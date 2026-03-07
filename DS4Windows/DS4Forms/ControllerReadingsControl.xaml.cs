@@ -337,7 +337,7 @@ namespace DS4WinWPF.DS4Forms
                 // Done with copying. Allow input thread to resume
                 ds.ReadWaitEv.Set();
 
-                Dispatcher.Invoke(() =>
+                Dispatcher.BeginInvoke(new Action(() =>
                 {
                     int x = baseState.LX;
                     int y = baseState.LY;
@@ -435,7 +435,7 @@ namespace DS4WinWPF.DS4Forms
                     batteryLvlLb.Content = $"{Translations.Strings.Battery}: {baseState.Battery}%";
                     gyroCalEllipse.Visibility = cntCalibrating > 0 && ((cntCalibrating / 250) % 2 == 1) ? Visibility.Visible : Visibility.Hidden;
                     UpdateCoordLabels(baseState, interState, exposeState);
-                });
+                }), System.Windows.Threading.DispatcherPriority.Background);
             }
 
             if (useTimer)
