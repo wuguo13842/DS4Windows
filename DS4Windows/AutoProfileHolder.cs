@@ -51,7 +51,7 @@ namespace DS4WinWPF
 
         private void Load()
         {
-            string configFile = Path.Combine(Global.appdatapath, "Auto Profiles.xml");
+            string configFile = Path.Combine(Global.ConfigPath, "Auto Profiles.xml");
             if (!File.Exists(configFile))
                 return;
 

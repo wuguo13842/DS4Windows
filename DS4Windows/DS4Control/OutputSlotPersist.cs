@@ -37,7 +37,7 @@ namespace DS4WinWPF.DS4Control
         {
             bool result = false;
 
-            string output_path = Path.Combine(Global.appdatapath, CONFIG_FILENAME);
+            string output_path = Path.Combine(Global.ConfigPath, CONFIG_FILENAME);
             if (File.Exists(output_path))
             {
                 XmlSerializer serializer = new XmlSerializer(typeof(OutputSlotPersistDTO));
@@ -61,7 +61,7 @@ namespace DS4WinWPF.DS4Control
         {
             bool result = false;
 
-            string output_path = Path.Combine(Global.appdatapath, CONFIG_FILENAME);
+            string output_path = Path.Combine(Global.ConfigPath, CONFIG_FILENAME);
             string testStr = string.Empty;
             XmlSerializer serializer = new XmlSerializer(typeof(OutputSlotPersistDTO));
             using (Utf8StringWriter strWriter = new Utf8StringWriter())

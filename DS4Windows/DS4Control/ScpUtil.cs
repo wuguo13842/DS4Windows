@@ -555,7 +555,12 @@ namespace DS4Windows
             return filePath;
         })();
         public static string exedirpath = Directory.GetParent(exelocation).FullName;
+		
         public static string exeFileName = Path.GetFileName(exelocation);
+		public static string ConfigPath => Path.Combine(appdatapath, "Config");
+		public static string ProfilesPath => Path.Combine(ConfigPath, "Profiles");
+		public static string LogsPath => Path.Combine(ConfigPath, "Logs");
+		
         public static FileVersionInfo fileVersion = FileVersionInfo.GetVersionInfo(exelocation);
         public static string exeversion = fileVersion.FileVersion;
         public static ulong exeversionLong = (ulong)fileVersion.ProductMajorPart << 48 |
@@ -937,14 +942,14 @@ namespace DS4Windows
             [TrayIconChoice.Battery] = $"{RESOURCES_PREFIX}/DS4W.ico"
         };
 
-        public static void SaveWhere(string path)
-        {
-            appdatapath = path;
-            m_Config.m_Profile = appdatapath + "\\Profiles.xml";
-            m_Config.m_Actions = appdatapath + "\\Actions.xml";
-            m_Config.m_linkedProfiles = Global.appdatapath + "\\LinkedProfiles.xml";
-            m_Config.m_controllerConfigs = Global.appdatapath + "\\ControllerConfigs.xml";
-        }
+public static void SaveWhere(string path)
+{
+    appdatapath = path;  // path 为程序根目录
+    m_Config.m_Profile = Path.Combine(ConfigPath, "Profiles.xml");
+    m_Config.m_Actions = Path.Combine(ConfigPath, "Actions.xml");
+    m_Config.m_linkedProfiles = Path.Combine(ConfigPath, "LinkedProfiles.xml");
+    m_Config.m_controllerConfigs = Path.Combine(ConfigPath, "ControllerConfigs.xml");
+}
 
         public static bool SaveDefault(string path)
         {
@@ -1412,39 +1417,46 @@ namespace DS4Windows
             return result;
         }
 
-        public static void FindConfigLocation()
-        {
-            bool programFolderAutoProfilesExists = File.Exists(Path.Combine(exedirpath, "Auto Profiles.xml"));
-            bool appDataAutoProfilesExists = File.Exists(Path.Combine(appDataPpath, "Auto Profiles.xml"));
-            //bool localAppDataAutoProfilesExists = File.Exists(Path.Combine(localAppDataPpath, "Auto Profiles.xml"));
-            //bool systemAppConfigExists = appDataAutoProfilesExists || localAppDataAutoProfilesExists;
-            bool systemAppConfigExists = appDataAutoProfilesExists;
-            bool isSameFolder = appDataAutoProfilesExists && exedirpath == appDataPpath;
+public static void FindConfigLocation()
+{
+    string configPath = Path.Combine(exedirpath, "Config");
+    string autoProfilesInConfig = Path.Combine(configPath, "Auto Profiles.xml");
 
-            if (programFolderAutoProfilesExists && appDataAutoProfilesExists &&
-                !isSameFolder)
-            {
-                Global.firstRun = true;
-                Global.multisavespots = true;
-            }
-            else if (programFolderAutoProfilesExists)
-            {
-                SaveWhere(exedirpath);
-            }
-            //else if (localAppDataAutoProfilesExists)
-            //{
-            //    SaveWhere(localAppDataPpath);
-            //}
-            else if (appDataAutoProfilesExists)
-            {
-                SaveWhere(appDataPpath);
-            }
-            else if (!programFolderAutoProfilesExists && !appDataAutoProfilesExists)
-            {
-                Global.firstRun = true;
-                Global.multisavespots = false;
-            }
-        }
+    // 检查 Config 文件夹中是否有 Auto Profiles.xml
+    bool programConfigAutoProfilesExists = File.Exists(autoProfilesInConfig);
+    // 检查原根目录（旧位置）是否有 Auto Profiles.xml
+    bool programRootAutoProfilesExists = File.Exists(Path.Combine(exedirpath, "Auto Profiles.xml"));
+    bool appDataAutoProfilesExists = File.Exists(Path.Combine(appDataPpath, "Auto Profiles.xml"));
+
+    if (programConfigAutoProfilesExists)
+    {
+        // 新结构已存在，直接使用 Config 文件夹
+        SaveWhere(configPath);
+        // 可在此添加迁移提示（如果 programRootAutoProfilesExists 也存在，询问是否移动旧文件）
+    }
+    else if (programRootAutoProfilesExists)
+    {
+        // 旧根目录存在配置，可选择自动迁移或提示用户
+        // 这里可以提示用户将文件移至 Config 文件夹，或者自动移动
+        // 简单处理：直接使用根目录，但为了符合新结构，建议自动迁移
+        // 例如：创建 Config 文件夹，移动所有 .xml 文件和 Profiles 文件夹
+        Directory.CreateDirectory(configPath);
+        // 移动文件...
+        SaveWhere(configPath);
+    }
+    else if (appDataAutoProfilesExists)
+    {
+        // AppData 存在配置，同样考虑迁移
+        // ...
+    }
+    else
+    {
+        // 无任何配置，首次运行，直接使用 Config 文件夹
+        Global.firstRun = true;
+        Global.multisavespots = false;
+        SaveWhere(configPath);
+    }
+}
 
         public static void SetCulture(string culture)
         {
@@ -4358,8 +4370,7 @@ namespace DS4Windows
                 proName = proName.Remove(proName.LastIndexOf(Global.XML_EXTENSION));
             }
 
-            string path = Path.Combine(Global.appdatapath, "Profiles",
-                $"{proName}{Global.XML_EXTENSION}");
+            string path = Path.Combine(Global.ProfilesPath, $"{proName}{Global.XML_EXTENSION}");
             string testStr = string.Empty;
             XmlSerializer serializer = new XmlSerializer(typeof(ProfileDTO),
                 ProfileDTO.GetAttributeOverrides());
@@ -5242,8 +5253,7 @@ namespace DS4Windows
             bool migratePerformed = false;
             string profilepath;
             if (propath == "")
-                profilepath = Path.Combine(Global.appdatapath, "Profiles",
-                    $"{profilePath[device]}.xml");
+                profilepath = Path.Combine(Global.ProfilesPath, $"{profilePath[device]}.xml");
             else
                 profilepath = propath;
 

@@ -43,7 +43,7 @@ namespace DS4WinWPF
         public void Refresh()
         {
             profileListCol.Clear();
-            string[] profiles = Directory.GetFiles(DS4Windows.Global.appdatapath + @"\Profiles\");
+            string[] profiles = Directory.GetFiles(DS4Windows.Global.appdatapath + @"\Config\Profiles\");
             foreach (string s in profiles)
             {
                 if (s.EndsWith(".xml"))

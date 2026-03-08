@@ -193,6 +193,8 @@ namespace DS4WinWPF
             logger.Info($"OS Release ID: {DS4Windows.Util.GetOSReleaseId()}");
             logger.Info($"System Architecture: {(Environment.Is64BitOperatingSystem ? "x64" : "x86")}");
             logger.Info("Logger created");
+			
+			logger.Info($"[DEBUG] Global.appdatapath = {DS4Windows.Global.appdatapath}");
 
             bool readAppConfig = DS4Windows.Global.Load();
             if (!firstRun && !readAppConfig)
@@ -312,9 +314,9 @@ namespace DS4WinWPF
             bool result = true;
             try
             {
-                Directory.CreateDirectory(DS4Windows.Global.appdatapath);
-                Directory.CreateDirectory(DS4Windows.Global.appdatapath + @"\Profiles\");
-                Directory.CreateDirectory(DS4Windows.Global.appdatapath + @"\Logs\");
+                Directory.CreateDirectory(DS4Windows.Global.appdatapath + @"\Config\");
+                Directory.CreateDirectory(DS4Windows.Global.appdatapath + @"\Config\Profiles\");
+                Directory.CreateDirectory(DS4Windows.Global.appdatapath + @"\Config\Logs\");
                 //Directory.CreateDirectory(DS4Windows.Global.appdatapath + @"\Macros\");
             }
             catch (UnauthorizedAccessException)
