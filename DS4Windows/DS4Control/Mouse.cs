@@ -381,7 +381,7 @@ namespace DS4Windows
 				
 				andCond = Global.getSATriggerCond(deviceNum);
 				
-				// 检查 Turn Behavior 触发器状态（使用用户选择的 AND/OR 逻辑）
+				// 检查 Turn Behavior 触发器状态
 				var turnTriggerActive = CheckTriggers(turnTriggers, andCond);
 				
 				// 检查 Toggle 触发器状态（总是使用 AND 逻辑）
@@ -397,12 +397,13 @@ namespace DS4Windows
 					}
 					previousTriggerActivated = toggleTriggerActive;
 					
-					// 只有当 Toggle 处于开启状态时，Turn Behavior 才生效
-					triggeractivated = currentToggleGyroMouse && turnTriggerActive;
+					// 如果 Toggle 处于开启状态，无视 Turn Behavior，始终激活
+					// 如果 Toggle 处于关闭状态，以 Turn Behavior 为主
+					triggeractivated = currentToggleGyroMouse ? true : turnTriggerActive;
 				}
 				else
 				{
-					// Toggle 不勾选：默认开启状态，Turn Behavior 直接生效
+					// Toggle 不勾选：以 Turn Behavior 为主
 					previousTriggerActivated = toggleTriggerActive;
 					triggeractivated = turnTriggerActive;
 				}
@@ -420,7 +421,7 @@ namespace DS4Windows
 				
 				andCond = Global.GetSAMouseStickTriggerCond(deviceNum);
 				
-				// 检查 Turn Behavior 触发器状态（使用用户选择的 AND/OR 逻辑）
+				// 检查 Turn Behavior 触发器状态
 				var turnTriggerActive = CheckTriggers(turnTriggers, andCond);
 				
 				// 检查 Toggle 触发器状态（总是使用 AND 逻辑）
@@ -436,12 +437,13 @@ namespace DS4Windows
 					}
 					previousTriggerActivated = toggleTriggerActive;
 					
-					// 只有当 Toggle 处于开启状态时，Turn Behavior 才生效
-					triggeractivated = currentToggleGyroStick && turnTriggerActive;
+					// 如果 Toggle 处于开启状态，无视 Turn Behavior，始终激活
+					// 如果 Toggle 处于关闭状态，以 Turn Behavior 为主
+					triggeractivated = currentToggleGyroStick ? true : turnTriggerActive;
 				}
 				else
 				{
-					// Toggle 不勾选：默认开启状态，Turn Behavior 直接生效
+					// Toggle 不勾选：以 Turn Behavior 为主
 					previousTriggerActivated = toggleTriggerActive;
 					triggeractivated = turnTriggerActive;
 				}
@@ -514,6 +516,10 @@ namespace DS4Windows
 							{
 								result = true;
 								break;
+							}
+							else
+							{
+								result = false;
 							}
 						}
 					}
