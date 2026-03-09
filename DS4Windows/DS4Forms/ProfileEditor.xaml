@@ -1826,6 +1826,14 @@
 										</Button>
 									</StackPanel>
 
+                                    <StackPanel Orientation="Horizontal" Margin="{StaticResource spaceMargin}">
+                                        <Label Content="Eval Cond." Margin="20,0,0,0" />
+                                        <ComboBox SelectedIndex="{Binding GyroMouseStickEvalCondIndex,FallbackValue=0}" Margin="8,0,0,0">
+                                            <ComboBoxItem Content="And" />
+                                            <ComboBoxItem Content="Or" />
+                                        </ComboBox>
+                                    </StackPanel>
+
 									<!-- Toggle Trigger -->
 									<StackPanel Orientation="Horizontal" Margin="{StaticResource spaceMargin}">
 										<CheckBox x:Name="gyroMouseStickToggleCheckBox" 
@@ -1896,13 +1904,7 @@
                                     </StackPanel>
 
                                     <StackPanel Orientation="Horizontal" Margin="{StaticResource spaceMargin}">
-                                        <Label Content="Eval Cond." />
-                                        <ComboBox SelectedIndex="{Binding GyroMouseStickEvalCondIndex,FallbackValue=0}" Margin="8,0,0,0">
-                                            <ComboBoxItem Content="And" />
-                                            <ComboBoxItem Content="Or" />
-                                        </ComboBox>
-
-                                        <Label Content="X-Axis" Margin="20,0,0,0" />
+                                        <Label Content="X-Axis" />
                                         <ComboBox SelectedIndex="{Binding GyroMouseStickXAxis,FallbackValue=0}" Margin="8,0,0,0">
                                             <ComboBoxItem Content="Yaw" />
                                             <ComboBoxItem Content="Roll" />
