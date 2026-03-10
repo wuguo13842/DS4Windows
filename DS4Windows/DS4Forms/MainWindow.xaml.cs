@@ -379,9 +379,8 @@ namespace DS4WinWPF.DS4Forms
         {
             Dispatcher.BeginInvoke((Action)(() =>
             {
-
-                if (!IsActive && (Global.Notifications == 2 ||
-                    (Global.Notifications == 1 && e.Warning)))
+				bool ignoreSettings = sender is bool && (bool)sender;
+                if (!IsActive && (Global.Notifications == 2 || (Global.Notifications == 1 && e.Warning)) || ignoreSettings)
                 {
                     if (notifyIcon.IsCreated)
                     {

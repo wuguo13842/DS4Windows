@@ -1485,4 +1485,24 @@
   <data name="SpecialActionEdit.ViaNotification" xml:space="preserve">
     <value>通过通知显示</value>
   </data>
+  <data name="LowBatteryNotify" xml:space="preserve">
+    <value>低电量时通知</value>
+    <comment>光条设置中启用低电量系统通知的复选框</comment>
+  </data>
+  <data name="ThresholdPrefix" xml:space="preserve">
+    <value>(阈值：</value>
+    <comment>Prefix before threshold value, e.g. "(Threshold: "</comment>
+  </data>
+  <data name="ThresholdSuffix" xml:space="preserve">
+    <value>)</value>
+    <comment>Suffix after threshold value, e.g. ")"</comment>
+  </data>
+  <data name="LowBatteryNotifyTooltip" xml:space="preserve">
+    <value>当电池电量下降到上述阈值时显示系统通知</value>
+    <comment>Tooltip for low battery notification checkbox</comment>
+  </data>
+  <data name="LowBatteryNotification" xml:space="preserve">
+    <value>控制器 {0} 电量低（{1}%）。请尽快充电。</value>
+    <comment>参数：0=控制器编号，1=电量百分比</comment>
+  </data>
 </root>

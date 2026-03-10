@@ -689,6 +689,7 @@ namespace DS4Windows
         public double rainbow;
         public double maxRainbowSat = DEFAULT_MAX_RAINBOW_SAT;
         public int flashAt; // Battery % when flashing occurs. <0 means disabled
+		public bool enableLowBatteryNotification = true; // Profile default -> Lightbar 低电量系统通知 默认 false（运行时由构造函数初始化为默认值，不需要显式赋值）
         public byte flashType;
         public int chargingType;
     }
