@@ -1163,44 +1163,91 @@
                         <TabItem Header="{lex:Loc Normal}" Visibility="Collapsed">
 
                             <StackPanel>
-                                <StackPanel Orientation="Horizontal">
-                                    <GroupBox x:Name="colorGB" Header="{lex:Loc Color}" Padding="4">
-                                        <StackPanel>
-                                            <StackPanel Orientation="Horizontal">
-                                                <Label Content="R" />
-                                                <Slider Value="{Binding MainColorR}" Minimum="0" Maximum="255" ToolTip="{Binding MainColorR}" MinWidth="100" Background="{Binding MainColorRString, FallbackValue=Red}"/>
-                                            </StackPanel>
-                                            <StackPanel Orientation="Horizontal">
-                                                <Label Content="G" />
-                                                <Slider Value="{Binding MainColorG}" MinWidth="100" Minimum="0" Maximum="255" ToolTip="{Binding MainColorG}" Background="{Binding MainColorGString, FallbackValue=Lime}"/>
-                                            </StackPanel>
-                                            <StackPanel Orientation="Horizontal">
-                                                <Label Content="B" />
-                                                <Slider Value="{Binding MainColorB}" MinWidth="100" Minimum="0" Maximum="255" ToolTip="{Binding MainColorB}" Background="{Binding MainColorBString, FallbackValue=Blue}"/>
-                                            </StackPanel>
-                                        </StackPanel>
-                                    </GroupBox>
+								<StackPanel Orientation="Horizontal">
+									<GroupBox x:Name="colorGB" Header="{lex:Loc Color}" Padding="4">
+										<StackPanel>
+											<Grid>
+												<Grid.RowDefinitions>
+													<RowDefinition Height="Auto"/>
+													<RowDefinition Height="Auto"/>
+													<RowDefinition Height="Auto"/>
+												</Grid.RowDefinitions>
+												<Grid.ColumnDefinitions>
+													<ColumnDefinition Width="Auto"/>
+													<ColumnDefinition Width="*"/>
+												</Grid.ColumnDefinitions>
+												<!-- R -->
+												<Label Grid.Row="0" Grid.Column="0" Content="R" VerticalAlignment="Center" />
+												<Slider Grid.Row="0" Grid.Column="1"
+														Value="{Binding MainColorR}" Minimum="0" Maximum="255"
+														ToolTip="{Binding MainColorR}" MinWidth="100"
+														Background="{Binding MainColorRString, FallbackValue=Red}"
+														VerticalAlignment="Center"/>
+												<!-- G -->
+												<Label Grid.Row="1" Grid.Column="0" Content="G" VerticalAlignment="Center" />
+												<Slider Grid.Row="1" Grid.Column="1"
+														Value="{Binding MainColorG}" Minimum="0" Maximum="255"
+														ToolTip="{Binding MainColorG}" MinWidth="100"
+														Background="{Binding MainColorGString, FallbackValue=Lime}"
+														VerticalAlignment="Center"/>
+												<!-- B -->
+												<Label Grid.Row="2" Grid.Column="0" Content="B" VerticalAlignment="Center" />
+												<Slider Grid.Row="2" Grid.Column="1"
+														Value="{Binding MainColorB}" Minimum="0" Maximum="255"
+														ToolTip="{Binding MainColorB}" MinWidth="100"
+														Background="{Binding MainColorBString, FallbackValue=Blue}"
+														VerticalAlignment="Center"/>
+											</Grid>
+										</StackPanel>
+									</GroupBox>
+																					
+									<GroupBox x:Name="emptyColorGB" Header="Empty" Padding="4">
+										<StackPanel>
+											<!-- 三行滑块统一放在一个 Grid 中 -->
+											<Grid>
+												<Grid.RowDefinitions>
+													<RowDefinition Height="Auto"/>
+													<RowDefinition Height="Auto"/>
+													<RowDefinition Height="Auto"/>
+												</Grid.RowDefinitions>
+												<Grid.ColumnDefinitions>
+													<ColumnDefinition Width="Auto"/>
+													<ColumnDefinition Width="*"/>
+												</Grid.ColumnDefinitions>
 
-                                    <GroupBox x:Name="emptyColorGB" Header="Empty" Padding="4">
-                                        <StackPanel>
+												<!-- R -->
+												<Label Grid.Row="0" Grid.Column="0" Content="R" VerticalAlignment="Center" />
+												<Slider Grid.Row="0" Grid.Column="1"
+														Value="{Binding LowColorR}" Minimum="0" Maximum="255"
+														ToolTip="{Binding LowColorR}" MinWidth="100"
+														Background="{Binding LowColorRString, FallbackValue=Red}"
+														VerticalAlignment="Center"/>
 
-                                            <StackPanel Orientation="Horizontal">
-                                                <Label Content="R" />
-                                                <Slider Value="{Binding LowColorR}" MinWidth="100" Minimum="0" Maximum="255" ToolTip="{Binding LowColorR}" Background="{Binding LowColorRString, FallbackValue=Red}"/>
-                                            </StackPanel>
-                                            <StackPanel Orientation="Horizontal">
-                                                <Label Content="G" />
-                                                <Slider Value="{Binding LowColorG}" MinWidth="100" Minimum="0" Maximum="255" ToolTip="{Binding LowColorG}" Background="{Binding LowColorGString, FallbackValue=Lime}"/>
-                                            </StackPanel>
-                                            <StackPanel Orientation="Horizontal">
-                                                <Label Content="B" />
-                                                <Slider Value="{Binding LowColorB}" MinWidth="100" Minimum="0" Maximum="255" ToolTip="{Binding LowColorB}" Background="{Binding LowColorBString, FallbackValue=Blue}"/>
-                                            </StackPanel>
+												<!-- G -->
+												<Label Grid.Row="1" Grid.Column="0" Content="G" VerticalAlignment="Center" />
+												<Slider Grid.Row="1" Grid.Column="1"
+														Value="{Binding LowColorG}" Minimum="0" Maximum="255"
+														ToolTip="{Binding LowColorG}" MinWidth="100"
+														Background="{Binding LowColorGString, FallbackValue=Lime}"
+														VerticalAlignment="Center"/>
 
-                                            <Button x:Name="lowColorBtn" Width="10" Height="10" Background="{Binding LowColor}" HorizontalAlignment="Right" Margin="0,6,0,0" Click="LowColorBtn_Click" />
-                                        </StackPanel>
-                                    </GroupBox>
-                                </StackPanel>
+												<!-- B -->
+												<Label Grid.Row="2" Grid.Column="0" Content="B" VerticalAlignment="Center" />
+												<Slider Grid.Row="2" Grid.Column="1"
+														Value="{Binding LowColorB}" Minimum="0" Maximum="255"
+														ToolTip="{Binding LowColorB}" MinWidth="100"
+														Background="{Binding LowColorBString, FallbackValue=Blue}"
+														VerticalAlignment="Center"/>
+											</Grid>
+
+											<!-- 按钮保持原样，位于三行下方 -->
+											<Button x:Name="lowColorBtn" Width="10" Height="10"
+													Background="{Binding LowColor}"
+													HorizontalAlignment="Right" Margin="0,6,0,0"
+													Click="LowColorBtn_Click" />
+										</StackPanel>
+									</GroupBox>
+								</StackPanel>
                                 <StackPanel Orientation="Horizontal" Margin="0,10,0,0">
                                     <ComboBox x:Name="flashTypeCombo" SelectedIndex="{Binding FlashTypeIndex,FallbackValue=0}">
                                         <ComboBoxItem Content="Flash at"/>
