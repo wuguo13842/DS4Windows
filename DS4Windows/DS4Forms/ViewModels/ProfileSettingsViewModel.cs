@@ -295,6 +295,17 @@ namespace DS4WinWPF.DS4Forms.ViewModels
             get => Global.LightbarSettingsInfo[device].ds4winSettings.flashAt; //Global.FlashAt[device];
             set => Global.LightbarSettingsInfo[device].ds4winSettings.flashAt = value;
         }
+		
+		public bool EnableLowBatteryNotification
+		{
+			get => Global.LightbarSettingsInfo[device].ds4winSettings.enableLowBatteryNotification;
+			set
+			{
+				Global.LightbarSettingsInfo[device].ds4winSettings.enableLowBatteryNotification = value;
+				EnableLowBatteryNotificationChanged?.Invoke(this, EventArgs.Empty);
+			}
+		}
+		public event EventHandler EnableLowBatteryNotificationChanged;
 
         public string FlashColor
         {

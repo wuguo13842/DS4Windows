@@ -1478,4 +1478,24 @@ Please click OK to confirm that you have read the message. Press Cancel to be re
   <data name="InverseMotors" xml:space="preserve">
     <value>Inverse motors</value>
   </data>
+  <data name="LowBatteryNotify" xml:space="preserve">
+    <value>Notify when battery low</value>
+    <comment>Checkbox in Lightbar settings to enable low battery system notification</comment>
+  </data>
+  <data name="LowBatteryNotification" xml:space="preserve">
+    <value>Controller {0} battery low ({1}%). Please charge soon.</value>
+    <comment>Low battery notification, parameters: {0}=controller number, {1}=battery percentage</comment>
+  </data>
+  <data name="ThresholdPrefix" xml:space="preserve">
+    <value>(Threshold:   </value>
+    <comment>Prefix before threshold value, e.g. "(Threshold: "  </comment>
+  </data>
+  <data name="ThresholdSuffix" xml:space="preserve">
+    <value>)  </value>
+    <comment>Suffix after threshold value, e.g. ")"  </comment>
+  </data>
+  <data name="LowBatteryNotifyTooltip" xml:space="preserve">
+    <value>Show system notification when battery drops below the threshold set above.  </value>
+    <comment>Tooltip for low battery notification checkbox  </comment>
+  </data>
 </root>

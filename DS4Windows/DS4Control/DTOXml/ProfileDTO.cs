@@ -449,6 +449,20 @@ namespace DS4WinWPF.DS4Control.DTOXml
             get => _maxSatRainbow * 100.0;
             set => _maxSatRainbow = Math.Clamp(value, 0.0, 100.0) / 100.0;
         }
+		
+		private bool _enableLowBatteryNotification; // Profile default -> Lightbar 低电量系统通知
+		[XmlElement("EnableLowBatteryNotification")]
+		public string EnableLowBatteryNotificationString
+		{
+			get => _enableLowBatteryNotification.ToString();
+			set => _enableLowBatteryNotification = XmlDataUtilities.StrToBool(value);
+		}
+		[XmlIgnore]
+		public bool EnableLowBatteryNotification
+		{
+			get => _enableLowBatteryNotification;
+			set => _enableLowBatteryNotification = value;
+		}
 
         private int _lSDeadZone = StickDeadZoneInfo.DEFAULT_DEADZONE;
         [XmlElement("LSDeadZone")]
@@ -1495,6 +1509,7 @@ namespace DS4WinWPF.DS4Control.DTOXml
             LightbarMode = source.lightbarSettingInfo[deviceIndex].mode;
             ColorString = $"{lightInfo.m_Led.red},{lightInfo.m_Led.green},{lightInfo.m_Led.blue}";
             _ledColor = new DS4Color(lightInfo.m_Led.red, lightInfo.m_Led.green, lightInfo.m_Led.blue);
+			_enableLowBatteryNotification = lightInfo.enableLowBatteryNotification; // Profile default -> Lightbar 低电量系统通知
             LeftStickDriftXAxis = source.leftStickDriftXAxis[deviceIndex];
             LeftStickDriftYAxis = source.leftStickDriftYAxis[deviceIndex];
             RightStickDriftXAxis = source.rightStickDriftXAxis[deviceIndex];
@@ -2013,6 +2028,8 @@ namespace DS4WinWPF.DS4Control.DTOXml
 
             LightbarSettingInfo lightbarSettings = destination.lightbarSettingInfo[deviceIndex];
             LightbarDS4WinInfo lightInfo = lightbarSettings.ds4winSettings;
+			
+			lightInfo.enableLowBatteryNotification = _enableLowBatteryNotification; // Profile default -> Lightbar 低电量系统通知
 
             destination.enableTouchToggle[deviceIndex] = TouchToggle;
             destination.idleDisconnectTimeout[deviceIndex] = IdleDisconnect;

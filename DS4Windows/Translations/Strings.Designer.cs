@@ -4059,5 +4059,11 @@ namespace DS4WinWPF.Translations {
                 return ResourceManager.GetString("Yes", resourceCulture);
             }
         }
+		
+		public static string LowBatteryNotification {
+			get {
+				return ResourceManager.GetString("LowBatteryNotification", resourceCulture);
+			}
+		}
     }
 }

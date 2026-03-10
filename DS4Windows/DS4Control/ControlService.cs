@@ -42,6 +42,7 @@ namespace DS4Windows
         // Might be useful for ScpVBus build
         public const int EXPANDED_CONTROLLER_COUNT = 8;
         public const int MAX_DS4_CONTROLLER_COUNT = Global.MAX_DS4_CONTROLLER_COUNT;
+		private bool[] lowBatteryNotified = new bool[MAX_DS4_CONTROLLER_COUNT]; // Profile default -> Lightbar 低电量系统通知
 #if FORCE_4_INPUT
         public static int CURRENT_DS4_CONTROLLER_LIMIT = Global.OLD_XINPUT_CONTROLLER_COUNT;
 #else
@@ -2575,6 +2576,7 @@ namespace DS4Windows
                     lag[ind] = false;
                     inWarnMonitor[ind] = false;
                     useDInputOnly[ind] = true;
+					lowBatteryNotified[ind] = false; // Profile default -> Lightbar 低电量系统通知
                     Global.activeOutDevType[ind] = OutContType.None;
                     /* Leave up to Auto Profile system to change the following flags? */
                     //Global.useTempProfile[ind] = false;
@@ -2644,6 +2646,42 @@ namespace DS4Windows
                 DS4State pState = device.getPreviousStateRef();
                 //device.getPreviousState(PreviousState[ind]);
                 //DS4State pState = PreviousState[ind];
+				
+				
+				// 低电量通知逻辑
+				// bool isCharging = device.isCharging();
+				// if (!isCharging && cState.Battery < pState.Battery) // 电量下降且不在充电
+				// {
+					// bool enableNotify = Global.LightbarSettingsInfo[ind].ds4winSettings.enableLowBatteryNotification;
+					// int threshold = Global.LightbarSettingsInfo[ind].ds4winSettings.flashAt;
+					// if (enableNotify && cState.Battery <= threshold && !lowBatteryNotified[ind])
+					// {
+						// lowBatteryNotified[ind] = true;
+						// string message = string.Format(DS4WinWPF.Translations.Strings.LowBatteryNotification, ind + 1, cState.Battery);
+						// AppLogger.LogToTray(message, true, true); // 第二个参数 true 表示警告类型
+					// }
+				// }
+				// 测试代码 - 只要低于阈值就通知（不考虑是否在下降）
+				bool isCharging = device.isCharging();
+				if (!isCharging) // 只要不在充电
+				{
+					bool enableNotify = Global.LightbarSettingsInfo[ind].ds4winSettings.enableLowBatteryNotification;
+					int threshold = Global.LightbarSettingsInfo[ind].ds4winSettings.flashAt;
+					
+					if (enableNotify && cState.Battery <= threshold && !lowBatteryNotified[ind])
+					{
+						lowBatteryNotified[ind] = true;
+						string message = string.Format(DS4WinWPF.Translations.Strings.LowBatteryNotification, ind + 1, cState.Battery);
+						AppLogger.LogToTray(message, true, true);
+					}
+				}
+				
+				// 当充电开始时重置通知标志
+				if (isCharging && !charging[ind])
+				{
+					lowBatteryNotified[ind] = false;
+				}
+				charging[ind] = isCharging;
 
 
                 if (device.firstReport && device.isSynced())
