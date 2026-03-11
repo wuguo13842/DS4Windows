@@ -1566,7 +1566,7 @@
 	<data name="EvalCond" xml:space="preserve"><value>按键组合行为</value></data>
 	<data name="And" xml:space="preserve"><value>与</value></data>
 	<data name="Or" xml:space="preserve"><value>或</value></data>
-	<data name="SteeringWheel360" xml:space="preserve"><value>360度方向盘</value></data>
+	<data name="SteeringWheel360" xml:space="preserve"><value>360° 方向盘</value></data>
 	<data name="SteeringWheelAxis" xml:space="preserve"><value>方向盘轴</value></data>
 	<data name="None" xml:space="preserve"><value>无</value></data>
 	<data name="LeftXAxis" xml:space="preserve"><value>左 X 轴</value></data>
@@ -1624,4 +1624,248 @@
 	<data name="Milliseconds" xml:space="preserve"><value>毫秒</value></data>
 	<data name="UseDs3PitchRollSim" xml:space="preserve"><value>[实验性] 使用 DS3 陀螺仪模拟</value></data>
 	<data name="UseDs3PitchRollSimTooltip" xml:space="preserve"><value>为期望 DS3 风格陀螺仪模拟的应用程序启用此功能。</value></data>
+	
+	<!-- Touchpad 标签页通用 -->
+	<data name="JitterCompensation" xml:space="preserve">
+		<value>抖动补偿</value>
+	</data>
+	<data name="DoubleTap" xml:space="preserve">
+		<value>双击</value>
+	</data>
+	<data name="TapAndHold" xml:space="preserve">
+		<value>单击并保持来拖拽，单击时略有延迟</value>
+	</data>
+	<data name="LowerRightAsRMB" xml:space="preserve">
+		<value>右下角作为右键</value>
+	</data>
+	<data name="BestUsedRightSide" xml:space="preserve">
+		<value>最好用于将右侧用作鼠标功能</value>
+	</data>
+	<data name="PassthruClickAction" xml:space="preserve">
+		<value>透传点击动作（DS4模式）</value>
+	</data>
+	<data name="StartSlideScrollOff" xml:space="preserve">
+		<value>启动时禁用滑动/滚动</value>
+	</data>
+	<data name="TouchpadOffTip" xml:space="preserve">
+		<value>按下PS键 + 触摸板重新启用</value>
+	</data>
+	<data name="RotationLabel" xml:space="preserve">
+		<value>旋转</value>
+	</data>
+	<data name="MinThresholdLabel" xml:space="preserve">
+		<value>最小阈值</value>
+	</data>
+	<data name="Trackball" xml:space="preserve">
+		<value>轨迹球</value>
+	</data>
+	<data name="FrictionLabel" xml:space="preserve">
+		<value>摩擦：</value>
+	</data>
+	<data name="InvertLabel" xml:space="preserve">
+		<value>反转</value>
+	</data>
+	<data name="DisableInvertLabel" xml:space="preserve">
+		<value>禁用反转</value>
+	</data>
+
+	<!-- 按钮名称（用于菜单项） -->
+	<data name="Cross" xml:space="preserve">
+		<value>叉</value>
+	</data>
+	<data name="Circle" xml:space="preserve">
+		<value>圈</value>
+	</data>
+	<data name="Square" xml:space="preserve">
+		<value>方块</value>
+	</data>
+	<data name="Triangle" xml:space="preserve">
+		<value>三角</value>
+	</data>
+	<data name="Up" xml:space="preserve">
+		<value>上</value>
+	</data>
+	<data name="Down" xml:space="preserve">
+		<value>下</value>
+	</data>
+	<data name="Left" xml:space="preserve">
+		<value>左</value>
+	</data>
+	<data name="Right" xml:space="preserve">
+		<value>右</value>
+	</data>
+	<data name="FingerOnTouchpad" xml:space="preserve">
+		<value>单指触摸</value>
+	</data>
+	<data name="TwoFingersOnTouchpad" xml:space="preserve">
+		<value>双指触摸</value>
+	</data>
+	<data name="Options" xml:space="preserve">
+		<value>选项</value>
+	</data>
+	<data name="Share" xml:space="preserve">
+		<value>分享</value>
+	</data>
+	<data name="PS" xml:space="preserve">
+		<value>PS</value>
+	</data>
+	<data name="TouchpadClick" xml:space="preserve">
+		<value>触摸板点击</value>
+	</data>
+	<data name="Mute" xml:space="preserve">
+		<value>静音</value>
+	</data>
+	<data name="SideL" xml:space="preserve">
+		<value>左侧</value>
+	</data>
+	<data name="SideR" xml:space="preserve">
+		<value>右侧</value>
+	</data>
+	<data name="FunctionLeft" xml:space="preserve">
+		<value>左侧功能键</value>
+	</data>
+	<data name="FunctionRight" xml:space="preserve">
+		<value>右侧功能键</value>
+	</data>
+	<data name="BottomLeftPaddle" xml:space="preserve">
+		<value>左下拨片</value>
+	</data>
+	<data name="BottomRightPaddle" xml:space="preserve">
+		<value>右下拨片</value>
+	</data>
+
+	<!-- Swipe 方向 -->
+	<data name="SwipeUp" xml:space="preserve">
+		<value>上滑</value>
+	</data>
+	<data name="SwipeDown" xml:space="preserve">
+		<value>下滑</value>
+	</data>
+	<data name="SwipeLeft" xml:space="preserve">
+		<value>左滑</value>
+	</data>
+	<data name="SwipeRight" xml:space="preserve">
+		<value>右滑</value>
+	</data>
+
+	<!-- MouseJoystick 标签页 -->
+	<data name="OutputStickLabel" xml:space="preserve">
+		<value>输出摇杆</value>
+	</data>
+	<data name="LeftStick" xml:space="preserve">
+		<value>左摇杆</value>
+	</data>
+	<data name="RightStick" xml:space="preserve">
+		<value>右摇杆</value>
+	</data>
+	<data name="OutputAxesLabel" xml:space="preserve">
+		<value>输出轴向</value>
+	</data>
+	<data name="HorizontalAndVertical" xml:space="preserve">
+		<value>水平和垂直</value>
+	</data>
+	<data name="HorizontalOnly" xml:space="preserve">
+		<value>仅水平</value>
+	</data>
+	<data name="VerticalOnly" xml:space="preserve">
+		<value>仅垂直</value>
+	</data>
+	<data name="MinimumXLabel" xml:space="preserve">
+		<value>最小X</value>
+	</data>
+	<data name="MinimumYLabel" xml:space="preserve">
+		<value>最小Y</value>
+	</data>
+	<data name="Smoothing" xml:space="preserve">
+		<value>平滑</value>
+	</data>
+	<data name="SmoothingOptions" xml:space="preserve">
+		<value>平滑选项</value>
+	</data>
+	<data name="OneEuroMinCutoff" xml:space="preserve">
+		<value>1€ 最小截止</value>
+	</data>
+	<data name="OneEuroBeta" xml:space="preserve">
+		<value>1€ Beta</value>
+	</data>
+	<data name="InvertX" xml:space="preserve">
+		<value>反转X</value>
+	</data>
+	<data name="InvertY" xml:space="preserve">
+		<value>反转Y</value>
+	</data>
+
+	<!-- AbsoluteMouse 标签页 -->
+	<data name="MaxZoneXLabel" xml:space="preserve">
+		<value>最大区域 X</value>
+	</data>
+	<data name="MaxZoneYLabel" xml:space="preserve">
+		<value>最大区域 Y</value>
+	</data>
+	<data name="SnapToCenterOnRelease" xml:space="preserve">
+		<value>释放时居中</value>
+	</data>
+	
+	<data name="DebouncingHeader" xml:space="preserve"><value>去抖动</value></data>
+	<data name="MillisecondsUnit" xml:space="preserve"><value>毫秒</value></data>
+	<data name="SecondsUnit" xml:space="preserve"><value>秒</value></data>
+	<data name="MinutesUnit" xml:space="preserve"><value>分钟</value></data>
+	<data name="PercentSign" xml:space="preserve"><value>%</value></data>
+	<data name="PPSUnit" xml:space="preserve"><value>像素/秒</value></data>
+	<data name="ForReadoutLabel" xml:space="preserve"><value>用于读数</value></data>
+	<data name="UseControllerForMapping" xml:space="preserve"><value>你也可以用控制器来改变设置</value></data>
+	<data name="EnableTouchToggleTip" xml:space="preserve"><value>启用触摸板切换</value></data>
+	<data name="BtPollRateTip" xml:space="preserve"><value>决定使用蓝牙连接的DS4硬件的回报率（当配置保存时应用）</value></data>
+	<data name="SettingsHeader" xml:space="preserve"><value>设置</value></data>
+	
+	<data name="ProfileLabel" xml:space="preserve">
+		<value>配置文件：</value>
+	</data>
+	<data name="SelectPreset" xml:space="preserve">
+		<value>选择预设</value>
+	</data>
+	<data name="KeepSizeMessage" xml:space="preserve">
+		<value>关闭后保持此窗口大小</value>
+	</data>
+	<data name="SpecialActionsTab" xml:space="preserve">
+		<value>特殊动作</value>
+	</data>
+	<data name="ControllerReadings" xml:space="preserve">
+		<value>控制器读数</value>
+	</data>
+	
+	
+	<data name="MenuDisconnect" xml:space="preserve">
+		<value>断开连接菜单</value>
+	</data>
+	<data name="ServiceStart" xml:space="preserve">
+		<value>启动</value>
+	</data>
+	<data name="ServiceStop" xml:space="preserve">
+		<value>停止</value>
+	</data>
+	<data name="MenuOpen" xml:space="preserve">
+		<value>打开</value>
+	</data>
+	<data name="MenuMinimize" xml:space="preserve">
+		<value>最小化</value>
+	</data>
+	<data name="MenuOpenProgramFolder" xml:space="preserve">
+		<value>打开程序文件夹</value>
+	</data>
+	<data name="MenuExit" xml:space="preserve">
+		<value>退出</value>
+	</data>
+	
+	<data name="ProfileSwitchNotification" xml:space="preserve">
+		<value>系统通知配置切换</value>
+	</data>
+	<data name="ProcessPriority" xml:space="preserve">
+		<value>进程优先级</value>
+	</data>
+	
+	<data name="PriorityNormal" xml:space="preserve"><value>正常</value></data>
+	<data name="PriorityAboveNormal" xml:space="preserve"><value>高于正常</value></data>
+	<data name="PriorityHigh" xml:space="preserve"><value>高</value></data>
+	<data name="PriorityRealTime" xml:space="preserve"><value>实时</value></data>
 </root>

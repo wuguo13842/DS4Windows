@@ -24,6 +24,7 @@ using System.Threading;
 using System.Windows;
 using System.Windows.Controls;
 using DS4Windows;
+using WPFLocalizeExtension.Extensions;
 
 namespace DS4WinWPF.DS4Forms.ViewModels
 {
@@ -40,7 +41,6 @@ namespace DS4WinWPF.DS4Forms.ViewModels
         private MenuItem openProgramItem;
         private MenuItem closeItem;
         private int? prevBattery = null;
-
 
         public string TooltipText
         {
@@ -95,18 +95,22 @@ namespace DS4WinWPF.DS4Forms.ViewModels
             contextMenu = new ContextMenu();
             iconSource = Global.iconChoiceResources[Global.UseIconChoice];
             Global.BatteryChanged += UpdateTrayBattery;
-            changeServiceItem = new MenuItem() { Header = "Start" };
-            changeServiceItem.Click += ChangeControlServiceItem_Click;
-            changeServiceItem.IsEnabled = false;
 
-            openItem = new MenuItem() { Header = "Open",
+            // 初始化菜单项
+            changeServiceItem = new MenuItem()
+            {
+                Header = GetLocalizedString("ServiceStart"),
+                IsEnabled = false
+            };
+            changeServiceItem.Click += ChangeControlServiceItem_Click;
+            openItem = new MenuItem() {  Header = GetLocalizedString("MenuOpen"),
                 FontWeight = FontWeights.Bold };
             openItem.Click += OpenMenuItem_Click;
-            minimizeItem = new MenuItem() { Header = "Minimize" };
+            minimizeItem = new MenuItem() { Header = GetLocalizedString("MenuMinimize") };
             minimizeItem.Click += MinimizeMenuItem_Click;
-            openProgramItem = new MenuItem() { Header = "Open Program Folder" };
+            openProgramItem = new MenuItem() { Header = GetLocalizedString("MenuOpenProgramFolder") };
             openProgramItem.Click += OpenProgramFolderItem_Click;
-            closeItem = new MenuItem() { Header = "Exit" };
+            closeItem = new MenuItem()  { Header = GetLocalizedString("MenuExit") };
             closeItem.Click += ExitMenuItem_Click;
 
             PopulateControllerList();
@@ -128,15 +132,20 @@ namespace DS4WinWPF.DS4Forms.ViewModels
             tester.PreRemoveControllers += ClearToolText;
             tester.HotplugControllers += HookBatteryUpdate;
             tester.HotplugControllers += StartPopulateText;
-            */
+			*/
+        }
+
+        private string GetLocalizedString(string key)
+        {
+            return LocExtension.GetLocalizedValue<string>(key);
         }
 
         private void Service_RunningChanged(object sender, EventArgs e)
         {
-            string temp = controlService.running ? "Stop" : "Start";
+            string headerKey = controlService.running ? "ServiceStop" : "ServiceStart";
             App.Current.Dispatcher.BeginInvoke((Action)(() =>
             {
-                changeServiceItem.Header = temp;
+                changeServiceItem.Header = GetLocalizedString(headerKey);
                 changeServiceItem.IsEnabled = true;
             }));
         }
@@ -215,7 +224,7 @@ namespace DS4WinWPF.DS4Forms.ViewModels
                     idx++;
                 }
 
-                item = new MenuItem() { Header = "Disconnect Menu" };
+                item = new MenuItem() {  Header = GetLocalizedString("MenuDisconnect") };
                 idx = 0;
                 foreach (ControllerHolder holder in controllerList)
                 {
