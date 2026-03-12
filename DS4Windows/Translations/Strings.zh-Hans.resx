@@ -414,7 +414,10 @@
     <comment/>
   </data>
   <data name="CustomExeNameInfo" xml:space="preserve">
-    <value>一些游戏如果测到DS4Windows.exe 或 InputMapper.exe 正在运行，则会忽略 DS4 的输入。对于这些游戏，解决方法是将 DS4Windows.exe 重命名，以规避检测。在这样自定义可执行文件的名称，以允许 DS4Updater 自动更新已被重命名的DS4Windows。请不要输入扩展名（即 .exe)。名称示例: whyme_DS4Windows</value>
+    <value>一些游戏如果测到DS4Windows.exe 或 InputMapper.exe 正在运行，则会忽略 DS4 的输入。
+    对于这些游戏，解决方法是将 DS4Windows.exe 重命名，以规避检测。在这样自定义可执行文件的名称，
+    以允许 DS4Updater 自动更新已被重命名的DS4Windows。请不要输入扩展名（即 .exe)。
+    名称示例: whyme_DS4Windows</value>
     <comment/>
   </data>
   <data name="XInputChecker" xml:space="preserve">
@@ -632,7 +635,10 @@
     <comment/>
   </data>
   <data name="StickRotationTooltip" xml:space="preserve">
-    <value>正数为顺时针， 负数为逆时针。旋转设置旨在帮助校正模拟摇杆的方向，如果在移动模拟摇杆时你的拇指略微偏移。例如，当模拟摇杆完全向北移动时，你的拇指可能会从中心略微偏移。由于我的手握持DS4的方式，当我完全将模拟摇杆移动到北方时，我的拇指会略微向右偏移。所使用的值表示用于调整最终轴输出值的角度数。值的范围允许从-180到180。默认值为0</value>
+    <value>正数为顺时针， 负数为逆时针。旋转设置旨在帮助校正模拟摇杆的方向，如果在移动模拟摇杆时你的拇指略微偏移。
+	
+    例如，当模拟摇杆完全向北移动时，你的拇指可能会从中心略微偏移。由于我的手握持DS4的方式，当我完全将模拟摇杆移动到北方时，我的拇指会略微向右偏移。
+    所使用的值表示用于调整最终轴输出值的角度数。值的范围允许从-180到180。默认值为0</value>
   </data>
   <data name="TouchpadJitterCompTooltip" xml:space="preserve">
     <value>限制触摸板下部分的移动。在触摸板上基本保持一个位置时可以减少意外的鼠标指针移动。</value>
@@ -681,11 +687,22 @@
 - 启用：DS4Windows的通用震动调整和DualSense的原生控制都会生效</value>
   </data>
   <data name="DualSRumbleModes_Tip" xml:space="preserve">
-    <value>Accurate Mode (recommended):- Better replicates the DualShock 4/Xbox 360 controller rumble feeling- More accurately executes game's intended rumble effects- Rumble has more depth. Within the same power level there is a greater difference between min and max in-game rumble activation,varying from real low up to the max strength of the defined power levelLegacy Mode:- Overral stronger, but lacks depth- Has a "sharper" feeling- The min and max activation in-game will be, respectively, only slightly below and slight above the chosen power level strengthDisabled:- Fully disables rumble</value>
+    <value>精确模式（推荐）：- 更好地复制 DualShock 4/Xbox 360 手柄的隆隆声感觉- 
+    更准确地执行游戏预期的隆隆声效果-隆隆声更有深度。在同一功率级别中，
+    游戏中的最小和最大隆隆声激活差异更大，从实际的低强度到所定义功率级别的最大强度不等。
+	
+传统模式：- 总体强度更高，但缺乏深度- 具有 "更尖锐 "的感觉- 
+    游戏中的最小和最大激活分别仅略低于和略高于所选择的功率级别强度。</value>
     <comment/>
   </data>
   <data name="DualSRumblePowerLevel_Tip" xml:space="preserve">
-    <value>DualSense's native rumble Power Level rescaler.- When in Accurate Mode, rumble's [ min // max ] will be [ 1% /// Chosen Power Level ]    - Example (62%): [ min = 1% /// max = 62% ]- When in Legacy Mode, rumble's [min /// max ] will be roughly [ Power Level - 12% /// Power Level + 12% ]    - Example (62%): [ min = 50% /// max = 74% ]</value>
+    <value>DualSense 原生震动强度等级调整器。
+
+- 在精准模式下，震动强度 [最小值 -> 最大值] 将为 [1% -> 选择的强度等级]
+    - 例如 (62%): [最小值 = 1% -> 最大值 = 62%]
+
+- 在传统模式下，震动强度 [最小值 -> 最大值] 大约为 [强度等级 - 12% -> 强度等级 + 12%]
+    - 例如 (62%): [最小值 = 50% -> 最大值 = 74%]</value>
     <comment/>
   </data>
   <data name="Accept" xml:space="preserve">
@@ -772,7 +789,7 @@
     <comment/>
   </data>
   <data name="White" xml:space="preserve">
-    <value>亮色</value>
+    <value>白色</value>
     <comment/>
   </data>
   <data name="AppTheme" xml:space="preserve">
@@ -868,7 +885,9 @@
     <value>DS3 手柄支持</value>
   </data>
   <data name="AntiDeadzoneTooltip" xml:space="preserve">
-    <value>反死区作为一个与轴关联的偏移量，用于表示摇杆在某轴在离开其指定的死区后生成的最小输出值。这主要是为了应对游戏中某轴的死区。例如在游戏中，一般的XInput LS死区约为8000（25%）。如果没有分配反死区，摇杆就必须移动超过DS4Windows和游戏设定的死区才有输出。</value>
+    <value>反死区作为一个与轴关联的偏移量，用于表示摇杆在某轴在离开其指定的死区后生成的最小输出值。
+    这主要是为了应对游戏中某轴的死区。例如在游戏中，一般的XInput LS死区约为8000（25%）。
+    如果没有分配反死区，摇杆就必须移动超过DS4Windows和游戏设定的死区才有输出。</value>
   </data>
   <data name="AutoProfiles.DisplaySwitchVia" xml:space="preserve">
     <value>通过以下选项显示配置切换</value>
@@ -904,7 +923,8 @@
     <value>从挂起中唤醒</value>
   </data>
   <data name="FirstLaunch.DeviceIntroText" xml:space="preserve">
-    <value>由于其他映射软件默认支持多种设备（Steam输入），DS4Windows默认只启用DS4控制器的输入。你可以在这里启用其他支持的设备的输入。当DS4Windows与其他映射同时运行的时候请小心冲突。</value>
+    <value>由于其他映射软件默认支持多种设备（Steam输入），DS4Windows默认只启用DS4控制器的输入。
+    你可以在这里启用其他支持的设备的输入。当DS4Windows与其他映射同时运行的时候请小心冲突。</value>
   </data>
   <data name="FirstLaunch.DS3EnableCkbLabel" xml:space="preserve">
     <value>DS3 设备支持</value>
@@ -943,7 +963,7 @@
     <value>第一次启动</value>
   </data>
   <data name="Light" xml:space="preserve">
-    <value>左</value>
+    <value>白色</value>
   </data>
   <data name="TouchpadTapTooltip" xml:space="preserve">
     <value>用触摸板单击触发鼠标左键点击。最大时间间隔为（值 * 2）ms</value>
@@ -1411,7 +1431,10 @@
     <value>（可选）步骤5：安装FakerInput驱动</value>
   </data>
   <data name="Welcome.Step5HelpText" xml:space="preserve">
-    <value>使用FakerInput驱动来设置全局的虚拟键盘，相对鼠标，和绝对鼠标。在某些情况下，SendInput失效时可以发送虚拟的键盘与鼠标事件。这些情况包括提升优先级的进程与游戏，UAC提示框，以及一些反作弊系统会屏蔽SendInput事件。为了能让DS4Windows在一些带有反作弊保护的游戏，比如 Valorant，中正常运行，FakerInput是必要的。</value>
+    <value>使用FakerInput驱动来设置全局的虚拟键盘，相对鼠标，和绝对鼠标。在某些情况下，
+    SendInput失效时可以发送虚拟的键盘与鼠标事件。这些情况包括提升优先级的进程与游戏，UAC提示框，
+    以及一些反作弊系统会屏蔽SendInput事件。为了能让DS4Windows在一些带有反作弊保护的游戏，
+    比如 Valorant，中正常运行，FakerInput是必要的。</value>
   </data>
   <data name="SpecialActionEdit.CheckBattery" xml:space="preserve">
     <value>检查电池电量</value>
@@ -1816,7 +1839,6 @@
 	<data name="UseControllerForMapping" xml:space="preserve"><value>你也可以用控制器来改变设置</value></data>
 	<data name="EnableTouchToggleTip" xml:space="preserve"><value>启用触摸板切换</value></data>
 	<data name="BtPollRateTip" xml:space="preserve"><value>决定使用蓝牙连接的DS4硬件的回报率（当配置保存时应用）</value></data>
-	<data name="SettingsHeader" xml:space="preserve"><value>设置</value></data>
 	
 	<data name="ProfileLabel" xml:space="preserve">
 		<value>配置文件：</value>
@@ -1868,4 +1890,18 @@
 	<data name="PriorityAboveNormal" xml:space="preserve"><value>高于正常</value></data>
 	<data name="PriorityHigh" xml:space="preserve"><value>高</value></data>
 	<data name="PriorityRealTime" xml:space="preserve"><value>实时</value></data>
+	
+	<data name="StickCalibration" xml:space="preserve">
+		<value>摇杆校准</value>
+	</data>
+	<data name="AutomaticallyRecalibrateStick" xml:space="preserve">
+		<value>自动摇杆校准</value>
+	</data>
+	
+  <data name="InverseMotors" xml:space="preserve">
+    <value>震动电机互换</value>
+  </data>
+    <data name="AntiRadius" xml:space="preserve">
+    <value>反向半径</value>
+  </data>
 </root>

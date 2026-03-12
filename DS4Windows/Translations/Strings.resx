@@ -1813,9 +1813,6 @@ Please click OK to confirm that you have read the message. Press Cancel to be re
 
 	<!-- Enable Touch Toggle -->
 	<data name="EnableTouchToggleTip" xml:space="preserve"><value>Enable Touchpad Toggle</value></data>
-
-	<!-- Expander -->
-	<data name="SettingsHeader" xml:space="preserve"><value>Settings</value></data>
 	
 	<data name="ProfileLabel" xml:space="preserve">
 		<value>Profile:</value>

@@ -11,8 +11,16 @@
              lex:ResxLocalizationProvider.DefaultAssembly="DS4Windows"
              lex:ResxLocalizationProvider.DefaultDictionary="Strings"
              mc:Ignorable="d" 
-             d:DesignHeight="550" d:DesignWidth="1000">
+             d:DesignHeight="550" d:DesignWidth="1000"
+			 xmlns:sys="clr-namespace:System;assembly=mscorlib">
     <UserControl.Resources>
+		<sys:Double x:Key="FirstColumnMinWidth">100</sys:Double>
+		<GridLength x:Key="FirstColumnWidth">*</GridLength>
+		<sys:Double x:Key="SecondColumnMaxWidth">120</sys:Double>
+		<GridLength x:Key="SecondColumnWidth">Auto</GridLength>
+		<sys:Double x:Key="SecondColumnMaxWidthForStar">110</sys:Double>
+		<GridLength x:Key="FirstColumnStarWidth">*</GridLength>
+		<GridLength x:Key="SecondColumnStarWidth">*</GridLength>
         <xctk:InverseBoolConverter x:Key="InverseBoolConverter"/>
         <localConvert:InvertBoolToVisibilityConverter x:Key="InvertBoolToVisibilityConverter" />
         <local:ControlIndexCheck x:Key="controlIndexCheck" />
@@ -277,622 +285,869 @@
                 </TabItem.Resources>
                 <ScrollViewer>
                     <StackPanel>
-                        <GroupBox Header="LS">
-                            <StackPanel>
-                                <StackPanel Orientation="Horizontal">
-                                    <Label Content="{lex:Loc OutputMode}" />
-                                    <ComboBox MinWidth="160" SelectedIndex="{Binding LSOutputIndex,FallbackValue='0'}" VerticalContentAlignment="Center" Margin="10,0,0,0">
-                                        <ComboBoxItem Content="{lex:Loc None}" />
-                                        <ComboBoxItem Content="{lex:Loc Controls}" />
-                                        <ComboBoxItem Content="{lex:Loc FlickStick}" />
-                                    </ComboBox>
-                                </StackPanel>
-
-                                <TabControl SelectedIndex="{Binding LSOutputIndex,Mode=OneWay,FallbackValue='0'}" BorderBrush="{x:Null}" Padding="0" Margin="0,10,0,0">
-                                    <TabItem Header="{lex:Loc None}"  Visibility="Collapsed" />
-                                    <TabItem Header="{lex:Loc Controls}" Visibility="Collapsed">
-                                        <DockPanel>
-                                            <StackPanel Orientation="Horizontal" DockPanel.Dock="Top">
-                                                <Label Content="{lex:Loc DeadZoneType}" />
-                                                <ComboBox MinWidth="160" SelectedIndex="{Binding LSDeadTypeIndex,FallbackValue='0'}" VerticalContentAlignment="Center" Margin="10,0,0,0">
-                                                    <ComboBoxItem Content="{lex:Loc Radial}" />
-                                                    <ComboBoxItem Content="{lex:Loc Axial}" />
-                                                </ComboBox>
-                                            </StackPanel>
-
-                                            <TabControl DockPanel.Dock="Top" SelectedIndex="{Binding LSDeadTypeIndex,Mode=OneWay,FallbackValue='0'}" BorderBrush="{x:Null}" Padding="0" Margin="0,8,0,8">
-                                                <TabItem Header="Radial" Visibility="Collapsed">
-                                                    <Grid>
-                                                        <Grid.ColumnDefinitions>
-                                                            <ColumnDefinition/>
-                                                            <ColumnDefinition/>
-                                                        </Grid.ColumnDefinitions>
-                                                        <Grid.RowDefinitions>
-                                                            <RowDefinition/>
-                                                            <RowDefinition Style="{StaticResource gridRowHeight}" />
-                                                            <RowDefinition Style="{StaticResource gridRowHeight}" />
-                                                            <RowDefinition Style="{StaticResource gridRowHeight}" />
-                                                            <RowDefinition Style="{StaticResource gridRowHeight}" />
-                                                            <RowDefinition Style="{StaticResource gridRowHeight}" />
-                                                        </Grid.RowDefinitions>
-
-                                                        <Label Content="{lex:Loc DeadZone}" ContentStringFormat="{}{0}:" Grid.Row="0" Grid.Column="0" />
-                                                        <xctk:DoubleUpDown d:IsHidden="True" Value="{Binding LSDeadZone,UpdateSourceTrigger=LostFocus}" FormatString="F2" MinWidth="50" Grid.Row="0" Grid.Column="1" Maximum="1.0" Minimum="0.0" Increment="0.1"
-                                                   Margin="{StaticResource spaceMargin}" />
-
-                                                        <Label Content="{lex:Loc MaxZone}" ContentStringFormat="{}{0}:" Grid.Row="1" Grid.Column="0" />
-                                                        <xctk:DoubleUpDown d:IsHidden="True" Value="{Binding LSMaxZone}" FormatString="F2" MinWidth="50" Grid.Row="1" Grid.Column="1" Maximum="1.0" Minimum="0.0" Increment="0.1"
-                                                   Margin="{StaticResource spaceMargin}" />
-
-                                                        <Label Content="{lex:Loc AntiDeadZone}" ContentStringFormat="{}{0}:" Grid.Row="2" Grid.Column="0" />
-                                                        <xctk:DoubleUpDown d:IsHidden="True" Value="{Binding LSAntiDeadZone}" FormatString="F2" MinWidth="50" Grid.Row="2" Grid.Column="1" Maximum="1.0" Minimum="0.0" Increment="0.1"
-                                                            Margin="{StaticResource spaceMargin}">
-                                                            <xctk:DoubleUpDown.ToolTip>
-                                                                <TextBlock TextWrapping="Wrap" Text="{lex:Loc AntiDeadzoneTooltip}">
-                                                                </TextBlock>
-                                                            </xctk:DoubleUpDown.ToolTip>
-                                                        </xctk:DoubleUpDown>
-
-                                                        <Label Content="{lex:Loc MaxOutput}" ContentStringFormat="{}{0}:" Grid.Row="3" Grid.Column="0" />
-                                                        <DockPanel Grid.Row="3" Grid.Column="1">
-                                                            <CheckBox Content="Force" VerticalAlignment="Center" IsChecked="{Binding LSMaxOutputForce}" ToolTip="{lex:Loc StickMaxOutputForceTooltip}" DockPanel.Dock="Right" Margin="8,0,0,0" />
-                                                            <xctk:DoubleUpDown d:IsHidden="True" Value="{Binding LSMaxOutput}" FormatString="F2" MinWidth="50" Maximum="1.0" Minimum="0.0" Increment="0.1"
-                                                                Margin="{StaticResource spaceMargin}" DockPanel.Dock="Left">
-                                                                <xctk:DoubleUpDown.ToolTip>
-                                                                    <TextBlock TextWrapping="Wrap" Text="{lex:Loc StickMaxOutputTooltip}">
-                                                                    </TextBlock>
-                                                                </xctk:DoubleUpDown.ToolTip>
-                                                            </xctk:DoubleUpDown>
-                                                        </DockPanel>
-
-                                                        <Label Content="{lex:Loc VerticalScale}" ContentStringFormat="{}{0}:" Grid.Row="4" Grid.Column="0" />
-                                                        <xctk:DoubleUpDown d:IsHidden="True" Value="{Binding LSVerticalScale}" FormatString="F2" MinWidth="50" Grid.Row="4" Grid.Column="1" Maximum="4.0" Minimum="0.0" Increment="0.1"
-                                                   Margin="{StaticResource spaceMargin}" />
-
-                                                        <Label Content="{lex:Loc Sensitivity}" ContentStringFormat="{}{0}:" Grid.Row="5" Grid.Column="0" />
-                                                        <xctk:DoubleUpDown d:IsHidden="True" FormatString="F2" Value="{Binding LSSens}" MinWidth="50" Grid.Row="5" Grid.Column="1" Maximum="5.0" Minimum="0.1" Increment="0.1"
-                                                   Margin="{StaticResource spaceMargin}" />
-
-                                                    </Grid>
-                                                </TabItem>
-
-                                                <TabItem Header="{lex:Loc Axial}" Visibility="Collapsed">
-                                                    <local:AxialStickUserControl x:Name="axialLSStickControl" />
-                                                </TabItem>
-                                            </TabControl>
-
-                                            <Grid DockPanel.Dock="Top">
-                                                <Grid.ColumnDefinitions>
-                                                    <ColumnDefinition/>
-                                                    <ColumnDefinition/>
-                                                </Grid.ColumnDefinitions>
-                                                <Grid.RowDefinitions>
-                                                    <RowDefinition/>
-                                                    <RowDefinition Style="{StaticResource gridRowHeight}" />
-                                                    <RowDefinition Style="{StaticResource gridRowHeight}" />
-                                                    <RowDefinition Style="{StaticResource gridRowHeight}" />
-                                                    <RowDefinition Style="{StaticResource gridRowHeight}" />
-                                                    <RowDefinition Style="{StaticResource gridRowHeight}" />
-                                                    <RowDefinition Style="{StaticResource gridRowHeight}" />
-                                                    <RowDefinition />
-                                                    <RowDefinition />
-                                                    <RowDefinition />
-                                                    <RowDefinition />
-                                                    <RowDefinition />
-                                                    <RowDefinition />
-                                                </Grid.RowDefinitions>
-
-                                                <Label Content="{lex:Loc OutputCurve}" ContentStringFormat="{}{0}:" Grid.Row="0" Grid.Column="0" />
-                                                <ComboBox Grid.Row="0" Grid.Column="1" SelectedIndex="{Binding LSOutputCurveIndex}"
-                                          Margin="{StaticResource spaceMargin}">
-                                                    <ComboBoxItem Content="{lex:Loc Linear}" />
-                                                    <ComboBoxItem Content="{lex:Loc EnhancedPrecision}" />
-                                                    <ComboBoxItem Content="{lex:Loc Quadratic}" />
-                                                    <ComboBoxItem Content="{lex:Loc Cubic}" />
-                                                    <ComboBoxItem Content="{lex:Loc EaseoutQuad}" />
-                                                    <ComboBoxItem Content="{lex:Loc EaseoutCubic}" />
-                                                    <ComboBoxItem Content="{lex:Loc Custom}" />
-                                                </ComboBox>
-
-                                                <DockPanel Grid.Row="1" Grid.Column="1" IsEnabled="{Binding LSCustomCurveSelected}">
-                                                    <Button x:Name="lsCustomEditorBtn" Content="..." Tag="LS" Width="20" DockPanel.Dock="Right" Click="CustomEditorBtn_Click"
-                                            Margin="{StaticResource spaceMargin}" />
-                                                    <TextBox Text="{Binding LSCustomCurve,UpdateSourceTrigger=LostFocus,FallbackValue='0.00, 0.00, 1.00, 1.00'}" DockPanel.Dock="Left"
-                                             Margin="{StaticResource spaceMargin}" />
-                                                </DockPanel>
-
-                                                <Label Content="{lex:Loc SquareStick}" ContentStringFormat="{}{0}:" Grid.Row="2" Grid.Column="0" />
-                                                <StackPanel Orientation="Horizontal" Grid.Row="2" Grid.Column="1" HorizontalAlignment="Right">
-                                                    <CheckBox IsChecked="{Binding LSSquareStick}" Margin="{StaticResource spaceMargin}" VerticalAlignment="Center" />
-                                                    <xctk:DoubleUpDown d:IsHidden="True" FormatString="F1" Value="{Binding LSSquareRoundness,FallbackValue=5}"
-                                                       MinWidth="100" Minimum="0.0" Maximum="1000.0" Increment="1.0" IsEnabled="{Binding LSSquareStick}"
-                                                       Margin="{StaticResource spaceMargin}" />
-                                                </StackPanel>
-
-                                                <Label Content="{lex:Loc Rotation}" ContentStringFormat="{}{0}:" Grid.Row="3" Grid.Column="0" />
-                                                <DockPanel Grid.Row="3" Grid.Column="1">
-                                                    <TextBlock Text="&#xb0;" DockPanel.Dock="Right" FontSize="18" Margin="{StaticResource spaceMargin}" />
-                                                    <xctk:IntegerUpDown d:IsHidden="True" Value="{Binding LSRotation}"
-                                                        Minimum="-180" Maximum="180"
-                                                        Margin="{StaticResource spaceMargin}">
-                                                        <xctk:IntegerUpDown.ToolTip>
-                                                            <TextBlock TextWrapping="Wrap" Text="{lex:Loc StickRotationTooltip}">
-                                                            </TextBlock>
-                                                        </xctk:IntegerUpDown.ToolTip>
-                                                    </xctk:IntegerUpDown>
-                                                </DockPanel>
-
-                                                <Label Content="{lex:Loc Fuzz}" ContentStringFormat="{}{0}:" Grid.Row="4" Grid.Column="0" />
-                                                <DockPanel Grid.Row="4" Grid.Column="1">
-                                                    <TextBlock Text="units" DockPanel.Dock="Right" FontSize="10" Margin="{StaticResource spaceMargin}" VerticalAlignment="Center" />
-                                                    <xctk:IntegerUpDown d:IsHidden="True" Value="{Binding LSFuzz}"
-                                                    Minimum="0" Maximum="100"
-                                                    Margin="{StaticResource spaceMargin}">
-                                                        <xctk:IntegerUpDown.ToolTip>
-                                                            <TextBlock TextWrapping="Wrap" Text="{lex:Loc StickFuzzTooltip}">
-                                                            </TextBlock>
-                                                        </xctk:IntegerUpDown.ToolTip>
-                                                    </xctk:IntegerUpDown>
-                                                </DockPanel>
-
-                                                <Label Content="{lex:Loc AntiSnapback}" ContentStringFormat="{}{0}:" Grid.Row="5" Grid.Column="0" />
-                                                <StackPanel Orientation="Horizontal" Grid.Row="5" Grid.Column="1" HorizontalAlignment="Right">
-                                                    <CheckBox IsChecked="{Binding LSAntiSnapback}" Margin="{StaticResource spaceMargin}" VerticalAlignment="Center" />
-                                                    <xctk:DoubleUpDown d:IsHidden="True" FormatString="F1" Value="{Binding LSAntiSnapbackDelta, FallbackValue=135}"
-                                                       MinWidth="100" Minimum="0.0" Maximum="256.0" Increment="1.0" IsEnabled="{Binding LSAntiSnapback}"
-                                                       Margin="{StaticResource spaceMargin}" />
-                                                    <TextBlock Text="units" DockPanel.Dock="Right" FontSize="10" Margin="{StaticResource spaceMargin}" VerticalAlignment="Center" />
-                                                </StackPanel>
-
-                                                <Label Content="{lex:Loc AntiSnapbackTiming}" ContentStringFormat="{}{0}:" Grid.Row="6" Grid.Column="0" />
-                                                <StackPanel Orientation="Horizontal" Grid.Row="6" Grid.Column="1" HorizontalAlignment="Right">
-                                                    <xctk:IntegerUpDown d:IsHidden="True" FormatString="F1" Value="{Binding LSAntiSnapbackTimeout}"
-                                                       MinWidth="100" Minimum="0" Maximum="1000" Increment="1" IsEnabled="{Binding LSAntiSnapback}"
-                                                       Margin="{StaticResource spaceMargin}" />
-                                                    <TextBlock Text="ms" DockPanel.Dock="Right" FontSize="10" Margin="{StaticResource spaceMargin}" VerticalAlignment="Center" />
-                                                </StackPanel>
-
-                                                <Label Content="{lex:Loc OuterBtn}" ContentStringFormat="{}{0}:" Grid.Row="7" Grid.Column="0" />
-                                                <DockPanel Grid.Row="7" Grid.Column="1">
-                                                    <Button Content="{lex:Loc OuterBind}" MinWidth="40" Tag="{Binding LSOuterBind, Source={StaticResource controlIndexCheck}}"
-                                                            Click="StickOuterBindButton_Click"
-                                                            Margin="{StaticResource spaceMargin}" ToolTip="{lex:Loc StickOuterBindTooltip}"  DockPanel.Dock="Top" />
-                                                    <Label x:Name="lsOuterBindLb" Content="{Binding MappingName,FallbackValue=Unassigned}"
-                                                        Margin="{StaticResource spaceMargin}" HorizontalAlignment="Center" DockPanel.Dock="Top"/>
-                                                </DockPanel>
-
-                                                <Label Content="{lex:Loc OuterBtnDead}" ContentStringFormat="{}{0}:" Grid.Row="8" Grid.Column="0" />
-                                                <DockPanel Grid.Row="8" Grid.Column="1">
-                                                    <xctk:DoubleUpDown d:IsHidden="True" FormatString="F2" Value="{Binding LSOuterBindDead}"
-                                                       MinWidth="100" Minimum="0.0" Maximum="1.0" Increment="0.1"
-                                                       Margin="{StaticResource spaceMargin}" ToolTip="{lex:Loc StickOuterBindDeadTooltip}" DockPanel.Dock="Top" />
-                                                    <CheckBox Content="Invert" IsChecked="{Binding LSOuterBindInvert}" ToolTip="{lex:Loc StickOuterBindInvertTooltip}" DockPanel.Dock="Top" HorizontalAlignment="Right" />
-                                                </DockPanel>
-
-                                                <Label Grid.Row="9" Grid.Column="0" Grid.ColumnSpan="2" Content="{lex:Loc StickCalibration}"
-                                                       HorizontalContentAlignment="Center" Margin="0 4 0 4" />
-
-                                                <Label Content="{lex:Loc XAxisOffset}" Grid.Row="10" Grid.Column="0" />
-                                                <DockPanel Grid.Row="10" Grid.Column="1">
-                                                    <xctk:SByteUpDown d:IsHidden="True" Value="{Binding LeftStickDriftXAxis,UpdateSourceTrigger=LostFocus}" MinWidth="50" Maximum="127" Minimum="-127" Increment="1"
-                                                                       Margin="{StaticResource spaceMargin}" />
-                                                </DockPanel>
-
-                                                <Label Content="{lex:Loc YAxisOffset}" Grid.Row="11" Grid.Column="0" />
-                                                <DockPanel Grid.Row="11" Grid.Column="1">
-                                                    <xctk:SByteUpDown d:IsHidden="True" Value="{Binding LeftStickDriftYAxis,UpdateSourceTrigger=LostFocus}" MinWidth="50" Maximum="127" Minimum="-127" Increment="1"
-                                                                       Margin="{StaticResource spaceMargin}" />
-                                                </DockPanel>
-                                                <Button Grid.Row="12" Grid.Column="0" Grid.ColumnSpan="2" Content="{lex:Loc AutomaticallyRecalibrateStick}" Click="CalibrateStick_OnClick"
-                                                        Tag="0" />
-                                            </Grid>
-
-                                            <GroupBox Header="{lex:Loc DeltaAcceleration}" DockPanel.Dock="Top">
-                                                <StackPanel Orientation="Vertical">
-                                                    <DockPanel LastChildFill="False">
-                                                        <Label Content="{lex:Loc Enabled}" ContentStringFormat="{}{0}:" DockPanel.Dock="Left" />
-                                                        <CheckBox IsChecked="{Binding LSDeltaAccelEnabled}" Margin="{StaticResource spaceMargin}" DockPanel.Dock="Right" />
-                                                    </DockPanel>
-
-                                                    <Expander IsExpanded="{Binding LSDeltaAccelEnabled,Mode=OneTime}" Header="Settings">
-                                                        <Grid IsEnabled="{Binding LSDeltaAccelEnabled}">
-                                                            <Grid.ColumnDefinitions>
-                                                                <ColumnDefinition />
-                                                                <ColumnDefinition />
-                                                            </Grid.ColumnDefinitions>
-
-                                                            <Grid.RowDefinitions>
-                                                                <RowDefinition />
-                                                                <RowDefinition />
-                                                                <RowDefinition />
-                                                                <RowDefinition />
-                                                                <RowDefinition />
-                                                            </Grid.RowDefinitions>
-
-                                                            <Label Content="{lex:Loc Multiplier}" ContentStringFormat="{}{0}:" Grid.Row="0" Grid.Column="0" />
-                                                            <xctk:DoubleUpDown d:IsHidden="True" FormatString="F2" Value="{Binding LSDeltaMultiplier}"
-                                                            MinWidth="100" Minimum="0.0" Maximum="10.0" Increment="0.1"
-                                                            Margin="{StaticResource spaceMargin}" Grid.Row="0" Grid.Column="1" />
-
-                                                            <Label Content="{lex:Loc MaxTravel}" ContentStringFormat="{}{0}:" Grid.Row="1" Grid.Column="0" />
-                                                            <xctk:DoubleUpDown d:IsHidden="True" FormatString="F2" Value="{Binding LSDeltaMaxTravel}"
-                                                            MinWidth="100" Minimum="0.0" Maximum="1.0" Increment="0.05"
-                                                            Margin="{StaticResource spaceMargin}" Grid.Row="1" Grid.Column="1" />
-
-                                                            <Label Content="{lex:Loc MinTravel}" ContentStringFormat="{}{0}:" Grid.Row="2" Grid.Column="0" />
-                                                            <xctk:DoubleUpDown d:IsHidden="True" FormatString="F2" Value="{Binding LSDeltaMinTravel}"
-                                                            MinWidth="100" Minimum="0.0" Maximum="1.0" Increment="0.05"
-                                                            Margin="{StaticResource spaceMargin}" Grid.Row="2" Grid.Column="1" />
-
-                                                            <Label Content="{lex:Loc EasingDuration}" ContentStringFormat="{}{0}:" Grid.Row="3" Grid.Column="0" />
-                                                            <DockPanel Grid.Row="3" Grid.Column="1">
-                                                                <TextBlock Text="sec" DockPanel.Dock="Right" FontSize="10" Margin="{StaticResource spaceMargin}" VerticalAlignment="Center" />
-                                                                <xctk:DoubleUpDown d:IsHidden="True" FormatString="F2" Value="{Binding LSDeltaEasingDuration}"
-                                                            MinWidth="100" Minimum="0.0" Maximum="600.0" Increment="0.1"
-                                                            Margin="{StaticResource spaceMargin}" />
-                                                            </DockPanel>
-
-                                                            <Label Content="{lex:Loc MinFactor}" ContentStringFormat="{}{0}:" Grid.Row="4" Grid.Column="0" />
-                                                            <xctk:DoubleUpDown d:IsHidden="True" FormatString="F2" Value="{Binding LSDeltaMinFactor}"
-                                                            MinWidth="100" Minimum="1.0" Maximum="10.0" Increment="0.1"
-                                                            Margin="{StaticResource spaceMargin}" Grid.Row="4" Grid.Column="1" />
-                                                        </Grid>
-                                                    </Expander>
-
-                                                </StackPanel>
-                                            </GroupBox>
-                                        </DockPanel>
-                                    </TabItem>
-                                    <TabItem Header="{lex:Loc FlickStick}" Visibility="Collapsed">
-                                        <Grid>
-                                            <Grid.ColumnDefinitions>
-                                                <ColumnDefinition/>
-                                                <ColumnDefinition/>
-                                            </Grid.ColumnDefinitions>
-                                            <Grid.RowDefinitions>
-                                                <RowDefinition />
-                                                <RowDefinition Style="{StaticResource gridRowHeight}" />
-                                                <RowDefinition Style="{StaticResource gridRowHeight}" />
-                                                <RowDefinition Style="{StaticResource gridRowHeight}" />
-                                            </Grid.RowDefinitions>
-
-                                            <Label Content="{lex:Loc RealWorldCalibration}" ContentStringFormat="{}{0}:" Grid.Row="0" Grid.Column="0" />
-                                            <xctk:DoubleUpDown d:IsHidden="True" Value="{Binding LSFlickRWC,UpdateSourceTrigger=LostFocus}" FormatString="F2" MinWidth="50" Grid.Row="0" Grid.Column="1" Maximum="200.0" Minimum="1.0" Increment="1.0"
-                                                   Margin="{StaticResource spaceMargin}" />
-
-                                            <Label Content="{lex:Loc FlickThreshold}" ContentStringFormat="{}{0}:" Grid.Row="1" Grid.Column="0" />
-                                            <xctk:DoubleUpDown d:IsHidden="True" Value="{Binding LSFlickThreshold,UpdateSourceTrigger=LostFocus}" FormatString="F2" MinWidth="50" Grid.Row="1" Grid.Column="1" Maximum="1.0" Minimum="0.0" Increment="0.1"
-                                                   Margin="{StaticResource spaceMargin}" />
-
-                                            <Label Content="{lex:Loc FlickTime}" ContentStringFormat="{}{0}:" Grid.Row="2" Grid.Column="0" />
-                                            <DockPanel Grid.Row="2" Grid.Column="1">
-                                                <TextBlock Text="sec." DockPanel.Dock="Right" Margin="{StaticResource spaceMargin}" />
-                                                <xctk:DoubleUpDown d:IsHidden="True" Value="{Binding LSFlickTime,UpdateSourceTrigger=LostFocus}" FormatString="F2" MinWidth="50" Maximum="10.0" Minimum="0.01" Increment="0.1"
-                                                   Margin="{StaticResource spaceMargin}" />
-                                            </DockPanel>
-
-                                            <Label Content="{lex:Loc MinAngleThreshold}" ContentStringFormat="{}{0}:" Grid.Row="3" Grid.Column="0" />
-                                            <DockPanel Grid.Row="3" Grid.Column="1">
-                                                <TextBlock Text="&#xb0;" DockPanel.Dock="Right" FontSize="18" Margin="{StaticResource spaceMargin}" />
-                                                <xctk:DoubleUpDown d:IsHidden="True" Value="{Binding LSMinAngleThreshold,UpdateSourceTrigger=LostFocus}" FormatString="F2" MinWidth="50" Maximum="180.0" Minimum="0.0" Increment="0.5"
-                                                   Margin="{StaticResource spaceMargin}" />
-                                            </DockPanel>
-                                        </Grid>
-                                    </TabItem>
-                                </TabControl>
-                            </StackPanel>
-
-
-                        </GroupBox>
-
-                        <GroupBox Header="RS">
-                            <StackPanel>
-                                <StackPanel Orientation="Horizontal">
-                                    <Label Content="{lex:Loc OutputMode}" />
-                                    <ComboBox MinWidth="160" SelectedIndex="{Binding RSOutputIndex,FallbackValue='0'}" VerticalContentAlignment="Center" Margin="10,0,0,0">
-                                        <ComboBoxItem Content="{lex:Loc None}" />
-                                        <ComboBoxItem Content="{lex:Loc Controls}" />
-                                        <ComboBoxItem Content="{lex:Loc FlickStick}" />
-                                    </ComboBox>
-                                </StackPanel>
-
-
-                                <TabControl SelectedIndex="{Binding RSOutputIndex,Mode=OneWay,FallbackValue='0'}" BorderBrush="{x:Null}" Padding="0" Margin="0,10,0,0">
-                                    <TabItem Header="{lex:Loc None}"  Visibility="Collapsed" />
-                                    <TabItem Header="{lex:Loc Controls}" Visibility="Collapsed">
-                                        <DockPanel>
-                                            <StackPanel Orientation="Horizontal" DockPanel.Dock="Top">
-                                                <Label Content="{lex:Loc DeadZoneType}" />
-                                                <ComboBox MinWidth="160" SelectedIndex="{Binding RSDeadTypeIndex,FallbackValue='0'}" VerticalContentAlignment="Center" Margin="10,0,0,0">
-                                                    <ComboBoxItem Content="{lex:Loc Radial}" />
-                                                    <ComboBoxItem Content="{lex:Loc Axial}" />
-                                                </ComboBox>
-                                            </StackPanel>
-
-                                            <TabControl DockPanel.Dock="Top" SelectedIndex="{Binding RSDeadTypeIndex,Mode=OneWay,FallbackValue='0'}" BorderBrush="{x:Null}" Padding="0" Margin="0,8,0,8">
-                                                <TabItem Header="{lex:Loc Radial}" Visibility="Collapsed">
-                                                    <Grid>
-                                                        <Grid.ColumnDefinitions>
-                                                            <ColumnDefinition/>
-                                                            <ColumnDefinition/>
-                                                        </Grid.ColumnDefinitions>
-                                                        <Grid.RowDefinitions>
-                                                            <RowDefinition/>
-                                                            <RowDefinition Style="{StaticResource gridRowHeight}" />
-                                                            <RowDefinition Style="{StaticResource gridRowHeight}" />
-                                                            <RowDefinition />
-                                                            <RowDefinition Style="{StaticResource gridRowHeight}" />
-                                                            <RowDefinition Style="{StaticResource gridRowHeight}" />
-                                                        </Grid.RowDefinitions>
-
-                                                        <Label Content="{lex:Loc DeadZone}" ContentStringFormat="{}{0}:" Grid.Row="0" Grid.Column="0" />
-                                                        <xctk:DoubleUpDown d:IsHidden="True" Value="{Binding RSDeadZone,UpdateSourceTrigger=LostFocus}" FormatString="F2" MinWidth="50" Grid.Row="0" Grid.Column="1" Maximum="1.0" Minimum="0.0" Increment="0.1"
-                                                   Margin="{StaticResource spaceMargin}" />
-
-                                                        <Label Content="{lex:Loc MaxZone}" ContentStringFormat="{}{0}:" Grid.Row="1" Grid.Column="0" />
-                                                        <xctk:DoubleUpDown d:IsHidden="True" Value="{Binding RSMaxZone}" FormatString="F2" MinWidth="50" Grid.Row="1" Grid.Column="1" Maximum="1.0" Minimum="0.0" Increment="0.1"
-                                                   Margin="{StaticResource spaceMargin}" />
-
-                                                        <Label Content="{lex:Loc AntiDeadZone}" ContentStringFormat="{}{0}:" Grid.Row="2" Grid.Column="0" />
-                                                        <xctk:DoubleUpDown d:IsHidden="True" Value="{Binding RSAntiDeadZone}" FormatString="F2" MinWidth="50" Grid.Row="2" Grid.Column="1" Maximum="1.0" Minimum="0.0" Increment="0.1"
-                                                            Margin="{StaticResource spaceMargin}">
-                                                            <xctk:DoubleUpDown.ToolTip>
-                                                                <TextBlock TextWrapping="Wrap" Text="{lex:Loc AntiDeadzoneTooltip}">
-                                                                </TextBlock>
-                                                            </xctk:DoubleUpDown.ToolTip>
-                                                        </xctk:DoubleUpDown>
-
-                                                        <Label Content="{lex:Loc MaxOutput}" ContentStringFormat="{}{0}:" Grid.Row="3" Grid.Column="0" />
-                                                        <DockPanel Grid.Row="3" Grid.Column="1">
-                                                            <CheckBox Content="Force" IsChecked="{Binding RSMaxOutputForce}" VerticalAlignment="Center" DockPanel.Dock="Right" ToolTip="{lex:Loc StickMaxOutputForceTooltip}"
-                                                                      Margin="8,0,0,0" />
-                                                            <xctk:DoubleUpDown d:IsHidden="True" Value="{Binding RSMaxOutput}" FormatString="F2" MinWidth="50" Maximum="1.0" Minimum="0.0" Increment="0.1"
-                                                                Margin="{StaticResource spaceMargin}" DockPanel.Dock="Left">
-                                                                <xctk:DoubleUpDown.ToolTip>
-                                                                    <TextBlock TextWrapping="Wrap" Text="{lex:Loc StickMaxOutputTooltip}">
-                                                                    </TextBlock>
-                                                                </xctk:DoubleUpDown.ToolTip>
-                                                            </xctk:DoubleUpDown>
-                                                        </DockPanel>
-
-                                                        <Label Content="{lex:Loc VerticalScale}" ContentStringFormat="{}{0}:" Grid.Row="4" Grid.Column="0" />
-                                                        <xctk:DoubleUpDown d:IsHidden="True" Value="{Binding RSVerticalScale}" FormatString="F2" MinWidth="50" Grid.Row="4" Grid.Column="1" Maximum="4.0" Minimum="0.0" Increment="0.1"
-                                                   Margin="{StaticResource spaceMargin}" />
-
-                                                        <Label Content="{lex:Loc Sensitivity}" ContentStringFormat="{}{0}:" Grid.Row="5" Grid.Column="0" />
-                                                        <xctk:DoubleUpDown d:IsHidden="True" FormatString="F2" Value="{Binding RSSens}" MinWidth="50" Grid.Row="5" Grid.Column="1" Maximum="5.0" Minimum="0.1" Increment="0.1"
-                                                   Margin="{StaticResource spaceMargin}" />
-                                                    </Grid>
-                                                </TabItem>
-                                                <TabItem Header="{lex:Loc Axial}" Visibility="Collapsed">
-                                                    <local:AxialStickUserControl x:Name="axialRSStickControl" />
-                                                </TabItem>
-                                            </TabControl>
-
-                                            <Grid DockPanel.Dock="Top">
-                                                <Grid.ColumnDefinitions>
-                                                    <ColumnDefinition/>
-                                                    <ColumnDefinition/>
-                                                </Grid.ColumnDefinitions>
-                                                <Grid.RowDefinitions>
-                                                    <RowDefinition/>
-                                                    <RowDefinition Style="{StaticResource gridRowHeight}" />
-                                                    <RowDefinition Style="{StaticResource gridRowHeight}" />
-                                                    <RowDefinition Style="{StaticResource gridRowHeight}" />
-                                                    <RowDefinition Style="{StaticResource gridRowHeight}" />
-                                                    <RowDefinition Style="{StaticResource gridRowHeight}" />
-                                                    <RowDefinition Style="{StaticResource gridRowHeight}" />
-                                                    <RowDefinition />
-                                                    <RowDefinition />
-                                                    <RowDefinition />
-                                                    <RowDefinition />
-                                                    <RowDefinition />
-                                                    <RowDefinition />
-                                                </Grid.RowDefinitions>
-
-                                                <Label Content="{lex:Loc OutputCurve}" ContentStringFormat="{}{0}:" Grid.Row="0" Grid.Column="0" />
-                                                <ComboBox Grid.Row="0" Grid.Column="1" SelectedIndex="{Binding RSOutputCurveIndex}"
-                                          Margin="{StaticResource spaceMargin}">
-                                                    <ComboBoxItem Content="{lex:Loc Linear}" />
-                                                    <ComboBoxItem Content="{lex:Loc EnhancedPrecision}" />
-                                                    <ComboBoxItem Content="{lex:Loc Quadratic}" />
-                                                    <ComboBoxItem Content="{lex:Loc Cubic}" />
-                                                    <ComboBoxItem Content="{lex:Loc EaseoutQuad}" />
-                                                    <ComboBoxItem Content="{lex:Loc EaseoutCubic}" />
-                                                    <ComboBoxItem Content="{lex:Loc Custom}" />
-                                                </ComboBox>
-
-                                                <DockPanel Grid.Row="1" Grid.Column="1" IsEnabled="{Binding RSCustomCurveSelected}">
-                                                    <Button x:Name="rsCustomEditorBtn" Content="..." Tag="RS" Width="20" DockPanel.Dock="Right" Click="CustomEditorBtn_Click"
-                                            Margin="{StaticResource spaceMargin}" />
-                                                    <TextBox Text="{Binding RSCustomCurve,UpdateSourceTrigger=LostFocus,FallbackValue='0.00, 0.00, 1.00, 1.00'}" DockPanel.Dock="Left"
-                                             Margin="{StaticResource spaceMargin}" />
-                                                </DockPanel>
-
-                                                <Label Content="{lex:Loc SquareStick}" ContentStringFormat="{}{0}:" Grid.Row="2" Grid.Column="0" />
-                                                <StackPanel Orientation="Horizontal" Grid.Row="2" Grid.Column="1" HorizontalAlignment="Right">
-                                                    <CheckBox IsChecked="{Binding RSSquareStick}" Margin="{StaticResource spaceMargin}" VerticalAlignment="Center" />
-                                                    <xctk:DoubleUpDown d:IsHidden="True" FormatString="F1" Value="{Binding RSSquareRoundness,FallbackValue=5}"
-                                                       MinWidth="100" Minimum="0.0" Maximum="1000.0" Increment="1.0" IsEnabled="{Binding RSSquareStick}"
-                                                       Margin="{StaticResource spaceMargin}" />
-                                                </StackPanel>
-
-                                                <Label Content="Rotation:" Grid.Row="3" Grid.Column="0" />
-                                                <DockPanel Grid.Row="3" Grid.Column="1">
-                                                    <TextBlock Text="&#xb0;" DockPanel.Dock="Right" FontSize="18" Margin="{StaticResource spaceMargin}" />
-                                                    <xctk:IntegerUpDown d:IsHidden="True" Value="{Binding RSRotation}"
-                                                        Minimum="-180" Maximum="180"
-                                                        Margin="{StaticResource spaceMargin}">
-                                                        <xctk:IntegerUpDown.ToolTip>
-                                                            <TextBlock TextWrapping="Wrap" Text="{lex:Loc StickRotationTooltip}">
-                                                            </TextBlock>
-                                                        </xctk:IntegerUpDown.ToolTip>
-                                                    </xctk:IntegerUpDown>
-                                                </DockPanel>
-
-                                                <Label Content="{lex:Loc Fuzz}" ContentStringFormat="{}{0}:" Grid.Row="4" Grid.Column="0" />
-                                                <DockPanel Grid.Row="4" Grid.Column="1">
-                                                    <TextBlock Text="units" DockPanel.Dock="Right" FontSize="10" Margin="{StaticResource spaceMargin}" VerticalAlignment="Center" />
-                                                    <xctk:IntegerUpDown d:IsHidden="True" Value="{Binding RSFuzz}"
-                                                    Minimum="0" Maximum="100"
-                                                    Margin="{StaticResource spaceMargin}">
-                                                        <xctk:IntegerUpDown.ToolTip>
-                                                            <TextBlock TextWrapping="Wrap" Text="{lex:Loc StickFuzzTooltip}">
-                                                            </TextBlock>
-                                                        </xctk:IntegerUpDown.ToolTip>
-                                                    </xctk:IntegerUpDown>
-                                                </DockPanel>
-
-                                                <Label Content="{lex:Loc AntiSnapback}" ContentStringFormat="{}{0}:" Grid.Row="5" Grid.Column="0" />
-                                                <StackPanel Orientation="Horizontal" Grid.Row="5" Grid.Column="1" HorizontalAlignment="Right">
-                                                    <CheckBox IsChecked="{Binding RSAntiSnapback}" Margin="{StaticResource spaceMargin}" VerticalAlignment="Center" />
-                                                    <xctk:DoubleUpDown d:IsHidden="True" FormatString="F1" Value="{Binding RSAntiSnapbackDelta, FallbackValue=135}"
-                                                       MinWidth="100" Minimum="0.0" Maximum="256.0" Increment="1.0" IsEnabled="{Binding RSAntiSnapback}"
-                                                       Margin="{StaticResource spaceMargin}" />
-                                                    <TextBlock Text="units" DockPanel.Dock="Right" FontSize="10" Margin="{StaticResource spaceMargin}" VerticalAlignment="Center" />
-                                                </StackPanel>
-
-                                                <Label Content="{lex:Loc AntiSnapbackTiming}" ContentStringFormat="{}{0}:" Grid.Row="6" Grid.Column="0" />
-                                                <StackPanel Orientation="Horizontal" Grid.Row="6" Grid.Column="1" HorizontalAlignment="Right">
-                                                    <xctk:IntegerUpDown d:IsHidden="True" FormatString="F1" Value="{Binding RSAntiSnapbackTimeout}"
-                                                       MinWidth="100" Minimum="0" Maximum="1000" Increment="1" IsEnabled="{Binding RSAntiSnapback}"
-                                                       Margin="{StaticResource spaceMargin}" />
-                                                    <TextBlock Text="ms" DockPanel.Dock="Right" FontSize="10" Margin="{StaticResource spaceMargin}" VerticalAlignment="Center" />
-                                                </StackPanel>
-
-                                                <Label Content="{lex:Loc OuterBtn}" ContentStringFormat="{}{0}:" Grid.Row="7" Grid.Column="0" />
-                                                <DockPanel Grid.Row="7" Grid.Column="1">
-                                                    <Button Content="{lex:Loc OuterBind}" MinWidth="40" Tag="{Binding RSOuterBind, Source={StaticResource controlIndexCheck}}"
-                                                        Click="StickOuterBindButton_Click"
-                                                        Margin="{StaticResource spaceMargin}" ToolTip="{lex:Loc StickOuterBindTooltip}" DockPanel.Dock="Top" />
-                                                    <Label x:Name="rsOuterBindLb" Content="{Binding MappingName,FallbackValue=Unassigned}"
-                                                        Margin="{StaticResource spaceMargin}" HorizontalAlignment="Center" DockPanel.Dock="Top"/>
-                                                </DockPanel>
-
-                                                <Label Content="{lex:Loc OuterBtnDead}" ContentStringFormat="{}{0}:" Grid.Row="8" Grid.Column="0" />
-                                                <DockPanel Grid.Row="8" Grid.Column="1">
-                                                    <xctk:DoubleUpDown d:IsHidden="True" FormatString="F2" Value="{Binding RSOuterBindDead}"
-                                                       MinWidth="100" Minimum="0.0" Maximum="1.0" Increment="0.1"
-                                                       Margin="{StaticResource spaceMargin}" ToolTip="{lex:Loc StickOuterBindDeadTooltip}"  DockPanel.Dock="Top" />
-                                                    <CheckBox Content="Invert" IsChecked="{Binding RSOuterBindInvert}" ToolTip="{lex:Loc StickOuterBindInvertTooltip}" DockPanel.Dock="Top" HorizontalAlignment="Right" />
-                                                </DockPanel>
-
-                                                <Label Grid.Row="9" Grid.Column="0" Grid.ColumnSpan="2" Content="{lex:Loc StickCalibration}"
-                                                       HorizontalContentAlignment="Center" Margin="0 4 0 4" />
-
-                                                <Label Content="{lex:Loc XAxisOffset}" Grid.Row="10" Grid.Column="0" />
-                                                <DockPanel Grid.Row="10" Grid.Column="1">
-                                                    <xctk:SByteUpDown d:IsHidden="True" Value="{Binding RightStickDriftXAxis,UpdateSourceTrigger=LostFocus}" MinWidth="50" Maximum="127" Minimum="-127" Increment="1"
-                                                                      Margin="{StaticResource spaceMargin}" />
-                                                </DockPanel>
-
-                                                <Label Content="{lex:Loc YAxisOffset}" Grid.Row="11" Grid.Column="0" />
-                                                <DockPanel Grid.Row="11" Grid.Column="1">
-                                                    <xctk:SByteUpDown d:IsHidden="True" Value="{Binding RightStickDriftYAxis,UpdateSourceTrigger=LostFocus}" MinWidth="50" Maximum="127" Minimum="-127" Increment="1"
-                                                                      Margin="{StaticResource spaceMargin}" />
-                                                </DockPanel>
-                                                <Button Grid.Row="12" Grid.Column="0" Grid.ColumnSpan="2" Content="{lex:Loc AutomaticallyRecalibrateStick}" Click="CalibrateStick_OnClick"
-                                                        Tag="1" />
-                                            </Grid>
-
-                                            <GroupBox Header="{lex:Loc DeltaAcceleration}" DockPanel.Dock="Top">
-                                                <StackPanel Orientation="Vertical">
-                                                    <DockPanel LastChildFill="False">
-                                                        <Label Content="{lex:Loc Enabled}" ContentStringFormat="{}{0}:" DockPanel.Dock="Left" />
-                                                        <CheckBox IsChecked="{Binding RSDeltaAccelEnabled}" Margin="{StaticResource spaceMargin}" DockPanel.Dock="Right" />
-                                                    </DockPanel>
-
-                                                    <Expander IsExpanded="{Binding RSDeltaAccelEnabled,Mode=OneTime}" Header="Settings">
-                                                        <Grid IsEnabled="{Binding RSDeltaAccelEnabled}">
-                                                            <Grid.ColumnDefinitions>
-                                                                <ColumnDefinition />
-                                                                <ColumnDefinition />
-                                                            </Grid.ColumnDefinitions>
-
-                                                            <Grid.RowDefinitions>
-                                                                <RowDefinition />
-                                                                <RowDefinition />
-                                                                <RowDefinition />
-                                                                <RowDefinition />
-                                                                <RowDefinition />
-                                                            </Grid.RowDefinitions>
-
-                                                            <Label Content="{lex:Loc Multiplier}" ContentStringFormat="{}{0}:" Grid.Row="0" Grid.Column="0" />
-                                                            <xctk:DoubleUpDown d:IsHidden="True" FormatString="F2" Value="{Binding RSDeltaMultiplier}"
-                                                            MinWidth="100" Minimum="0.0" Maximum="10.0" Increment="0.1"
-                                                            Margin="{StaticResource spaceMargin}" Grid.Row="0" Grid.Column="1" />
-
-                                                            <Label Content="{lex:Loc MaxTravel}" ContentStringFormat="{}{0}:" Grid.Row="1" Grid.Column="0" />
-                                                            <xctk:DoubleUpDown d:IsHidden="True" FormatString="F2" Value="{Binding RSDeltaMaxTravel}"
-                                                            MinWidth="100" Minimum="0.0" Maximum="1.0" Increment="0.05"
-                                                            Margin="{StaticResource spaceMargin}" Grid.Row="1" Grid.Column="1" />
-
-                                                            <Label Content="{lex:Loc MinTravel}" ContentStringFormat="{}{0}:" Grid.Row="2" Grid.Column="0" />
-                                                            <xctk:DoubleUpDown d:IsHidden="True" FormatString="F2" Value="{Binding RSDeltaMinTravel}"
-                                                            MinWidth="100" Minimum="0.0" Maximum="1.0" Increment="0.05"
-                                                            Margin="{StaticResource spaceMargin}" Grid.Row="2" Grid.Column="1" />
-
-                                                            <Label Content="{lex:Loc EasingDuration}" ContentStringFormat="{}{0}:" Grid.Row="3" Grid.Column="0" />
-                                                            <DockPanel Grid.Row="3" Grid.Column="1">
-                                                                <TextBlock Text="sec" DockPanel.Dock="Right" FontSize="10" Margin="{StaticResource spaceMargin}" VerticalAlignment="Center" />
-                                                                <xctk:DoubleUpDown d:IsHidden="True" FormatString="F2" Value="{Binding RSDeltaEasingDuration}"
-                                                            MinWidth="100" Minimum="0.0" Maximum="600.0" Increment="0.1"
-                                                            Margin="{StaticResource spaceMargin}" />
-                                                            </DockPanel>
-
-                                                            <Label Content="{lex:Loc MinFactor}" ContentStringFormat="{}{0}:" Grid.Row="4" Grid.Column="0" />
-                                                            <xctk:DoubleUpDown d:IsHidden="True" FormatString="F2" Value="{Binding RSDeltaMinFactor}"
-                                                            MinWidth="100" Minimum="1.0" Maximum="10.0" Increment="0.1"
-                                                            Margin="{StaticResource spaceMargin}" Grid.Row="4" Grid.Column="1" />
-                                                        </Grid>
-                                                    </Expander>
-                                                </StackPanel>
-                                            </GroupBox>
-                                        </DockPanel>
-
-                                    </TabItem>
-                                    <TabItem Header="{lex:Loc FlickStick}" Visibility="Collapsed">
-                                        <Grid>
-                                            <Grid.ColumnDefinitions>
-                                                <ColumnDefinition/>
-                                                <ColumnDefinition/>
-                                            </Grid.ColumnDefinitions>
-                                            <Grid.RowDefinitions>
-                                                <RowDefinition />
-                                                <RowDefinition Style="{StaticResource gridRowHeight}" />
-                                                <RowDefinition Style="{StaticResource gridRowHeight}" />
-                                                <RowDefinition Style="{StaticResource gridRowHeight}" />
-                                            </Grid.RowDefinitions>
-
-                                            <Label Content="{lex:Loc RealWorldCalibration}" ContentStringFormat="{}{0}:" Grid.Row="0" Grid.Column="0" />
-                                            <xctk:DoubleUpDown d:IsHidden="True" Value="{Binding RSFlickRWC,UpdateSourceTrigger=LostFocus}" FormatString="F2" MinWidth="50" Grid.Row="0" Grid.Column="1" Maximum="200.0" Minimum="1.0" Increment="1.0"
-                                                   Margin="{StaticResource spaceMargin}" />
-
-                                            <Label Content="{lex:Loc FlickThreshold}" ContentStringFormat="{}{0}:" Grid.Row="1" Grid.Column="0" />
-                                            <xctk:DoubleUpDown d:IsHidden="True" Value="{Binding RSFlickThreshold,UpdateSourceTrigger=LostFocus}" FormatString="F2" MinWidth="50" Grid.Row="1" Grid.Column="1" Maximum="1.0" Minimum="0.0" Increment="0.1"
-                                                   Margin="{StaticResource spaceMargin}" />
-
-                                            <Label Content="{lex:Loc FlickTime}" ContentStringFormat="{}{0}:" Grid.Row="2" Grid.Column="0" />
-                                            <DockPanel Grid.Row="2" Grid.Column="1">
-                                                <TextBlock Text="sec." DockPanel.Dock="Right" Margin="{StaticResource spaceMargin}" />
-                                                <xctk:DoubleUpDown d:IsHidden="True" Value="{Binding RSFlickTime,UpdateSourceTrigger=LostFocus}" FormatString="F2" MinWidth="50" Maximum="10.0" Minimum="0.01" Increment="0.1"
-                                                   Margin="{StaticResource spaceMargin}" />
-                                            </DockPanel>
-
-                                            <Label Content="{lex:Loc MinAngleThreshold}" ContentStringFormat="{}{0}:" Grid.Row="3" Grid.Column="0" />
-                                            <DockPanel Grid.Row="3" Grid.Column="1">
-                                                <TextBlock Text="&#xb0;" DockPanel.Dock="Right" FontSize="18" Margin="{StaticResource spaceMargin}" />
-                                                <xctk:DoubleUpDown d:IsHidden="True" Value="{Binding RSMinAngleThreshold,UpdateSourceTrigger=LostFocus}" FormatString="F2" MinWidth="50" Maximum="180.0" Minimum="0.0" Increment="0.5"
-                                                   Margin="{StaticResource spaceMargin}" />
-                                            </DockPanel>
-                                        </Grid>
-                                    </TabItem>
-                                </TabControl>
-                            </StackPanel>
-
-
-                        </GroupBox>
-
+					
+
+						<!-- LS 和 RS 并列的外层Grid -->
+						<Grid Margin="0,4,0,0">
+							<Grid.ColumnDefinitions>
+								<ColumnDefinition Width="*"/>
+								<ColumnDefinition Width="10"/> <!-- 间距 -->
+								<ColumnDefinition Width="*"/>
+							</Grid.ColumnDefinitions>
+
+							<!-- LS 列 -->
+							<GroupBox Grid.Column="0" Header="LS" Margin="0,0,0,10">
+								<Grid>
+									<Grid.RowDefinitions>
+										<RowDefinition Height="Auto"/>
+										<RowDefinition Height="Auto"/>
+									</Grid.RowDefinitions>
+									
+									<!-- Output Mode 行 - 固定在顶部 -->
+									<Grid Grid.Row="0" Margin="0,0,0,5">
+										<Grid.ColumnDefinitions>
+											<ColumnDefinition Width="Auto"/>
+											<ColumnDefinition Width="*"/>
+										</Grid.ColumnDefinitions>
+										<Label Content="{lex:Loc OutputMode}" VerticalAlignment="Center"/>
+										<ComboBox Grid.Column="1" SelectedIndex="{Binding LSOutputIndex,FallbackValue='0'}" 
+												  HorizontalAlignment="Left"  MinWidth="80" MaxWidth="160" VerticalContentAlignment="Center">
+											<ComboBoxItem Content="{lex:Loc None}" />
+											<ComboBoxItem Content="{lex:Loc Controls}" />
+											<ComboBoxItem Content="{lex:Loc FlickStick}" />
+										</ComboBox>
+									</Grid>
+
+									<!-- TabControl 占据剩余空间并自动适应高度 -->
+									<TabControl Grid.Row="1" SelectedIndex="{Binding LSOutputIndex,Mode=OneWay,FallbackValue='0'}" 
+												BorderBrush="{x:Null}" Padding="0" Margin="0,5,0,0"
+												VerticalAlignment="Stretch" HorizontalAlignment="Stretch">
+										<TabItem Header="{lex:Loc None}" Visibility="Collapsed" />
+										
+										<!-- Controls Tab -->
+										<TabItem Header="{lex:Loc Controls}" Visibility="Collapsed">
+											<StackPanel Margin="0,0,5,0">
+												<!-- DeadZone Type 行 -->
+												<Grid Margin="0,0,0,5">
+													<Grid.ColumnDefinitions>
+														<ColumnDefinition Width="Auto"/>
+														<ColumnDefinition Width="*"/>
+													</Grid.ColumnDefinitions>
+													<Label Content="{lex:Loc DeadZoneType}" VerticalAlignment="Center"/>
+													<ComboBox Grid.Column="1" SelectedIndex="{Binding LSDeadTypeIndex,FallbackValue='0'}" 
+															  HorizontalAlignment="Left"  MinWidth="80" MaxWidth="160" VerticalContentAlignment="Center">
+														<ComboBoxItem Content="{lex:Loc Radial}" />
+														<ComboBoxItem Content="{lex:Loc Axial}" />
+													</ComboBox>
+												</Grid>
+
+												<!-- DeadZone Type specific controls (Radial/Axial) -->
+												<TabControl SelectedIndex="{Binding LSDeadTypeIndex,Mode=OneWay,FallbackValue='0'}" 
+															BorderBrush="{x:Null}" Padding="0" Margin="0,5,0,5">
+													<TabItem Header="Radial" Visibility="Collapsed">
+														<StackPanel>
+															<!-- 统一的外部Grid - Radial Tab内的所有控件 -->
+															<Grid>
+																<Grid.RowDefinitions>
+																	<RowDefinition Height="Auto"/>
+																	<RowDefinition Height="Auto"/>
+																	<RowDefinition Height="Auto"/>
+																	<RowDefinition Height="Auto"/>
+																	<RowDefinition Height="Auto"/>
+																	<RowDefinition Height="Auto"/>
+																</Grid.RowDefinitions>
+																<Grid.ColumnDefinitions>
+																	<ColumnDefinition Width="{StaticResource FirstColumnWidth}" MinWidth="{StaticResource FirstColumnMinWidth}"/>
+																	<ColumnDefinition Width="{StaticResource SecondColumnWidth}" MaxWidth="{StaticResource SecondColumnMaxWidth}"/>
+																</Grid.ColumnDefinitions>
+																
+																<!-- DeadZone -->
+																<Label Grid.Row="0" Grid.Column="0" Content="{lex:Loc DeadZone}" ContentStringFormat="{}{0}:" VerticalAlignment="Center" Margin="0,0,0,5"/>
+																<xctk:DoubleUpDown Grid.Row="0" Grid.Column="1" Value="{Binding LSDeadZone,UpdateSourceTrigger=LostFocus}" 
+																				  FormatString="F2" HorizontalAlignment="Stretch" Margin="0,0,0,5"
+																				  Maximum="1.0" Minimum="0.0" Increment="0.1"/>
+
+																<!-- MaxZone -->
+																<Label Grid.Row="1" Grid.Column="0" Content="{lex:Loc MaxZone}" ContentStringFormat="{}{0}:" VerticalAlignment="Center" Margin="0,0,0,5"/>
+																<xctk:DoubleUpDown Grid.Row="1" Grid.Column="1" Value="{Binding LSMaxZone}" FormatString="F2" 
+																				  HorizontalAlignment="Stretch" Margin="0,0,0,5"
+																				  Maximum="1.0" Minimum="0.0" Increment="0.1"/>
+
+																<!-- AntiDeadZone -->
+																<Label Grid.Row="2" Grid.Column="0" Content="{lex:Loc AntiDeadZone}" ContentStringFormat="{}{0}:" VerticalAlignment="Center" Margin="0,0,0,5"/>
+																<xctk:DoubleUpDown Grid.Row="2" Grid.Column="1" Value="{Binding LSAntiDeadZone}" FormatString="F2" 
+																				  HorizontalAlignment="Stretch" Margin="0,0,0,5"
+																				  Maximum="1.0" Minimum="0.0" Increment="0.1">
+																	<xctk:DoubleUpDown.ToolTip>
+																		<TextBlock TextWrapping="Wrap" Text="{lex:Loc AntiDeadzoneTooltip}"/>
+																	</xctk:DoubleUpDown.ToolTip>
+																</xctk:DoubleUpDown>
+
+																<!-- MaxOutput -->
+																<Label Grid.Row="3" Grid.Column="0" Content="{lex:Loc MaxOutput}" ContentStringFormat="{}{0}:" VerticalAlignment="Center" Margin="0,0,0,5"/>
+																<Grid Grid.Row="3" Grid.Column="1" Margin="0,0,0,5">
+																	<Grid.ColumnDefinitions>
+																		<ColumnDefinition Width="*"/>
+																		<ColumnDefinition Width="Auto"/>
+																	</Grid.ColumnDefinitions>
+																	<xctk:DoubleUpDown Grid.Column="0" Value="{Binding LSMaxOutput}" FormatString="F2" 
+																					  HorizontalAlignment="Stretch"
+																					  Maximum="1.0" Minimum="0.0" Increment="0.1">
+																		<xctk:DoubleUpDown.ToolTip>
+																			<TextBlock TextWrapping="Wrap" Text="{lex:Loc StickMaxOutputTooltip}"/>
+																		</xctk:DoubleUpDown.ToolTip>
+																	</xctk:DoubleUpDown>
+																	<CheckBox Grid.Column="1" Content="Force" VerticalAlignment="Center" 
+																			  IsChecked="{Binding LSMaxOutputForce}" 
+																			  ToolTip="{lex:Loc StickMaxOutputForceTooltip}" Margin="8,0,0,0"/>
+																</Grid>
+
+																<!-- VerticalScale -->
+																<Label Grid.Row="4" Grid.Column="0" Content="{lex:Loc VerticalScale}" ContentStringFormat="{}{0}:" VerticalAlignment="Center" Margin="0,0,0,5"/>
+																<xctk:DoubleUpDown Grid.Row="4" Grid.Column="1" Value="{Binding LSVerticalScale}" FormatString="F2" 
+																				  HorizontalAlignment="Stretch" Margin="0,0,0,5"
+																				  Maximum="4.0" Minimum="0.0" Increment="0.1"/>
+
+																<!-- Sensitivity -->
+																<Label Grid.Row="5" Grid.Column="0" Content="{lex:Loc Sensitivity}" ContentStringFormat="{}{0}:" VerticalAlignment="Center"/>
+																<xctk:DoubleUpDown Grid.Row="5" Grid.Column="1" FormatString="F2" Value="{Binding LSSens}" 
+																				  HorizontalAlignment="Stretch"
+																				  Maximum="5.0" Minimum="0.1" Increment="0.1"/>
+															</Grid>
+														</StackPanel>
+													</TabItem>
+
+													<TabItem Header="{lex:Loc Axial}" Visibility="Collapsed">
+														<local:AxialStickUserControl x:Name="axialLSStickControl" 
+																					  HorizontalAlignment="Stretch" VerticalAlignment="Stretch"/>
+													</TabItem>
+												</TabControl>
+
+												<!-- 统一的外部Grid - Radial Tab外的所有控件 -->
+												<Grid>
+													<Grid.RowDefinitions>
+														<RowDefinition Height="Auto"/>
+														<RowDefinition Height="Auto"/>
+														<RowDefinition Height="Auto"/>
+														<RowDefinition Height="Auto"/>
+														<RowDefinition Height="Auto"/>
+														<RowDefinition Height="Auto"/>
+														<RowDefinition Height="Auto"/>
+														<RowDefinition Height="Auto"/>
+														<RowDefinition Height="Auto"/>
+														<RowDefinition Height="Auto"/>
+														<RowDefinition Height="Auto"/>
+														<RowDefinition Height="Auto"/>
+														<RowDefinition Height="Auto"/>
+														<RowDefinition Height="Auto"/>
+														<RowDefinition Height="Auto"/>
+														<RowDefinition Height="Auto"/> <!-- 第16行给Delta Acceleration -->
+													</Grid.RowDefinitions>
+													<Grid.ColumnDefinitions>
+														<ColumnDefinition Width="{StaticResource FirstColumnWidth}" MinWidth="{StaticResource FirstColumnMinWidth}"/>
+														<ColumnDefinition Width="{StaticResource SecondColumnWidth}" MaxWidth="{StaticResource SecondColumnMaxWidth}"/>
+													</Grid.ColumnDefinitions>
+													
+													<!-- Output Curve -->
+													<Label Grid.Row="0" Grid.Column="0" Content="{lex:Loc OutputCurve}" ContentStringFormat="{}{0}:" VerticalAlignment="Center" Margin="0,0,0,5"/>
+													<ComboBox Grid.Row="0" Grid.Column="1" SelectedIndex="{Binding LSOutputCurveIndex}" 
+															  HorizontalAlignment="Stretch" Margin="0,0,0,5">
+														<ComboBoxItem Content="{lex:Loc Linear}" />
+														<ComboBoxItem Content="{lex:Loc EnhancedPrecision}" />
+														<ComboBoxItem Content="{lex:Loc Quadratic}" />
+														<ComboBoxItem Content="{lex:Loc Cubic}" />
+														<ComboBoxItem Content="{lex:Loc EaseoutQuad}" />
+														<ComboBoxItem Content="{lex:Loc EaseoutCubic}" />
+														<ComboBoxItem Content="{lex:Loc Custom}" />
+													</ComboBox>
+
+													<!-- Custom Curve -->
+													<Label Grid.Row="1" Grid.Column="0" Content="Custom Curve:" VerticalAlignment="Center" Margin="0,0,0,5"/>
+													<DockPanel Grid.Row="1" Grid.Column="1" IsEnabled="{Binding LSCustomCurveSelected}" Margin="0,0,0,5">
+														<Button x:Name="lsCustomEditorBtn" Content="..." Tag="LS" Width="20" 
+																DockPanel.Dock="Right" Click="CustomEditorBtn_Click" Margin="5,0,0,0"/>
+														<TextBox Text="{Binding LSCustomCurve,UpdateSourceTrigger=LostFocus,FallbackValue='0.00, 0.00, 1.00, 1.00'}" 
+																 Height="22" HorizontalAlignment="Stretch"/>
+													</DockPanel>
+
+													<!-- Square Stick -->
+													<Label Grid.Row="2" Grid.Column="0" Content="{lex:Loc SquareStick}" ContentStringFormat="{}{0}:" VerticalAlignment="Center" Margin="0,0,0,5"/>
+													<Grid Grid.Row="2" Grid.Column="1" Margin="0,0,0,5">
+														<Grid.ColumnDefinitions>
+															<ColumnDefinition Width="Auto"/>
+															<ColumnDefinition Width="*"/>
+														</Grid.ColumnDefinitions>
+														<CheckBox Grid.Column="0" IsChecked="{Binding LSSquareStick}" VerticalAlignment="Center"/>
+														<xctk:DoubleUpDown Grid.Column="1" FormatString="F1" Value="{Binding LSSquareRoundness,FallbackValue=5}"
+																		   HorizontalAlignment="Stretch"
+																		   Minimum="0.0" Maximum="1000.0" Increment="1.0" 
+																		   IsEnabled="{Binding LSSquareStick}" Margin="8,0,0,0"/>
+													</Grid>
+
+													<!-- Rotation -->
+													<Label Grid.Row="3" Grid.Column="0" Content="{lex:Loc Rotation}" ContentStringFormat="{}{0}:" VerticalAlignment="Center" Margin="0,0,0,5"/>
+													<DockPanel Grid.Row="3" Grid.Column="1" Margin="0,0,0,5">
+														<TextBlock Text="&#xb0;" DockPanel.Dock="Right" FontSize="18" Margin="5,0,0,0" VerticalAlignment="Center"/>
+														<xctk:IntegerUpDown Value="{Binding LSRotation}" 
+																			HorizontalAlignment="Stretch"
+																			Minimum="-180" Maximum="180">
+															<xctk:IntegerUpDown.ToolTip>
+																<TextBlock TextWrapping="Wrap" Text="{lex:Loc StickRotationTooltip}"/>
+															</xctk:IntegerUpDown.ToolTip>
+														</xctk:IntegerUpDown>
+													</DockPanel>
+
+													<!-- Fuzz -->
+													<Label Grid.Row="4" Grid.Column="0" Content="{lex:Loc Fuzz}" ContentStringFormat="{}{0}:" VerticalAlignment="Center" Margin="0,0,0,5"/>
+													<DockPanel Grid.Row="4" Grid.Column="1" Margin="0,0,0,5">
+														<TextBlock Text="units" DockPanel.Dock="Right" FontSize="10" Margin="5,0,0,0" VerticalAlignment="Center"/>
+														<xctk:IntegerUpDown Value="{Binding LSFuzz}" 
+																			HorizontalAlignment="Stretch"
+																			Minimum="0" Maximum="100">
+															<xctk:IntegerUpDown.ToolTip>
+																<TextBlock TextWrapping="Wrap" Text="{lex:Loc StickFuzzTooltip}"/>
+															</xctk:IntegerUpDown.ToolTip>
+														</xctk:IntegerUpDown>
+													</DockPanel>
+
+													<!-- Anti Snapback -->
+													<Label Grid.Row="5" Grid.Column="0" Content="{lex:Loc AntiSnapback}" ContentStringFormat="{}{0}:" VerticalAlignment="Center" Margin="0,0,0,5"/>
+													<Grid Grid.Row="5" Grid.Column="1" Margin="0,0,0,5">
+														<Grid.ColumnDefinitions>
+															<ColumnDefinition Width="Auto"/>
+															<ColumnDefinition Width="*"/>
+															<ColumnDefinition Width="Auto"/>
+														</Grid.ColumnDefinitions>
+														<CheckBox Grid.Column="0" IsChecked="{Binding LSAntiSnapback}" VerticalAlignment="Center"/>
+														<xctk:DoubleUpDown Grid.Column="1" FormatString="F1" Value="{Binding LSAntiSnapbackDelta, FallbackValue=135}"
+																		   HorizontalAlignment="Stretch"
+																		   Minimum="0.0" Maximum="256.0" Increment="1.0" 
+																		   IsEnabled="{Binding LSAntiSnapback}" Margin="8,0,8,0"/>
+														<TextBlock Grid.Column="2" Text="units" FontSize="10" VerticalAlignment="Center"/>
+													</Grid>
+
+													<!-- Anti Snapback Timing -->
+													<Label Grid.Row="6" Grid.Column="0" Content="{lex:Loc AntiSnapbackTiming}" ContentStringFormat="{}{0}:" VerticalAlignment="Center" Margin="0,0,0,5"/>
+													<Grid Grid.Row="6" Grid.Column="1" Margin="0,0,0,5">
+														<Grid.ColumnDefinitions>
+															<ColumnDefinition Width="*"/>
+															<ColumnDefinition Width="Auto"/>
+														</Grid.ColumnDefinitions>
+														<xctk:IntegerUpDown Grid.Column="0" Value="{Binding LSAntiSnapbackTimeout}" 
+																			HorizontalAlignment="Stretch"
+																			Minimum="0" Maximum="1000" Increment="1" 
+																			IsEnabled="{Binding LSAntiSnapback}"/>
+														<TextBlock Grid.Column="1" Text="ms" FontSize="10" Margin="8,0,0,0" VerticalAlignment="Center"/>
+													</Grid>
+
+													<!-- Outer Button - 第一行 -->
+													<Label Grid.Row="7" Grid.Column="0" Content="{lex:Loc OuterBtn}" ContentStringFormat="{}{0}:" VerticalAlignment="Center" Margin="0,0,0,5"/>
+													<Button Grid.Row="7" Grid.Column="1" Content="{lex:Loc OuterBind}" MinWidth="40" 
+															Tag="{Binding LSOuterBind, Source={StaticResource controlIndexCheck}}"
+															Click="StickOuterBindButton_Click" 
+															ToolTip="{lex:Loc StickOuterBindTooltip}" 
+															HorizontalAlignment="Stretch" Margin="0,0,0,5"/>
+													
+													<!-- Outer Button - 第二行 -->
+													<Grid Grid.Row="8" Grid.Column="1" Margin="0,0,0,5">
+														<Label x:Name="lsOuterBindLb" Content="{Binding MappingName,FallbackValue=Unassigned}"
+															   HorizontalAlignment="Center"/>
+													</Grid>
+
+													<!-- Outer Button Deadzone -->
+													<Label Grid.Row="9" Grid.Column="0" Content="{lex:Loc OuterBtnDead}" ContentStringFormat="{}{0}:" VerticalAlignment="Center" Margin="0,0,0,5"/>
+													<Grid Grid.Row="9" Grid.Column="1" Margin="0,0,0,5">
+														<Grid.ColumnDefinitions>
+															<ColumnDefinition Width="*"/>
+															<ColumnDefinition Width="Auto"/>
+														</Grid.ColumnDefinitions>
+														<xctk:DoubleUpDown Grid.Column="0" FormatString="F2" Value="{Binding LSOuterBindDead}"
+																		   HorizontalAlignment="Stretch"
+																		   Minimum="0.0" Maximum="1.0" Increment="0.1"
+																		   ToolTip="{lex:Loc StickOuterBindDeadTooltip}"/>
+														<CheckBox Grid.Column="1" Content="Invert" IsChecked="{Binding LSOuterBindInvert}" 
+																  ToolTip="{lex:Loc StickOuterBindInvertTooltip}" Margin="8,0,0,0"/>
+													</Grid>
+
+													<!-- Calibration Section 标题 - 跨两列 -->
+													<Label Grid.Row="10" Grid.Column="0" Grid.ColumnSpan="2" 
+														   Content="{lex:Loc StickCalibration}" 
+														   HorizontalContentAlignment="Center" 
+														   FontWeight="Bold" Margin="0,10,0,5"/>
+
+													<!-- X Axis Offset -->
+													<Label Grid.Row="11" Grid.Column="0" Content="{lex:Loc XAxisOffset}" VerticalAlignment="Center" Margin="0,0,0,5"/>
+													<xctk:SByteUpDown Grid.Row="11" Grid.Column="1" Value="{Binding LeftStickDriftXAxis,UpdateSourceTrigger=LostFocus}" 
+																	  HorizontalAlignment="Stretch" Margin="0,0,0,5"
+																	  Maximum="127" Minimum="-127" Increment="1"/>
+
+													<!-- Y Axis Offset -->
+													<Label Grid.Row="12" Grid.Column="0" Content="{lex:Loc YAxisOffset}" VerticalAlignment="Center" Margin="0,0,0,5"/>
+													<xctk:SByteUpDown Grid.Row="12" Grid.Column="1" Value="{Binding LeftStickDriftYAxis,UpdateSourceTrigger=LostFocus}" 
+																	  HorizontalAlignment="Stretch" Margin="0,0,0,5"
+																	  Maximum="127" Minimum="-127" Increment="1"/>
+
+													<!-- Calibrate Button - 跨两列 -->
+													<Button Grid.Row="13" Grid.Column="0" Grid.ColumnSpan="2" 
+															Content="{lex:Loc AutomaticallyRecalibrateStick}" 
+															Click="CalibrateStick_OnClick" Tag="0" 
+															HorizontalAlignment="Stretch" Padding="5" Margin="0,5,0,10"/>
+
+													<!-- Delta Acceleration Section - 跨两列 -->
+													<GroupBox Grid.Row="14" Grid.Column="0" Grid.ColumnSpan="2" 
+															  Header="{lex:Loc DeltaAcceleration}" Margin="0,5,0,0">
+														<StackPanel>
+															<!-- Delta Enabled -->
+															<Grid Margin="0,0,0,5">
+																<Grid.ColumnDefinitions>
+																	<ColumnDefinition Width="{StaticResource FirstColumnWidth}" MinWidth="{StaticResource FirstColumnMinWidth}"/>
+																	<ColumnDefinition Width="{StaticResource SecondColumnWidth}" MaxWidth="{StaticResource SecondColumnMaxWidth}"/>
+																</Grid.ColumnDefinitions>
+																<Label Content="{lex:Loc Enabled}" ContentStringFormat="{}{0}:" VerticalAlignment="Center"/>
+																<CheckBox Grid.Column="1" IsChecked="{Binding LSDeltaAccelEnabled}" 
+																		  VerticalAlignment="Center" HorizontalAlignment="Right"/>
+
+															</Grid>
+
+															<!-- Delta Settings Expander -->
+															<Expander IsExpanded="{Binding LSDeltaAccelEnabled,Mode=OneTime}" Header="{lex:Loc Settings}"  
+																	  IsEnabled="{Binding LSDeltaAccelEnabled}">
+																<!-- 统一的外部Grid - Expander内的所有控件 -->
+																<Grid Margin="0,5,0,0">
+																	<Grid.RowDefinitions>
+																		<RowDefinition Height="Auto"/>
+																		<RowDefinition Height="Auto"/>
+																		<RowDefinition Height="Auto"/>
+																		<RowDefinition Height="Auto"/>
+																		<RowDefinition Height="Auto"/>
+																	</Grid.RowDefinitions>
+																	<Grid.ColumnDefinitions>
+																		<ColumnDefinition Width="{StaticResource FirstColumnStarWidth}" MinWidth="{StaticResource FirstColumnMinWidth}"/>
+																		<ColumnDefinition Width="{StaticResource SecondColumnStarWidth}" MaxWidth="{StaticResource SecondColumnMaxWidthForStar}"/>
+																	</Grid.ColumnDefinitions>
+																	
+																	<!-- Multiplier -->
+																	<Label Grid.Row="0" Grid.Column="0" Content="{lex:Loc Multiplier}" ContentStringFormat="{}{0}:" VerticalAlignment="Center" Margin="0,0,0,5"/>
+																	<xctk:DoubleUpDown Grid.Row="0" Grid.Column="1" FormatString="F2" Value="{Binding LSDeltaMultiplier}"
+																					  HorizontalAlignment="Stretch" Margin="0,0,0,5"
+																					  Minimum="0.0" Maximum="10.0" Increment="0.1"/>
+
+																	<!-- Max Travel -->
+																	<Label Grid.Row="1" Grid.Column="0" Content="{lex:Loc MaxTravel}" ContentStringFormat="{}{0}:" VerticalAlignment="Center" Margin="0,0,0,5"/>
+																	<xctk:DoubleUpDown Grid.Row="1" Grid.Column="1" FormatString="F2" Value="{Binding LSDeltaMaxTravel}"
+																					  HorizontalAlignment="Stretch" Margin="0,0,0,5"
+																					  Minimum="0.0" Maximum="1.0" Increment="0.05"/>
+
+																	<!-- Min Travel -->
+																	<Label Grid.Row="2" Grid.Column="0" Content="{lex:Loc MinTravel}" ContentStringFormat="{}{0}:" VerticalAlignment="Center" Margin="0,0,0,5"/>
+																	<xctk:DoubleUpDown Grid.Row="2" Grid.Column="1" FormatString="F2" Value="{Binding LSDeltaMinTravel}"
+																					  HorizontalAlignment="Stretch" Margin="0,0,0,5"
+																					  Minimum="0.0" Maximum="1.0" Increment="0.05"/>
+
+																	<!-- Easing Duration -->
+																	<Label Grid.Row="3" Grid.Column="0" Content="{lex:Loc EasingDuration}" ContentStringFormat="{}{0}:" VerticalAlignment="Center" Margin="0,0,0,5"/>
+																	<DockPanel Grid.Row="3" Grid.Column="1" Margin="0,0,0,5">
+																		<TextBlock Text="sec" DockPanel.Dock="Right" FontSize="10" 
+																				  Margin="5,0,0,0" VerticalAlignment="Center"/>
+																		<xctk:DoubleUpDown FormatString="F2" Value="{Binding LSDeltaEasingDuration}"
+																						  HorizontalAlignment="Stretch"
+																						  Minimum="0.0" Maximum="600.0" Increment="0.1"/>
+																	</DockPanel>
+
+																	<!-- Min Factor -->
+																	<Label Grid.Row="4" Grid.Column="0" Content="{lex:Loc MinFactor}" ContentStringFormat="{}{0}:" VerticalAlignment="Center"/>
+																	<xctk:DoubleUpDown Grid.Row="4" Grid.Column="1" FormatString="F2" Value="{Binding LSDeltaMinFactor}"
+																					  HorizontalAlignment="Stretch"
+																					  Minimum="1.0" Maximum="10.0" Increment="0.1"/>
+																</Grid>
+															</Expander>
+														</StackPanel>
+													</GroupBox>
+												</Grid>
+											</StackPanel>
+										</TabItem>
+
+										<!-- FlickStick Tab -->
+										<TabItem Header="{lex:Loc FlickStick}" Visibility="Collapsed">
+											<StackPanel Margin="0,5,0,0">
+												<!-- 统一的外部Grid - FlickStick Tab内的所有控件 -->
+												<Grid>
+													<Grid.RowDefinitions>
+														<RowDefinition Height="Auto"/>
+														<RowDefinition Height="Auto"/>
+														<RowDefinition Height="Auto"/>
+														<RowDefinition Height="Auto"/>
+													</Grid.RowDefinitions>
+													<Grid.ColumnDefinitions>
+														<ColumnDefinition Width="{StaticResource FirstColumnWidth}" MinWidth="{StaticResource FirstColumnMinWidth}"/>
+														<ColumnDefinition Width="{StaticResource SecondColumnWidth}" MaxWidth="{StaticResource SecondColumnMaxWidth}"/>
+													</Grid.ColumnDefinitions>
+													
+													<!-- Real World Calibration -->
+													<Label Grid.Row="0" Grid.Column="0" Content="{lex:Loc RealWorldCalibration}" ContentStringFormat="{}{0}:" VerticalAlignment="Center" Margin="0,0,0,5"/>
+													<xctk:DoubleUpDown Grid.Row="0" Grid.Column="1" Value="{Binding LSFlickRWC,UpdateSourceTrigger=LostFocus}" 
+																	  FormatString="F2" HorizontalAlignment="Stretch" Margin="0,0,0,5"
+																	  Maximum="200.0" Minimum="1.0" Increment="1.0"/>
+
+													<!-- Flick Threshold -->
+													<Label Grid.Row="1" Grid.Column="0" Content="{lex:Loc FlickThreshold}" ContentStringFormat="{}{0}:" VerticalAlignment="Center" Margin="0,0,0,5"/>
+													<xctk:DoubleUpDown Grid.Row="1" Grid.Column="1" Value="{Binding LSFlickThreshold,UpdateSourceTrigger=LostFocus}" 
+																	  FormatString="F2" HorizontalAlignment="Stretch" Margin="0,0,0,5"
+																	  Maximum="1.0" Minimum="0.0" Increment="0.1"/>
+
+													<!-- Flick Time -->
+													<Label Grid.Row="2" Grid.Column="0" Content="{lex:Loc FlickTime}" ContentStringFormat="{}{0}:" VerticalAlignment="Center" Margin="0,0,0,5"/>
+													<DockPanel Grid.Row="2" Grid.Column="1" Margin="0,0,0,5">
+														<TextBlock Text="sec." DockPanel.Dock="Right" FontSize="10" Margin="5,0,0,0" VerticalAlignment="Center"/>
+														<xctk:DoubleUpDown Value="{Binding LSFlickTime,UpdateSourceTrigger=LostFocus}" 
+																		  FormatString="F2" HorizontalAlignment="Stretch"
+																		  Maximum="10.0" Minimum="0.01" Increment="0.1"/>
+													</DockPanel>
+
+													<!-- Min Angle Threshold -->
+													<Label Grid.Row="3" Grid.Column="0" Content="{lex:Loc MinAngleThreshold}" ContentStringFormat="{}{0}:" VerticalAlignment="Center"/>
+													<DockPanel Grid.Row="3" Grid.Column="1">
+														<TextBlock Text="&#xb0;" DockPanel.Dock="Right" FontSize="18" Margin="5,0,0,0" VerticalAlignment="Center"/>
+														<xctk:DoubleUpDown Value="{Binding LSMinAngleThreshold,UpdateSourceTrigger=LostFocus}" 
+																		  FormatString="F2" HorizontalAlignment="Stretch"
+																		  Maximum="180.0" Minimum="0.0" Increment="0.5"/>
+													</DockPanel>
+												</Grid>
+											</StackPanel>
+										</TabItem>
+									</TabControl>
+								</Grid>
+							</GroupBox>
+
+							<!-- 中间间距列 -->
+							<Grid Grid.Column="1"/>
+
+							<!-- RS 列 -->
+							<GroupBox Grid.Column="2" Header="RS" Margin="0,0,0,10">
+								<Grid>
+									<Grid.RowDefinitions>
+										<RowDefinition Height="Auto"/>
+										<RowDefinition Height="Auto"/>
+									</Grid.RowDefinitions>
+									
+									<!-- Output Mode 行 - 固定在顶部 -->
+									<Grid Grid.Row="0" Margin="0,0,0,5">
+										<Grid.ColumnDefinitions>
+											<ColumnDefinition Width="Auto"/>
+											<ColumnDefinition Width="*"/>
+										</Grid.ColumnDefinitions>
+										<Label Content="{lex:Loc OutputMode}" VerticalAlignment="Center"/>
+										<ComboBox Grid.Column="1" SelectedIndex="{Binding RSOutputIndex,FallbackValue='0'}" 
+												  HorizontalAlignment="Left"  MinWidth="80" MaxWidth="160" VerticalContentAlignment="Center">
+											<ComboBoxItem Content="{lex:Loc None}" />
+											<ComboBoxItem Content="{lex:Loc Controls}" />
+											<ComboBoxItem Content="{lex:Loc FlickStick}" />
+										</ComboBox>
+									</Grid>
+
+									<!-- TabControl 占据剩余空间并自动适应高度 -->
+									<TabControl Grid.Row="1" SelectedIndex="{Binding RSOutputIndex,Mode=OneWay,FallbackValue='0'}" 
+												BorderBrush="{x:Null}" Padding="0" Margin="0,5,0,0"
+												VerticalAlignment="Stretch" HorizontalAlignment="Stretch">
+										<TabItem Header="{lex:Loc None}" Visibility="Collapsed" />
+										
+										<!-- Controls Tab -->
+										<TabItem Header="{lex:Loc Controls}" Visibility="Collapsed">
+											<StackPanel Margin="0,0,5,0">
+												<!-- DeadZone Type 行 -->
+												<Grid Margin="0,0,0,5">
+													<Grid.ColumnDefinitions>
+														<ColumnDefinition Width="Auto"/>
+														<ColumnDefinition Width="*"/>
+													</Grid.ColumnDefinitions>
+													<Label Content="{lex:Loc DeadZoneType}" VerticalAlignment="Center"/>
+													<ComboBox Grid.Column="1" SelectedIndex="{Binding RSDeadTypeIndex,FallbackValue='0'}" 
+															  HorizontalAlignment="Left"  MinWidth="80" MaxWidth="160" VerticalContentAlignment="Center">
+														<ComboBoxItem Content="{lex:Loc Radial}" />
+														<ComboBoxItem Content="{lex:Loc Axial}" />
+													</ComboBox>
+												</Grid>
+
+												<!-- DeadZone Type specific controls (Radial/Axial) -->
+												<TabControl SelectedIndex="{Binding RSDeadTypeIndex,Mode=OneWay,FallbackValue='0'}" 
+															BorderBrush="{x:Null}" Padding="0" Margin="0,5,0,5">
+													<TabItem Header="Radial" Visibility="Collapsed">
+														<StackPanel>
+															<!-- 统一的外部Grid - Radial Tab内的所有控件 -->
+															<Grid>
+																<Grid.RowDefinitions>
+																	<RowDefinition Height="Auto"/>
+																	<RowDefinition Height="Auto"/>
+																	<RowDefinition Height="Auto"/>
+																	<RowDefinition Height="Auto"/>
+																	<RowDefinition Height="Auto"/>
+																	<RowDefinition Height="Auto"/>
+																</Grid.RowDefinitions>
+																<Grid.ColumnDefinitions>
+																	<ColumnDefinition Width="{StaticResource FirstColumnWidth}" MinWidth="{StaticResource FirstColumnMinWidth}"/>
+																	<ColumnDefinition Width="{StaticResource SecondColumnWidth}" MaxWidth="{StaticResource SecondColumnMaxWidth}"/>
+																</Grid.ColumnDefinitions>
+																
+																<!-- DeadZone -->
+																<Label Grid.Row="0" Grid.Column="0" Content="{lex:Loc DeadZone}" ContentStringFormat="{}{0}:" VerticalAlignment="Center" Margin="0,0,0,5"/>
+																<xctk:DoubleUpDown Grid.Row="0" Grid.Column="1" Value="{Binding RSDeadZone,UpdateSourceTrigger=LostFocus}" 
+																				  FormatString="F2" HorizontalAlignment="Stretch" Margin="0,0,0,5"
+																				  Maximum="1.0" Minimum="0.0" Increment="0.1"/>
+
+																<!-- MaxZone -->
+																<Label Grid.Row="1" Grid.Column="0" Content="{lex:Loc MaxZone}" ContentStringFormat="{}{0}:" VerticalAlignment="Center" Margin="0,0,0,5"/>
+																<xctk:DoubleUpDown Grid.Row="1" Grid.Column="1" Value="{Binding RSMaxZone}" FormatString="F2" 
+																				  HorizontalAlignment="Stretch" Margin="0,0,0,5"
+																				  Maximum="1.0" Minimum="0.0" Increment="0.1"/>
+
+																<!-- AntiDeadZone -->
+																<Label Grid.Row="2" Grid.Column="0" Content="{lex:Loc AntiDeadZone}" ContentStringFormat="{}{0}:" VerticalAlignment="Center" Margin="0,0,0,5"/>
+																<xctk:DoubleUpDown Grid.Row="2" Grid.Column="1" Value="{Binding RSAntiDeadZone}" FormatString="F2" 
+																				  HorizontalAlignment="Stretch" Margin="0,0,0,5"
+																				  Maximum="1.0" Minimum="0.0" Increment="0.1">
+																	<xctk:DoubleUpDown.ToolTip>
+																		<TextBlock TextWrapping="Wrap" Text="{lex:Loc AntiDeadzoneTooltip}"/>
+																	</xctk:DoubleUpDown.ToolTip>
+																</xctk:DoubleUpDown>
+
+																<!-- MaxOutput -->
+																<Label Grid.Row="3" Grid.Column="0" Content="{lex:Loc MaxOutput}" ContentStringFormat="{}{0}:" VerticalAlignment="Center" Margin="0,0,0,5"/>
+																<Grid Grid.Row="3" Grid.Column="1" Margin="0,0,0,5">
+																	<Grid.ColumnDefinitions>
+																		<ColumnDefinition Width="*"/>
+																		<ColumnDefinition Width="Auto"/>
+																	</Grid.ColumnDefinitions>
+																	<xctk:DoubleUpDown Grid.Column="0" Value="{Binding RSMaxOutput}" FormatString="F2" 
+																					  HorizontalAlignment="Stretch"
+																					  Maximum="1.0" Minimum="0.0" Increment="0.1">
+																		<xctk:DoubleUpDown.ToolTip>
+																			<TextBlock TextWrapping="Wrap" Text="{lex:Loc StickMaxOutputTooltip}"/>
+																		</xctk:DoubleUpDown.ToolTip>
+																	</xctk:DoubleUpDown>
+																	<CheckBox Grid.Column="1" Content="Force" VerticalAlignment="Center" 
+																			  IsChecked="{Binding RSMaxOutputForce}" 
+																			  ToolTip="{lex:Loc StickMaxOutputForceTooltip}" Margin="8,0,0,0"/>
+																</Grid>
+
+																<!-- VerticalScale -->
+																<Label Grid.Row="4" Grid.Column="0" Content="{lex:Loc VerticalScale}" ContentStringFormat="{}{0}:" VerticalAlignment="Center" Margin="0,0,0,5"/>
+																<xctk:DoubleUpDown Grid.Row="4" Grid.Column="1" Value="{Binding RSVerticalScale}" FormatString="F2" 
+																				  HorizontalAlignment="Stretch" Margin="0,0,0,5"
+																				  Maximum="4.0" Minimum="0.0" Increment="0.1"/>
+
+																<!-- Sensitivity -->
+																<Label Grid.Row="5" Grid.Column="0" Content="{lex:Loc Sensitivity}" ContentStringFormat="{}{0}:" VerticalAlignment="Center"/>
+																<xctk:DoubleUpDown Grid.Row="5" Grid.Column="1" FormatString="F2" Value="{Binding RSSens}" 
+																				  HorizontalAlignment="Stretch"
+																				  Maximum="5.0" Minimum="0.1" Increment="0.1"/>
+															</Grid>
+														</StackPanel>
+													</TabItem>
+
+													<TabItem Header="{lex:Loc Axial}" Visibility="Collapsed">
+														<local:AxialStickUserControl x:Name="axialRSStickControl" 
+																					  HorizontalAlignment="Stretch" VerticalAlignment="Stretch"/>
+													</TabItem>
+												</TabControl>
+
+												<!-- 统一的外部Grid - Radial Tab外的所有控件 -->
+												<Grid>
+													<Grid.RowDefinitions>
+														<RowDefinition Height="Auto"/>
+														<RowDefinition Height="Auto"/>
+														<RowDefinition Height="Auto"/>
+														<RowDefinition Height="Auto"/>
+														<RowDefinition Height="Auto"/>
+														<RowDefinition Height="Auto"/>
+														<RowDefinition Height="Auto"/>
+														<RowDefinition Height="Auto"/>
+														<RowDefinition Height="Auto"/>
+														<RowDefinition Height="Auto"/>
+														<RowDefinition Height="Auto"/>
+														<RowDefinition Height="Auto"/>
+														<RowDefinition Height="Auto"/>
+														<RowDefinition Height="Auto"/>
+														<RowDefinition Height="Auto"/>
+														<RowDefinition Height="Auto"/> <!-- 第16行给Delta Acceleration -->
+													</Grid.RowDefinitions>
+													<Grid.ColumnDefinitions>
+														<ColumnDefinition Width="{StaticResource FirstColumnWidth}" MinWidth="{StaticResource FirstColumnMinWidth}"/>
+														<ColumnDefinition Width="{StaticResource SecondColumnWidth}" MaxWidth="{StaticResource SecondColumnMaxWidth}"/>
+													</Grid.ColumnDefinitions>
+													
+													<!-- Output Curve -->
+													<Label Grid.Row="0" Grid.Column="0" Content="{lex:Loc OutputCurve}" ContentStringFormat="{}{0}:" VerticalAlignment="Center" Margin="0,0,0,5"/>
+													<ComboBox Grid.Row="0" Grid.Column="1" SelectedIndex="{Binding RSOutputCurveIndex}" 
+															  HorizontalAlignment="Stretch" Margin="0,0,0,5">
+														<ComboBoxItem Content="{lex:Loc Linear}" />
+														<ComboBoxItem Content="{lex:Loc EnhancedPrecision}" />
+														<ComboBoxItem Content="{lex:Loc Quadratic}" />
+														<ComboBoxItem Content="{lex:Loc Cubic}" />
+														<ComboBoxItem Content="{lex:Loc EaseoutQuad}" />
+														<ComboBoxItem Content="{lex:Loc EaseoutCubic}" />
+														<ComboBoxItem Content="{lex:Loc Custom}" />
+													</ComboBox>
+
+													<!-- Custom Curve -->
+													<Label Grid.Row="1" Grid.Column="0" Content="Custom Curve:" VerticalAlignment="Center" Margin="0,0,0,5"/>
+													<DockPanel Grid.Row="1" Grid.Column="1" IsEnabled="{Binding RSCustomCurveSelected}" Margin="0,0,0,5">
+														<Button x:Name="rsCustomEditorBtn" Content="..." Tag="RS" Width="20" 
+																DockPanel.Dock="Right" Click="CustomEditorBtn_Click" Margin="5,0,0,0"/>
+														<TextBox Text="{Binding RSCustomCurve,UpdateSourceTrigger=LostFocus,FallbackValue='0.00, 0.00, 1.00, 1.00'}" 
+																 Height="22" HorizontalAlignment="Stretch"/>
+													</DockPanel>
+
+													<!-- Square Stick -->
+													<Label Grid.Row="2" Grid.Column="0" Content="{lex:Loc SquareStick}" ContentStringFormat="{}{0}:" VerticalAlignment="Center" Margin="0,0,0,5"/>
+													<Grid Grid.Row="2" Grid.Column="1" Margin="0,0,0,5">
+														<Grid.ColumnDefinitions>
+															<ColumnDefinition Width="Auto"/>
+															<ColumnDefinition Width="*"/>
+														</Grid.ColumnDefinitions>
+														<CheckBox Grid.Column="0" IsChecked="{Binding RSSquareStick}" VerticalAlignment="Center"/>
+														<xctk:DoubleUpDown Grid.Column="1" FormatString="F1" Value="{Binding RSSquareRoundness,FallbackValue=5}"
+																		   HorizontalAlignment="Stretch"
+																		   Minimum="0.0" Maximum="1000.0" Increment="1.0" 
+																		   IsEnabled="{Binding RSSquareStick}" Margin="8,0,0,0"/>
+													</Grid>
+
+													<!-- Rotation -->
+													<Label Grid.Row="3" Grid.Column="0" Content="{lex:Loc Rotation}" ContentStringFormat="{}{0}:" VerticalAlignment="Center" Margin="0,0,0,5"/>
+													<DockPanel Grid.Row="3" Grid.Column="1" Margin="0,0,0,5">
+														<TextBlock Text="&#xb0;" DockPanel.Dock="Right" FontSize="18" Margin="5,0,0,0" VerticalAlignment="Center"/>
+														<xctk:IntegerUpDown Value="{Binding RSRotation}" 
+																			HorizontalAlignment="Stretch"
+																			Minimum="-180" Maximum="180">
+															<xctk:IntegerUpDown.ToolTip>
+																<TextBlock TextWrapping="Wrap" Text="{lex:Loc StickRotationTooltip}"/>
+															</xctk:IntegerUpDown.ToolTip>
+														</xctk:IntegerUpDown>
+													</DockPanel>
+
+													<!-- Fuzz -->
+													<Label Grid.Row="4" Grid.Column="0" Content="{lex:Loc Fuzz}" ContentStringFormat="{}{0}:" VerticalAlignment="Center" Margin="0,0,0,5"/>
+													<DockPanel Grid.Row="4" Grid.Column="1" Margin="0,0,0,5">
+														<TextBlock Text="units" DockPanel.Dock="Right" FontSize="10" Margin="5,0,0,0" VerticalAlignment="Center"/>
+														<xctk:IntegerUpDown Value="{Binding RSFuzz}" 
+																			HorizontalAlignment="Stretch"
+																			Minimum="0" Maximum="100">
+															<xctk:IntegerUpDown.ToolTip>
+																<TextBlock TextWrapping="Wrap" Text="{lex:Loc StickFuzzTooltip}"/>
+															</xctk:IntegerUpDown.ToolTip>
+														</xctk:IntegerUpDown>
+													</DockPanel>
+
+													<!-- Anti Snapback -->
+													<Label Grid.Row="5" Grid.Column="0" Content="{lex:Loc AntiSnapback}" ContentStringFormat="{}{0}:" VerticalAlignment="Center" Margin="0,0,0,5"/>
+													<Grid Grid.Row="5" Grid.Column="1" Margin="0,0,0,5">
+														<Grid.ColumnDefinitions>
+															<ColumnDefinition Width="Auto"/>
+															<ColumnDefinition Width="*"/>
+															<ColumnDefinition Width="Auto"/>
+														</Grid.ColumnDefinitions>
+														<CheckBox Grid.Column="0" IsChecked="{Binding RSAntiSnapback}" VerticalAlignment="Center"/>
+														<xctk:DoubleUpDown Grid.Column="1" FormatString="F1" Value="{Binding RSAntiSnapbackDelta, FallbackValue=135}"
+																		   HorizontalAlignment="Stretch"
+																		   Minimum="0.0" Maximum="256.0" Increment="1.0" 
+																		   IsEnabled="{Binding RSAntiSnapback}" Margin="8,0,8,0"/>
+														<TextBlock Grid.Column="2" Text="units" FontSize="10" VerticalAlignment="Center"/>
+													</Grid>
+
+													<!-- Anti Snapback Timing -->
+													<Label Grid.Row="6" Grid.Column="0" Content="{lex:Loc AntiSnapbackTiming}" ContentStringFormat="{}{0}:" VerticalAlignment="Center" Margin="0,0,0,5"/>
+													<Grid Grid.Row="6" Grid.Column="1" Margin="0,0,0,5">
+														<Grid.ColumnDefinitions>
+															<ColumnDefinition Width="*"/>
+															<ColumnDefinition Width="Auto"/>
+														</Grid.ColumnDefinitions>
+														<xctk:IntegerUpDown Grid.Column="0" Value="{Binding RSAntiSnapbackTimeout}" 
+																			HorizontalAlignment="Stretch"
+																			Minimum="0" Maximum="1000" Increment="1" 
+																			IsEnabled="{Binding RSAntiSnapback}"/>
+														<TextBlock Grid.Column="1" Text="ms" FontSize="10" Margin="8,0,0,0" VerticalAlignment="Center"/>
+													</Grid>
+
+													<!-- Outer Button - 第一行 -->
+													<Label Grid.Row="7" Grid.Column="0" Content="{lex:Loc OuterBtn}" ContentStringFormat="{}{0}:" VerticalAlignment="Center" Margin="0,0,0,5"/>
+													<Button Grid.Row="7" Grid.Column="1" Content="{lex:Loc OuterBind}" MinWidth="40" 
+															Tag="{Binding RSOuterBind, Source={StaticResource controlIndexCheck}}"
+															Click="StickOuterBindButton_Click" 
+															ToolTip="{lex:Loc StickOuterBindTooltip}" 
+															HorizontalAlignment="Stretch" Margin="0,0,0,5"/>
+													
+													<!-- Outer Button - 第二行 -->
+													<Grid Grid.Row="8" Grid.Column="1" Margin="0,0,0,5">
+														<Label x:Name="rsOuterBindLb" Content="{Binding MappingName,FallbackValue=Unassigned}"
+															   HorizontalAlignment="Center"/>
+													</Grid>
+
+													<!-- Outer Button Deadzone -->
+													<Label Grid.Row="9" Grid.Column="0" Content="{lex:Loc OuterBtnDead}" ContentStringFormat="{}{0}:" VerticalAlignment="Center" Margin="0,0,0,5"/>
+													<Grid Grid.Row="9" Grid.Column="1" Margin="0,0,0,5">
+														<Grid.ColumnDefinitions>
+															<ColumnDefinition Width="*"/>
+															<ColumnDefinition Width="Auto"/>
+														</Grid.ColumnDefinitions>
+														<xctk:DoubleUpDown Grid.Column="0" FormatString="F2" Value="{Binding RSOuterBindDead}"
+																		   HorizontalAlignment="Stretch"
+																		   Minimum="0.0" Maximum="1.0" Increment="0.1"
+																		   ToolTip="{lex:Loc StickOuterBindDeadTooltip}"/>
+														<CheckBox Grid.Column="1" Content="Invert" IsChecked="{Binding RSOuterBindInvert}" 
+																  ToolTip="{lex:Loc StickOuterBindInvertTooltip}" Margin="8,0,0,0"/>
+													</Grid>
+
+													<!-- Calibration Section 标题 - 跨两列 -->
+													<Label Grid.Row="10" Grid.Column="0" Grid.ColumnSpan="2" 
+														   Content="{lex:Loc StickCalibration}" 
+														   HorizontalContentAlignment="Center" 
+														   FontWeight="Bold" Margin="0,10,0,5"/>
+
+													<!-- X Axis Offset -->
+													<Label Grid.Row="11" Grid.Column="0" Content="{lex:Loc XAxisOffset}" VerticalAlignment="Center" Margin="0,0,0,5"/>
+													<xctk:SByteUpDown Grid.Row="11" Grid.Column="1" Value="{Binding RightStickDriftXAxis,UpdateSourceTrigger=LostFocus}" 
+																	  HorizontalAlignment="Stretch" Margin="0,0,0,5"
+																	  Maximum="127" Minimum="-127" Increment="1"/>
+
+													<!-- Y Axis Offset -->
+													<Label Grid.Row="12" Grid.Column="0" Content="{lex:Loc YAxisOffset}" VerticalAlignment="Center" Margin="0,0,0,5"/>
+													<xctk:SByteUpDown Grid.Row="12" Grid.Column="1" Value="{Binding RightStickDriftYAxis,UpdateSourceTrigger=LostFocus}" 
+																	  HorizontalAlignment="Stretch" Margin="0,0,0,5"
+																	  Maximum="127" Minimum="-127" Increment="1"/>
+
+													<!-- Calibrate Button - 跨两列 -->
+													<Button Grid.Row="13" Grid.Column="0" Grid.ColumnSpan="2" 
+															Content="{lex:Loc AutomaticallyRecalibrateStick}" 
+															Click="CalibrateStick_OnClick" Tag="1" 
+															HorizontalAlignment="Stretch" Padding="5" Margin="0,5,0,10"/>
+
+													<!-- Delta Acceleration Section - 跨两列 -->
+													<GroupBox Grid.Row="14" Grid.Column="0" Grid.ColumnSpan="2" 
+															  Header="{lex:Loc DeltaAcceleration}" Margin="0,5,0,0">
+														<StackPanel>
+															<!-- Delta Enabled -->
+															<Grid Margin="0,0,0,5">
+																<Grid.ColumnDefinitions>
+																	<ColumnDefinition Width="{StaticResource FirstColumnWidth}" MinWidth="{StaticResource FirstColumnMinWidth}"/>
+																	<ColumnDefinition Width="{StaticResource SecondColumnWidth}" MaxWidth="{StaticResource SecondColumnMaxWidth}"/>
+																</Grid.ColumnDefinitions>
+																<Label Content="{lex:Loc Enabled}" ContentStringFormat="{}{0}:" VerticalAlignment="Center"/>
+																<CheckBox Grid.Column="1" IsChecked="{Binding RSDeltaAccelEnabled}" 
+																		  VerticalAlignment="Center" HorizontalAlignment="Right"/>
+															</Grid>
+
+															<!-- Delta Settings Expander -->
+															<Expander IsExpanded="{Binding RSDeltaAccelEnabled,Mode=OneTime}" Header="{lex:Loc Settings}" 
+																	  IsEnabled="{Binding RSDeltaAccelEnabled}">
+																<!-- 统一的外部Grid - Expander内的所有控件 -->
+																<Grid Margin="0,5,0,0">
+																	<Grid.RowDefinitions>
+																		<RowDefinition Height="Auto"/>
+																		<RowDefinition Height="Auto"/>
+																		<RowDefinition Height="Auto"/>
+																		<RowDefinition Height="Auto"/>
+																		<RowDefinition Height="Auto"/>
+																	</Grid.RowDefinitions>
+																	<Grid.ColumnDefinitions>
+																		<ColumnDefinition Width="{StaticResource FirstColumnStarWidth}" MinWidth="{StaticResource FirstColumnMinWidth}"/>
+																		<ColumnDefinition Width="{StaticResource SecondColumnStarWidth}" MaxWidth="{StaticResource SecondColumnMaxWidthForStar}"/>
+																	</Grid.ColumnDefinitions>
+																	
+																	<!-- Multiplier -->
+																	<Label Grid.Row="0" Grid.Column="0" Content="{lex:Loc Multiplier}" ContentStringFormat="{}{0}:" VerticalAlignment="Center" Margin="0,0,0,5"/>
+																	<xctk:DoubleUpDown Grid.Row="0" Grid.Column="1" FormatString="F2" Value="{Binding RSDeltaMultiplier}"
+																					  HorizontalAlignment="Stretch" Margin="0,0,0,5"
+																					  Minimum="0.0" Maximum="10.0" Increment="0.1"/>
+
+																	<!-- Max Travel -->
+																	<Label Grid.Row="1" Grid.Column="0" Content="{lex:Loc MaxTravel}" ContentStringFormat="{}{0}:" VerticalAlignment="Center" Margin="0,0,0,5"/>
+																	<xctk:DoubleUpDown Grid.Row="1" Grid.Column="1" FormatString="F2" Value="{Binding RSDeltaMaxTravel}"
+																					  HorizontalAlignment="Stretch" Margin="0,0,0,5"
+																					  Minimum="0.0" Maximum="1.0" Increment="0.05"/>
+
+																	<!-- Min Travel -->
+																	<Label Grid.Row="2" Grid.Column="0" Content="{lex:Loc MinTravel}" ContentStringFormat="{}{0}:" VerticalAlignment="Center" Margin="0,0,0,5"/>
+																	<xctk:DoubleUpDown Grid.Row="2" Grid.Column="1" FormatString="F2" Value="{Binding RSDeltaMinTravel}"
+																					  HorizontalAlignment="Stretch" Margin="0,0,0,5"
+																					  Minimum="0.0" Maximum="1.0" Increment="0.05"/>
+
+																	<!-- Easing Duration -->
+																	<Label Grid.Row="3" Grid.Column="0" Content="{lex:Loc EasingDuration}" ContentStringFormat="{}{0}:" VerticalAlignment="Center" Margin="0,0,0,5"/>
+																	<DockPanel Grid.Row="3" Grid.Column="1" Margin="0,0,0,5">
+																		<TextBlock Text="sec" DockPanel.Dock="Right" FontSize="10" 
+																				  Margin="5,0,0,0" VerticalAlignment="Center"/>
+																		<xctk:DoubleUpDown FormatString="F2" Value="{Binding RSDeltaEasingDuration}"
+																						  HorizontalAlignment="Stretch"
+																						  Minimum="0.0" Maximum="600.0" Increment="0.1"/>
+																	</DockPanel>
+
+																	<!-- Min Factor -->
+																	<Label Grid.Row="4" Grid.Column="0" Content="{lex:Loc MinFactor}" ContentStringFormat="{}{0}:" VerticalAlignment="Center"/>
+																	<xctk:DoubleUpDown Grid.Row="4" Grid.Column="1" FormatString="F2" Value="{Binding RSDeltaMinFactor}"
+																					  HorizontalAlignment="Stretch"
+																					  Minimum="1.0" Maximum="10.0" Increment="0.1"/>
+																</Grid>
+															</Expander>
+														</StackPanel>
+													</GroupBox>
+												</Grid>
+											</StackPanel>
+										</TabItem>
+
+										<!-- FlickStick Tab -->
+										<TabItem Header="{lex:Loc FlickStick}" Visibility="Collapsed">
+											<StackPanel Margin="0,5,0,0">
+												<!-- 统一的外部Grid - FlickStick Tab内的所有控件 -->
+												<Grid>
+													<Grid.RowDefinitions>
+														<RowDefinition Height="Auto"/>
+														<RowDefinition Height="Auto"/>
+														<RowDefinition Height="Auto"/>
+														<RowDefinition Height="Auto"/>
+													</Grid.RowDefinitions>
+													<Grid.ColumnDefinitions>
+														<ColumnDefinition Width="{StaticResource FirstColumnWidth}" MinWidth="{StaticResource FirstColumnMinWidth}"/>
+														<ColumnDefinition Width="{StaticResource SecondColumnWidth}" MaxWidth="{StaticResource SecondColumnMaxWidth}"/>
+													</Grid.ColumnDefinitions>
+													
+													<!-- Real World Calibration -->
+													<Label Grid.Row="0" Grid.Column="0" Content="{lex:Loc RealWorldCalibration}" ContentStringFormat="{}{0}:" VerticalAlignment="Center" Margin="0,0,0,5"/>
+													<xctk:DoubleUpDown Grid.Row="0" Grid.Column="1" Value="{Binding RSFlickRWC,UpdateSourceTrigger=LostFocus}" 
+																	  FormatString="F2" HorizontalAlignment="Stretch" Margin="0,0,0,5"
+																	  Maximum="200.0" Minimum="1.0" Increment="1.0"/>
+
+													<!-- Flick Threshold -->
+													<Label Grid.Row="1" Grid.Column="0" Content="{lex:Loc FlickThreshold}" ContentStringFormat="{}{0}:" VerticalAlignment="Center" Margin="0,0,0,5"/>
+													<xctk:DoubleUpDown Grid.Row="1" Grid.Column="1" Value="{Binding RSFlickThreshold,UpdateSourceTrigger=LostFocus}" 
+																	  FormatString="F2" HorizontalAlignment="Stretch" Margin="0,0,0,5"
+																	  Maximum="1.0" Minimum="0.0" Increment="0.1"/>
+
+													<!-- Flick Time -->
+													<Label Grid.Row="2" Grid.Column="0" Content="{lex:Loc FlickTime}" ContentStringFormat="{}{0}:" VerticalAlignment="Center" Margin="0,0,0,5"/>
+													<DockPanel Grid.Row="2" Grid.Column="1" Margin="0,0,0,5">
+														<TextBlock Text="sec." DockPanel.Dock="Right" FontSize="10" Margin="5,0,0,0" VerticalAlignment="Center"/>
+														<xctk:DoubleUpDown Value="{Binding RSFlickTime,UpdateSourceTrigger=LostFocus}" 
+																		  FormatString="F2" HorizontalAlignment="Stretch"
+																		  Maximum="10.0" Minimum="0.01" Increment="0.1"/>
+													</DockPanel>
+
+													<!-- Min Angle Threshold -->
+													<Label Grid.Row="3" Grid.Column="0" Content="{lex:Loc MinAngleThreshold}" ContentStringFormat="{}{0}:" VerticalAlignment="Center"/>
+													<DockPanel Grid.Row="3" Grid.Column="1">
+														<TextBlock Text="&#xb0;" DockPanel.Dock="Right" FontSize="18" Margin="5,0,0,0" VerticalAlignment="Center"/>
+														<xctk:DoubleUpDown Value="{Binding RSMinAngleThreshold,UpdateSourceTrigger=LostFocus}" 
+																		  FormatString="F2" HorizontalAlignment="Stretch"
+																		  Maximum="180.0" Minimum="0.0" Increment="0.5"/>
+													</DockPanel>
+												</Grid>
+											</StackPanel>
+										</TabItem>
+									</TabControl>
+								</Grid>
+							</GroupBox>
+
+						</Grid>
+
+					
                         <GroupBox Header="L2 &amp; R2">
                             <Grid>
                                 <Grid.RowDefinitions>
@@ -1167,6 +1422,7 @@
                     </StackPanel>
                 </ScrollViewer>
             </TabItem>
+
 
 			<TabItem Header="{lex:Loc Lightbar}">
 				<Grid Margin="0,4,0,0">
@@ -2836,7 +3092,7 @@
 						<!-- Absolute Mouse Options -->
 						<GroupBox Header="{lex:Loc AbsoluteMouseOptions}" Margin="0,8,0,0">
 							<StackPanel Orientation="Vertical">
-								<Expander IsExpanded="False" Header="{lex:Loc SettingsHeader}">
+								<Expander IsExpanded="False" Header="{lex:Loc Settings}">
 									<Grid>
 										<Grid.ColumnDefinitions>
 											<ColumnDefinition />
