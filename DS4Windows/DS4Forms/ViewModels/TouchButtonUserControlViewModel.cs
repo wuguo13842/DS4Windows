@@ -24,6 +24,8 @@ using System.Threading.Tasks;
 using DS4WinWPF.DS4Forms.ViewModels.Util;
 using DS4Windows;
 using static DS4Windows.Mouse;
+using DS4WinWPF.Translations;
+using DS4Windows.InputDevices;
 
 namespace DS4WinWPF.DS4Forms.ViewModels
 {
@@ -36,12 +38,12 @@ namespace DS4WinWPF.DS4Forms.ViewModels
             set => deviceIndex = value;
         }
 
-        private EnumChoiceSelection<TouchButtonActivationMode>[] touchButtonModes = new EnumChoiceSelection<TouchButtonActivationMode>[]
-        {
-            new EnumChoiceSelection<TouchButtonActivationMode>("Click", TouchButtonActivationMode.Click),
-            new EnumChoiceSelection<TouchButtonActivationMode>("Touch", TouchButtonActivationMode.Touch),
-            new EnumChoiceSelection<TouchButtonActivationMode>("Release", TouchButtonActivationMode.Release),
-        };
+		private EnumChoiceSelection<TouchButtonActivationMode>[] touchButtonModes = new EnumChoiceSelection<TouchButtonActivationMode>[]
+		{
+			new EnumChoiceSelection<TouchButtonActivationMode>(Strings.TouchButtonModeClick, TouchButtonActivationMode.Click),
+			new EnumChoiceSelection<TouchButtonActivationMode>(Strings.TouchButtonModeTouch, TouchButtonActivationMode.Touch),
+			new EnumChoiceSelection<TouchButtonActivationMode>(Strings.TouchButtonModeRelease, TouchButtonActivationMode.Release),
+		};
         public EnumChoiceSelection<TouchButtonActivationMode>[] TouchButtonModes => touchButtonModes;
 
         public TouchButtonActivationMode CurrentMode

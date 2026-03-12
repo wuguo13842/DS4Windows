@@ -1,17 +1,17 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <root>
-  <!--
-    Microsoft ResX Schema
-
+  <!-- 
+    Microsoft ResX Schema 
+    
     Version 2.0
-
-    The primary goals of this format is to allow a simple XML format
-    that is mostly human readable. The generation and parsing of the
-    various data types are done through the TypeConverter classes
+    
+    The primary goals of this format is to allow a simple XML format 
+    that is mostly human readable. The generation and parsing of the 
+    various data types are done through the TypeConverter classes 
     associated with the data types.
-
+    
     Example:
-
+    
     ... ado.net/XML headers & schema ...
     <resheader name="resmimetype">text/microsoft-resx</resheader>
     <resheader name="version">2.0</resheader>
@@ -26,79 +26,79 @@
         <value>[base64 mime encoded string representing a byte array form of the .NET Framework object]</value>
         <comment>This is a comment</comment>
     </data>
-
-    There are any number of "resheader" rows that contain simple
+                
+    There are any number of "resheader" rows that contain simple 
     name/value pairs.
-
-    Each data row contains a name, and value. The row also contains a
-    type or mimetype. Type corresponds to a .NET class that support
-    text/value conversion through the TypeConverter architecture.
-    Classes that don't support this are serialized and stored with the
+    
+    Each data row contains a name, and value. The row also contains a 
+    type or mimetype. Type corresponds to a .NET class that support 
+    text/value conversion through the TypeConverter architecture. 
+    Classes that don't support this are serialized and stored with the 
     mimetype set.
-
-    The mimetype is used for serialized objects, and tells the
-    ResXResourceReader how to depersist the object. This is currently not
+    
+    The mimetype is used for serialized objects, and tells the 
+    ResXResourceReader how to depersist the object. This is currently not 
     extensible. For a given mimetype the value must be set accordingly:
-
-    Note - application/x-microsoft.net.object.binary.base64 is the format
-    that the ResXResourceWriter will generate, however the reader can
+    
+    Note - application/x-microsoft.net.object.binary.base64 is the format 
+    that the ResXResourceWriter will generate, however the reader can 
     read any of the formats listed below.
-
+    
     mimetype: application/x-microsoft.net.object.binary.base64
-    value   : The object must be serialized with
+    value   : The object must be serialized with 
             : System.Runtime.Serialization.Formatters.Binary.BinaryFormatter
             : and then encoded with base64 encoding.
-
+    
     mimetype: application/x-microsoft.net.object.soap.base64
-    value   : The object must be serialized with
+    value   : The object must be serialized with 
             : System.Runtime.Serialization.Formatters.Soap.SoapFormatter
             : and then encoded with base64 encoding.
 
     mimetype: application/x-microsoft.net.object.bytearray.base64
-    value   : The object must be serialized into a byte array
+    value   : The object must be serialized into a byte array 
             : using a System.ComponentModel.TypeConverter
             : and then encoded with base64 encoding.
     -->
   <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
-    <xsd:import namespace="http://www.w3.org/XML/1998/namespace"/>
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
     <xsd:element name="root" msdata:IsDataSet="true">
       <xsd:complexType>
         <xsd:choice maxOccurs="unbounded">
           <xsd:element name="metadata">
             <xsd:complexType>
               <xsd:sequence>
-                <xsd:element name="value" type="xsd:string" minOccurs="0"/>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" />
               </xsd:sequence>
-              <xsd:attribute name="name" use="required" type="xsd:string"/>
-              <xsd:attribute name="type" type="xsd:string"/>
-              <xsd:attribute name="mimetype" type="xsd:string"/>
-              <xsd:attribute ref="xml:space"/>
+              <xsd:attribute name="name" use="required" type="xsd:string" />
+              <xsd:attribute name="type" type="xsd:string" />
+              <xsd:attribute name="mimetype" type="xsd:string" />
+              <xsd:attribute ref="xml:space" />
             </xsd:complexType>
           </xsd:element>
           <xsd:element name="assembly">
             <xsd:complexType>
-              <xsd:attribute name="alias" type="xsd:string"/>
-              <xsd:attribute name="name" type="xsd:string"/>
+              <xsd:attribute name="alias" type="xsd:string" />
+              <xsd:attribute name="name" type="xsd:string" />
             </xsd:complexType>
           </xsd:element>
           <xsd:element name="data">
             <xsd:complexType>
               <xsd:sequence>
-                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1"/>
-                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2"/>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
               </xsd:sequence>
-              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1"/>
-              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3"/>
-              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4"/>
-              <xsd:attribute ref="xml:space"/>
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+              <xsd:attribute ref="xml:space" />
             </xsd:complexType>
           </xsd:element>
           <xsd:element name="resheader">
             <xsd:complexType>
               <xsd:sequence>
-                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1"/>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
               </xsd:sequence>
-              <xsd:attribute name="name" type="xsd:string" use="required"/>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
             </xsd:complexType>
           </xsd:element>
         </xsd:choice>
@@ -119,283 +119,216 @@
   </resheader>
   <data name="Accel" xml:space="preserve">
     <value>加速度</value>
-    <comment/>
   </data>
   <data name="Action" xml:space="preserve">
     <value>动作</value>
-    <comment/>
   </data>
   <data name="AddDirectory" xml:space="preserve">
     <value>添加目录</value>
-    <comment/>
   </data>
   <data name="AddPrograms" xml:space="preserve">
     <value>添加程序</value>
-    <comment/>
+  </data>
+  <data name="AddStartMenuPrograms" xml:space="preserve">
+    <value>添加开始菜单程序</value>
   </data>
   <data name="AddSteamGames" xml:space="preserve">
     <value>添加Steam游戏</value>
-    <comment/>
   </data>
   <data name="All" xml:space="preserve">
     <value>全部</value>
-    <comment/>
   </data>
   <data name="AutoProfiles" xml:space="preserve">
     <value>自动配置</value>
-    <comment/>
   </data>
   <data name="Battery" xml:space="preserve">
     <value>电量</value>
-    <comment/>
   </data>
   <data name="Browse" xml:space="preserve">
     <value>浏览</value>
-    <comment/>
   </data>
   <data name="BrowseOtherPrograms" xml:space="preserve">
     <value>浏览其他程序</value>
-    <comment/>
   </data>
   <data name="Cancel" xml:space="preserve">
     <value>取消</value>
-    <comment/>
   </data>
   <data name="CheckUpdateNow" xml:space="preserve">
     <value>立即检查更新</value>
-    <comment/>
   </data>
   <data name="CheckUpdateStartup" xml:space="preserve">
     <value>程序启动时检查更新</value>
-    <comment/>
   </data>
   <data name="Clear" xml:space="preserve">
     <value>清除</value>
-    <comment/>
   </data>
   <data name="CloseMinimizes" xml:space="preserve">
     <value>关闭时最小化</value>
-    <comment/>
   </data>
   <data name="Color" xml:space="preserve">
     <value>颜色</value>
-    <comment/>
   </data>
   <data name="Controller1Text" xml:space="preserve">
     <value>手柄 1</value>
-    <comment/>
   </data>
   <data name="Controller2Text" xml:space="preserve">
     <value>手柄 2</value>
-    <comment/>
   </data>
   <data name="Controller3Text" xml:space="preserve">
     <value>手柄 3</value>
-    <comment/>
   </data>
   <data name="Controller4Text" xml:space="preserve">
     <value>手柄 4</value>
-    <comment/>
   </data>
   <data name="Controllers" xml:space="preserve">
     <value>控制器</value>
   </data>
   <data name="ControlPanel" xml:space="preserve">
     <value>手柄</value>
-    <comment/>
   </data>
   <data name="Delete" xml:space="preserve">
     <value>删除</value>
-    <comment/>
   </data>
   <data name="DriverSetup" xml:space="preserve">
     <value>手柄/驱动安装</value>
-    <comment/>
   </data>
   <data name="Duplicate" xml:space="preserve">
     <value>复制</value>
-    <comment/>
   </data>
   <data name="Edit" xml:space="preserve">
     <value>编辑</value>
-    <comment/>
   </data>
   <data name="EditAction" xml:space="preserve">
     <value>编辑动作</value>
-    <comment/>
   </data>
   <data name="Export" xml:space="preserve">
     <value>导出</value>
-    <comment/>
   </data>
   <data name="Full" xml:space="preserve">
     <value>全部</value>
-    <comment/>
   </data>
   <data name="Gyro" xml:space="preserve">
     <value>体感</value>
-    <comment/>
   </data>
   <data name="HideUnchecked" xml:space="preserve">
     <value>隐藏未选中</value>
-    <comment/>
   </data>
   <data name="Import" xml:space="preserve">
     <value>导入</value>
-    <comment/>
   </data>
   <data name="LeftStick" xml:space="preserve">
     <value>左摇杆</value>
-    <comment/>
   </data>
   <data name="Log" xml:space="preserve">
     <value>日志</value>
-    <comment/>
   </data>
   <data name="Name" xml:space="preserve">
     <value>名称</value>
-    <comment/>
   </data>
   <data name="New" xml:space="preserve">
     <value>新建</value>
-    <comment/>
   </data>
   <data name="NewAction" xml:space="preserve">
     <value>新建动作</value>
-    <comment/>
   </data>
   <data name="NewProfile" xml:space="preserve">
     <value>新建配置</value>
-    <comment/>
   </data>
   <data name="None" xml:space="preserve">
     <value>无</value>
-    <comment/>
   </data>
   <data name="Path" xml:space="preserve">
     <value>路径</value>
-    <comment/>
   </data>
   <data name="Profile" xml:space="preserve">
     <value>配置文件</value>
-    <comment/>
   </data>
   <data name="ProfileFolder" xml:space="preserve">
     <value>配置文件夹</value>
-    <comment/>
   </data>
   <data name="QuickCharge" xml:space="preserve">
     <value>快速充电</value>
-    <comment/>
   </data>
   <data name="RecordText" xml:space="preserve">
     <value>录制</value>
-    <comment/>
   </data>
   <data name="Remove" xml:space="preserve">
     <value>移除</value>
-    <comment/>
   </data>
   <data name="RemoveAction" xml:space="preserve">
     <value>删除动作</value>
-    <comment/>
   </data>
   <data name="RightStick" xml:space="preserve">
     <value>右摇杆</value>
-    <comment/>
   </data>
   <data name="Rumble" xml:space="preserve">
     <value>震动</value>
   </data>
   <data name="RunAtStartup" xml:space="preserve">
     <value>开机自动启动</value>
-    <comment/>
   </data>
   <data name="Save" xml:space="preserve">
     <value>保存</value>
-    <comment/>
   </data>
   <data name="SaveProfile" xml:space="preserve">
     <value>保存配置</value>
-    <comment/>
   </data>
   <data name="Settings" xml:space="preserve">
     <value>设置</value>
-    <comment/>
   </data>
   <data name="ShowNotifications" xml:space="preserve">
     <value>显示通知</value>
-    <comment/>
   </data>
   <data name="StartMinimized" xml:space="preserve">
     <value>启动时最小化</value>
-    <comment/>
   </data>
   <data name="StartText" xml:space="preserve">
     <value>开始</value>
-    <comment/>
   </data>
   <data name="Status" xml:space="preserve">
     <value>状态</value>
-    <comment/>
   </data>
   <data name="StopText" xml:space="preserve">
     <value>停止</value>
-    <comment/>
   </data>
   <data name="TouchScroll" xml:space="preserve">
     <value>滚动</value>
-    <comment/>
   </data>
   <data name="TouchSlide" xml:space="preserve">
     <value>滑动</value>
-    <comment/>
   </data>
   <data name="TouchTap" xml:space="preserve">
     <value>滑动</value>
-    <comment/>
   </data>
   <data name="Trigger" xml:space="preserve">
     <value>触发</value>
   </data>
   <data name="WarningsOnly" xml:space="preserve">
     <value>仅警告</value>
-    <comment/>
-  </data>
-  <data name="RumbleMaxSecs" xml:space="preserve">
-    <value>秒</value>
-    <comment/>
   </data>
   <data name="RumbleMaxSecsTip" xml:space="preserve">
     <value>震动自动停止时间，单位为秒 (0则不自动停止)</value>
   </data>
   <data name="WindowTitle" xml:space="preserve">
     <value>窗口标题</value>
-    <comment/>
   </data>
   <data name="MoveUp" xml:space="preserve">
     <value>上移</value>
-    <comment/>
   </data>
   <data name="MoveDown" xml:space="preserve">
     <value>下移</value>
-    <comment/>
   </data>
   <data name="AutoProfPathTip" xml:space="preserve">
     <value>进程路径. ^ABC = 匹配字符串头 (^) | ABC$ = 匹配字符串尾 ($) | *ABC =包含字符串 (*)</value>
-    <comment/>
   </data>
   <data name="AutoProfTitleTip" xml:space="preserve">
     <value>&gt;窗口标题. ^ABC = 匹配字符串头 (^) | ABC$ = 匹配字符串尾 ($) | *ABC =包含字符串 (*)</value>
-    <comment/>
   </data>
   <data name="GamepadTest" xml:space="preserve">
     <value>手柄测试(GamepadTest)</value>
-    <comment/>
   </data>
   <data name="EnableOutputDataToDS4" xml:space="preserve">
     <value>启用向DS4发送数据</value>
-    <comment/>
   </data>
   <data name="EnableOutputDataToDS4Tip" xml:space="preserve">
     <value>定期向DS4发送灯条和震动数据。若手柄不支持接收该数据则取消选中。设定变更在手柄连接时生效</value>
@@ -403,118 +336,90 @@
   </data>
   <data name="Apply" xml:space="preserve">
     <value>应用</value>
-    <comment/>
   </data>
   <data name="HidNinja" xml:space="preserve">
     <value>HidNinja</value>
-    <comment/>
   </data>
   <data name="CustomExeName" xml:space="preserve">
     <value>自定义可执行文件名称</value>
-    <comment/>
   </data>
   <data name="CustomExeNameInfo" xml:space="preserve">
     <value>一些游戏如果测到DS4Windows.exe 或 InputMapper.exe 正在运行，则会忽略 DS4 的输入。
     对于这些游戏，解决方法是将 DS4Windows.exe 重命名，以规避检测。在这样自定义可执行文件的名称，
     以允许 DS4Updater 自动更新已被重命名的DS4Windows。请不要输入扩展名（即 .exe)。
     名称示例: whyme_DS4Windows</value>
-    <comment/>
   </data>
   <data name="XInputChecker" xml:space="preserve">
     <value>XInput 检查器</value>
-    <comment/>
   </data>
   <data name="Controller5Text" xml:space="preserve">
     <value>手柄 5</value>
-    <comment/>
   </data>
   <data name="Controller6Text" xml:space="preserve">
     <value>手柄 6</value>
-    <comment/>
   </data>
   <data name="Controller7Text" xml:space="preserve">
     <value>手柄 7</value>
-    <comment/>
   </data>
   <data name="Controller8Text" xml:space="preserve">
     <value>手柄 8</value>
-    <comment/>
   </data>
   <data name="GamepadGyroCameraDescription" xml:space="preserve">
     <value>将手柄映射为标准的 Xinput 手柄或 DS4 手柄。体感将被映射为类似鼠标的摇杆(相对值输入摇杆）(Mouse-like Joystick)。</value>
-    <comment/>
   </data>
   <data name="GamepadGyroCameraName" xml:space="preserve">
     <value>含有类鼠标的摇杆(相对值输入摇杆）(Mouse-like Joystick)的手柄</value>
-    <comment/>
   </data>
   <data name="GamepadPresetDescription" xml:space="preserve">
     <value>将手柄映射为标准手柄</value>
-    <comment/>
   </data>
   <data name="GamepadPresetName" xml:space="preserve">
     <value>手柄</value>
-    <comment/>
   </data>
   <data name="KBMGyroMouseDescription" xml:space="preserve">
     <value>将手柄映射为虚拟键盘和鼠标。在游玩无手柄支持的 FPS 游戏时很有用。体感将被映射为虚拟鼠标。</value>
-    <comment/>
   </data>
   <data name="KBMGyroMouseName" xml:space="preserve">
     <value>带有体感控制鼠标虚拟键盘和鼠标</value>
-    <comment/>
   </data>
   <data name="KBMPresetDescription" xml:space="preserve">
     <value>将手柄映射为虚拟键盘和鼠标。在游玩无手柄支持的 FPS 游戏时很有用。</value>
-    <comment/>
   </data>
   <data name="KBMPresetName" xml:space="preserve">
     <value>虚拟键盘和鼠标</value>
-    <comment/>
   </data>
   <data name="MixedGyroMousePresetDescription" xml:space="preserve">
     <value>将按钮和手柄轴映射为标准手柄。将体感映射为虚拟鼠标</value>
-    <comment/>
   </data>
   <data name="MixedGyroMousePresetName" xml:space="preserve">
     <value>带有体感控制鼠标的手柄</value>
-    <comment/>
   </data>
   <data name="MixedPresetDescription" xml:space="preserve">
     <value>将手柄映射为Xinput手柄和 RS 鼠标</value>
-    <comment/>
   </data>
   <data name="MixedPresetName" xml:space="preserve">
     <value>带有高精度相机的摇杆</value>
-    <comment/>
   </data>
   <data name="Description" xml:space="preserve">
     <value>描述</value>
-    <comment/>
   </data>
   <data name="PresetIntroText" xml:space="preserve">
     <value>是否使用预设选项？如不使用，配置编辑器将会使用空配置文件</value>
-    <comment/>
   </data>
   <data name="Presets" xml:space="preserve">
     <value>预设</value>
-    <comment/>
   </data>
   <data name="Changelog" xml:space="preserve">
     <value>更新日志</value>
-    <comment/>
   </data>
   <data name="Close" xml:space="preserve">
     <value>关闭</value>
-    <comment/>
   </data>
   <data name="Profiles" xml:space="preserve">
     <value>配置文件</value>
-    <comment/>
   </data>
   <data name="NoControllersConnected" xml:space="preserve">
     <value>未连接手柄 (最多 {0} 个)</value>
-    <comment/>
   </data>
   <data name="FlickThreshold" xml:space="preserve">
     <value>触发横移阈值</value>
@@ -524,7 +429,6 @@
   </data>
   <data name="MinAngleThreshold" xml:space="preserve">
     <value>最小角度阈值</value>
-    <comment/>
   </data>
   <data name="RealWorldCalibration" xml:space="preserve">
     <value>实际移动距离</value>
@@ -534,67 +438,51 @@
   </data>
   <data name="CRC32Fail" xml:space="preserve">
     <value>无线手柄数据完整性检查失败。正在关闭手柄。</value>
-    <comment/>
   </data>
   <data name="FutureNetNotInstalled" xml:space="preserve">
     <value>未检测到 .NET 5 运行时。请下载并安装 .NET 5 运行时，以确保与未来的 DS4Windows 版本兼容。关闭此窗口后，您将被重定向到 .NET 5 运行时下载页。</value>
-    <comment/>
   </data>
   <data name="UpgradeNetCaption" xml:space="preserve">
     <value>请更新 .NET 运行时</value>
-    <comment/>
   </data>
   <data name="HidHide" xml:space="preserve">
     <value>HidHide</value>
-    <comment/>
   </data>
   <data name="HidHideConfigClient" xml:space="preserve">
     <value>HidHide 配置客户端</value>
-    <comment/>
   </data>
   <data name="ExclusiveAccess" xml:space="preserve">
     <value>独占访问</value>
-    <comment/>
   </data>
   <data name="HidGuardianAccess" xml:space="preserve">
     <value>隐藏守护者(HidGuardian)访问</value>
-    <comment/>
   </data>
   <data name="HidHideAccess" xml:space="preserve">
     <value>HidHide 访问</value>
-    <comment/>
   </data>
   <data name="SharedAccess" xml:space="preserve">
     <value>共享访问</value>
-    <comment/>
   </data>
   <data name="RenameProfile" xml:space="preserve">
     <value>重命名</value>
-    <comment/>
   </data>
   <data name="DisableVirtualController" xml:space="preserve">
     <value>禁用虚拟手柄</value>
-    <comment/>
   </data>
   <data name="DisableVirtualControllerTip" xml:space="preserve">
     <value>不要为已连接并使用此配置文件的手柄 生成/绑定 虚拟手柄（在配置文件保存时应用）</value>
-    <comment/>
   </data>
   <data name="EmulatedController" xml:space="preserve">
     <value>仿真控制器</value>
-    <comment/>
   </data>
   <data name="OutContNotice" xml:space="preserve">
     <value>选择输出虚拟手柄类型（在配置文件保存时应用）</value>
-    <comment/>
   </data>
   <data name="VirtualControllerSettings" xml:space="preserve">
     <value>虚拟手柄设置</value>
-    <comment/>
   </data>
   <data name="ChangeOnNewDeviceConn" xml:space="preserve">
     <value>更改将在新设备连接时生效</value>
-    <comment/>
   </data>
   <data name="StickFuzzTooltip" xml:space="preserve">
     <value>模糊指定了摇杆被注册为输出前的最小移动单位。这个设置对无法保持恒定位置的战损摇杆很有帮助。此数值为原始摇杆单位。</value>
@@ -604,6 +492,11 @@
   </data>
   <data name="StickMaxOutputTooltip" xml:space="preserve">
     <value>在某些情况下，限制摇杆的最大输出可能会有用。最大输出可以限制模拟摇杆的最终输出。</value>
+  </data>
+  <data name="AntiDeadzoneTooltip" xml:space="preserve">
+    <value>反死区作为一个与轴关联的偏移量，用于表示摇杆在某轴在离开其指定的死区后生成的最小输出值。
+    这主要是为了应对游戏中某轴的死区。例如在游戏中，一般的XInput LS死区约为8000（25%）。
+    如果没有分配反死区，摇杆就必须移动超过DS4Windows和游戏设定的死区才有输出。</value>
   </data>
   <data name="StickInputCurveTooltip" xml:space="preserve">
     <value>旧的过时的设置。会在死区之前尝试对原生输入坐标应用一个曲线。不太灵光。</value>
@@ -617,6 +510,9 @@
   <data name="TouchpadSlideTooltip" xml:space="preserve">
     <value>用于多点触摸启用鼠标滚轮动作的灵敏度</value>
   </data>
+  <data name="TouchpadTapTooltip" xml:space="preserve">
+    <value>用触摸板单击触发鼠标左键点击。最大时间间隔为（值 * 2）ms</value>
+  </data>
   <data name="TouchpadTrackballEnableTooltip" xml:space="preserve">
     <value>在手指抬起后给触摸板滑动加个动量。可以增加鼠标指针的额外移动距离，不仅局限于触摸板大小的限制。</value>
   </data>
@@ -625,19 +521,22 @@
   </data>
   <data name="StickOuterBindDeadTooltip" xml:space="preserve">
     <value>操作触发阈值</value>
-    <comment/>
   </data>
   <data name="StickOuterBindInvertTooltip" xml:space="preserve">
     <value>让额外按键绑定在达到阈值前触发。动作会在超过阈值后结束。</value>
   </data>
+  <data name="StickOuterBindTooltip" xml:space="preserve">
+    <value>当摇杆行程超过阈值时，执行一个动作。当映射的按键是静步或疾跑时很有用。反转可以放动作在到达阈值前一直执行。</value>
+  </data>
   <data name="SASteeringWheelFuzzTooltip" xml:space="preserve">
-    <value>Fuzz specifies the minimum number of device units, in active zone, that the Accel has to be rotated before the output is registered as changed in the mapper. The value is expressed in raw Accel units.</value>
-    <comment/>
+    <value>模糊 值定义了陀螺仪（Accel）必须转动多少角度输出值才会被识别为有效变化.
+    如果转动量小于  模糊值，输出值会保持不变（被过滤掉）.</value>
   </data>
   <data name="StickRotationTooltip" xml:space="preserve">
     <value>正数为顺时针， 负数为逆时针。旋转设置旨在帮助校正模拟摇杆的方向，如果在移动模拟摇杆时你的拇指略微偏移。
 	
-    例如，当模拟摇杆完全向北移动时，你的拇指可能会从中心略微偏移。由于我的手握持DS4的方式，当我完全将模拟摇杆移动到北方时，我的拇指会略微向右偏移。
+    例如，当模拟摇杆完全向北移动时，你的拇指可能会从中心略微偏移。
+    由于我的手握持DS4的方式，当我完全将模拟摇杆移动到北方时，我的拇指会略微向右偏移。
     所使用的值表示用于调整最终轴输出值的角度数。值的范围允许从-180到180。默认值为0</value>
   </data>
   <data name="TouchpadJitterCompTooltip" xml:space="preserve">
@@ -645,39 +544,30 @@
   </data>
   <data name="DS4BTPollRate" xml:space="preserve">
     <value>DS4 蓝牙轮询速率</value>
-    <comment/>
   </data>
   <data name="DS4LightbarPassthruDisabled" xml:space="preserve">
     <value>由于驱动程序问题，本功能当前被禁用。希望问题会在将来更新中解决。</value>
-    <comment/>
   </data>
   <data name="DualSRumbleForceGenericRescale" xml:space="preserve">
     <value>强制使用两种震动力度（普通和 DualSense 控制器特定力度）</value>
-    <comment/>
   </data>
   <data name="DualSRumbleModeDisabled" xml:space="preserve">
     <value>已禁用</value>
-    <comment/>
   </data>
   <data name="DualSRumbleModeAccurate" xml:space="preserve">
     <value>精度</value>
-    <comment/>
   </data>
   <data name="DualSRumbleModeLegacy" xml:space="preserve">
     <value>传统</value>
-    <comment/>
   </data>
   <data name="DualSRumbleModeNPowerLevelTxt" xml:space="preserve">
     <value>震动模式和震动强度：</value>
-    <comment/>
   </data>
   <data name="DualSRumbleModePassthru" xml:space="preserve">
     <value>直通</value>
-    <comment/>
   </data>
   <data name="DualSRumbleSpecificSettings" xml:space="preserve">
     <value>DualSense 控制器特定震动设置</value>
-    <comment/>
   </data>
   <data name="DualSRumbleForceGenericRescale_Tip" xml:space="preserve">
     <value>建议保持禁用。
@@ -693,210 +583,93 @@
 	
 传统模式：- 总体强度更高，但缺乏深度- 具有 "更尖锐 "的感觉- 
     游戏中的最小和最大激活分别仅略低于和略高于所选择的功率级别强度。</value>
-    <comment/>
   </data>
   <data name="DualSRumblePowerLevel_Tip" xml:space="preserve">
     <value>DualSense 原生震动强度等级调整器。
 
-- 在精准模式下，震动强度 [最小值 -> 最大值] 将为 [1% -> 选择的强度等级]
-    - 例如 (62%): [最小值 = 1% -> 最大值 = 62%]
+- 在精准模式下，震动强度 [最小值 -&gt; 最大值] 将为 [1% -&gt; 选择的强度等级]
+    - 例如 (62%): [最小值 = 1% -&gt; 最大值 = 62%]
 
-- 在传统模式下，震动强度 [最小值 -> 最大值] 大约为 [强度等级 - 12% -> 强度等级 + 12%]
-    - 例如 (62%): [最小值 = 50% -> 最大值 = 74%]</value>
-    <comment/>
+- 在传统模式下，震动强度 [最小值 -&gt; 最大值] 大约为 [强度等级 -12% -&gt; 强度等级 +12%]
+    - 例如 (62%): [最小值 = 50% -&gt; 最大值 = 74%]</value>
   </data>
   <data name="Accept" xml:space="preserve">
     <value>接受</value>
-    <comment/>
   </data>
   <data name="Black" xml:space="preserve">
     <value>黑色</value>
-    <comment/>
   </data>
   <data name="Colored" xml:space="preserve">
     <value>彩色</value>
-    <comment/>
   </data>
   <data name="Default" xml:space="preserve">
     <value>默认</value>
-    <comment/>
   </data>
   <data name="DeviceType" xml:space="preserve">
     <value>设备类型</value>
-    <comment/>
   </data>
   <data name="DisconnectFromBtWhenStopping" xml:space="preserve">
     <value>停止时断开蓝牙连接</value>
-    <comment/>
   </data>
   <data name="Dynamic" xml:space="preserve">
     <value>动态</value>
-    <comment/>
   </data>
   <data name="FlashLightbarAtHighLatency" xml:space="preserve">
     <value>高延迟时使灯条闪烁</value>
   </data>
   <data name="HideDS4Controller" xml:space="preserve">
     <value>隐藏 DS4 控制器</value>
-    <comment/>
   </data>
   <data name="HotkeysAbout" xml:space="preserve">
     <value>热键（快捷键）和关于</value>
-    <comment/>
   </data>
   <data name="IconChoice" xml:space="preserve">
     <value>图标选择</value>
-    <comment/>
   </data>
   <data name="MinimizeToTaskbar" xml:space="preserve">
     <value>最小化到任务栏</value>
-    <comment/>
   </data>
   <data name="MinimizeToTaskbarTip" xml:space="preserve">
     <value>最小化到任务栏而非系统托盘</value>
-    <comment/>
   </data>
   <data name="OutputSlots" xml:space="preserve">
     <value>输出插槽</value>
-    <comment/>
   </data>
   <data name="Permanent" xml:space="preserve">
     <value>永久</value>
-    <comment/>
   </data>
   <data name="Plug" xml:space="preserve">
     <value>插入</value>
-    <comment/>
   </data>
   <data name="RevertToDefaultProfileOnUnknown" xml:space="preserve">
     <value>遇到未知的应用时回滚到默认配置文件</value>
-    <comment/>
   </data>
   <data name="ShowAutoProfileDebugMessages" xml:space="preserve">
     <value>显示自动配置文件切换的调试消息</value>
-    <comment/>
   </data>
   <data name="SwipeTouchpadToSwitchProfiles" xml:space="preserve">
     <value>滑动触摸板来切换配置文件</value>
-    <comment/>
   </data>
   <data name="TurnOffDS4WindowsTemporarily" xml:space="preserve">
     <value>临时关闭 DS4Windows</value>
-    <comment/>
   </data>
   <data name="Unplug" xml:space="preserve">
     <value>拔出</value>
-    <comment/>
   </data>
   <data name="White" xml:space="preserve">
     <value>白色</value>
-    <comment/>
   </data>
   <data name="AppTheme" xml:space="preserve">
     <value>应用主题</value>
-    <comment/>
   </data>
   <data name="CheckEvery" xml:space="preserve">
     <value>每日检查</value>
-    <comment/>
   </data>
-  <data name="ControllerSupportDS4" xml:space="preserve">
-    <value>DS4 手柄支持</value>
-    <comment/>
+  <data name="OscServerHeading" xml:space="preserve">
+    <value>启用 OSC 控制和监控</value>
   </data>
-  <data name="ControllerSupportDualSense" xml:space="preserve">
-    <value>DualSense 手柄支持</value>
-    <comment/>
-  </data>
-  <data name="ControllerSupportJoyCon" xml:space="preserve">
-    <value>JoyCon 手柄支持</value>
-    <comment/>
-  </data>
-  <data name="ControllerSupportSwitchPro" xml:space="preserve">
-    <value>Switch Pro 手柄支持</value>
-    <comment/>
-  </data>
-  <data name="Copycat" xml:space="preserve">
-    <value>模仿（Copycat）</value>
-    <comment/>
-  </data>
-  <data name="CopycatTip" xml:space="preserve">
-    <value>更改一些标志以适配第三方 DS4 手柄。可能修复对第三方 DS4 手柄的震动和灯光支持</value>
-    <comment/>
-  </data>
-  <data name="Dark" xml:space="preserve">
-    <value>暗色</value>
-    <comment/>
-  </data>
-  <data name="Days" xml:space="preserve">
-    <value>天</value>
-    <comment/>
-  </data>
-  <data name="DetectedControllers" xml:space="preserve">
-    <value>检测到的手柄</value>
-    <comment/>
-  </data>
-  <data name="DeviceOptions" xml:space="preserve">
-    <value>设备选项</value>
-    <comment/>
-  </data>
-  <data name="EnableVerboseLog" xml:space="preserve">
-    <value>启用详细（Verbose）日志</value>
-    <comment/>
-  </data>
-  <data name="EnableVerboseLogTip" xml:space="preserve">
-    <value>连接手柄时显示更多日志信息</value>
-    <comment/>
-  </data>
-  <data name="Hours" xml:space="preserve">
-    <value>小时</value>
-    <comment/>
-  </data>
-  <data name="UseCustomSteamFolder" xml:space="preserve">
-    <value>使用自定义Steam库文件夹</value>
-    <comment/>
-  </data>
-  <data name="Utils" xml:space="preserve">
-    <value>实用工具</value>
-    <comment/>
-  </data>
-  <data name="Program" xml:space="preserve">
-    <value>程序</value>
-    <comment/>
-  </data>
-  <data name="RunAs" xml:space="preserve">
-    <value>以一下身份运行：</value>
-    <comment/>
-  </data>
-  <data name="Task" xml:space="preserve">
-    <value>任务</value>
-    <comment/>
-  </data>
-  <data name="AddStartMenuPrograms" xml:space="preserve">
-    <value>添加开始菜单程序</value>
-  </data>
-  <data name="Analog" xml:space="preserve">
-    <value>模拟</value>
-  </data>
-  <data name="DS4OutputTriggersDefault" xml:space="preserve">
-    <value>默认 （模拟+按钮）</value>
-  </data>
-  <data name="ControllerSupportDS3" xml:space="preserve">
-    <value>DS3 手柄支持</value>
-  </data>
-  <data name="AntiDeadzoneTooltip" xml:space="preserve">
-    <value>反死区作为一个与轴关联的偏移量，用于表示摇杆在某轴在离开其指定的死区后生成的最小输出值。
-    这主要是为了应对游戏中某轴的死区。例如在游戏中，一般的XInput LS死区约为8000（25%）。
-    如果没有分配反死区，摇杆就必须移动超过DS4Windows和游戏设定的死区才有输出。</value>
-  </data>
-  <data name="AutoProfiles.DisplaySwitchVia" xml:space="preserve">
-    <value>通过以下选项显示配置切换</value>
-  </data>
-  <data name="AutoProfiles.LogAndNotification" xml:space="preserve">
-    <value>日志 + 通知</value>
-  </data>
-  <data name="Buttons" xml:space="preserve">
-    <value>按钮</value>
+  <data name="EnableOscServer" xml:space="preserve">
+    <value>启用控制服务器</value>
   </data>
   <data name="EnableInterpretingOscMonitoring" xml:space="preserve">
     <value>解释监控消息</value>
@@ -904,23 +677,68 @@
   <data name="EnableOscSender" xml:space="preserve">
     <value>启用监控消息</value>
   </data>
-  <data name="EnableOscServer" xml:space="preserve">
-    <value>启用控制服务器</value>
+  <data name="ControllerSupportDS4" xml:space="preserve">
+    <value>DS4 手柄支持</value>
+  </data>
+  <data name="ControllerSupportDualSense" xml:space="preserve">
+    <value>DualSense 手柄支持</value>
+  </data>
+  <data name="ControllerSupportJoyCon" xml:space="preserve">
+    <value>JoyCon 手柄支持</value>
+  </data>
+  <data name="ControllerSupportSwitchPro" xml:space="preserve">
+    <value>Switch Pro 手柄支持</value>
+  </data>
+  <data name="Copycat" xml:space="preserve">
+    <value>模仿（Copycat）</value>
+  </data>
+  <data name="CopycatTip" xml:space="preserve">
+    <value>更改一些标志以适配第三方 DS4 手柄。可能修复对第三方 DS4 手柄的震动和灯光支持</value>
+  </data>
+  <data name="Dark" xml:space="preserve">
+    <value>暗色</value>
+  </data>
+  <data name="Days" xml:space="preserve">
+    <value>天</value>
+  </data>
+  <data name="DetectedControllers" xml:space="preserve">
+    <value>检测到的手柄</value>
+  </data>
+  <data name="DeviceOptions" xml:space="preserve">
+    <value>设备选项</value>
+  </data>
+  <data name="EnableVerboseLog" xml:space="preserve">
+    <value>启用详细（Verbose）日志</value>
+  </data>
+  <data name="EnableVerboseLogTip" xml:space="preserve">
+    <value>连接手柄时显示更多日志信息</value>
+  </data>
+  <data name="Hours" xml:space="preserve">
+    <value>小时</value>
+  </data>
+  <data name="UseCustomSteamFolder" xml:space="preserve">
+    <value>使用自定义Steam库文件夹</value>
+  </data>
+  <data name="Utils" xml:space="preserve">
+    <value>实用工具</value>
+  </data>
+  <data name="Program" xml:space="preserve">
+    <value>程序</value>
+  </data>
+  <data name="RunAs" xml:space="preserve">
+    <value>以一下身份运行：</value>
+  </data>
+  <data name="Task" xml:space="preserve">
+    <value>任务</value>
   </data>
   <data name="GyroTriggerJitterCompensationTooltip" xml:space="preserve">
     <value>在曲线低处增加额外的限制来防止设备晃动。</value>
   </data>
-  <data name="Notification" xml:space="preserve">
-    <value>通知</value>
-  </data>
-  <data name="OscServerHeading" xml:space="preserve">
-    <value>启用 OSC 控制和监控</value>
-  </data>
-  <data name="ProfileEditor.VirtualDS4TrigOutput" xml:space="preserve">
-    <value>DS4 扳机输出模式</value>
-  </data>
   <data name="WakeupFromSuspend" xml:space="preserve">
     <value>从挂起中唤醒</value>
+  </data>
+  <data name="ControllerSupportDS3" xml:space="preserve">
+    <value>DS3 手柄支持</value>
   </data>
   <data name="FirstLaunch.DeviceIntroText" xml:space="preserve">
     <value>由于其他映射软件默认支持多种设备（Steam输入），DS4Windows默认只启用DS4控制器的输入。
@@ -962,26 +780,107 @@
   <data name="FirstLaunch.WinTitle" xml:space="preserve">
     <value>第一次启动</value>
   </data>
+  <data name="AutoProfiles.DisplaySwitchVia" xml:space="preserve">
+    <value>通过以下选项显示配置切换</value>
+  </data>
+  <data name="AutoProfiles.LogAndNotification" xml:space="preserve">
+    <value>日志 + 通知</value>
+  </data>
+  <data name="Notification" xml:space="preserve">
+    <value>通知</value>
+  </data>
   <data name="Light" xml:space="preserve">
     <value>白色</value>
   </data>
-  <data name="TouchpadTapTooltip" xml:space="preserve">
-    <value>用触摸板单击触发鼠标左键点击。最大时间间隔为（值 * 2）ms</value>
+  <data name="ProfileEditor.VirtualDS4TrigOutput" xml:space="preserve">
+    <value>DS4 扳机输出模式</value>
   </data>
-  <data name="StickOuterBindTooltip" xml:space="preserve">
-    <value>当摇杆行程超过阈值时，执行一个动作。当映射的按键是静步或疾跑时很有用。反转可以放动作在到达阈值前一直执行。</value>
+  <data name="Analog" xml:space="preserve">
+    <value>模拟</value>
   </data>
-  <data name="AbsoluteMouse" xml:space="preserve">
-    <value>绝对鼠标</value>
+  <data name="Buttons" xml:space="preserve">
+    <value>按钮</value>
   </data>
-  <data name="AbsoluteMouseOptions" xml:space="preserve">
-    <value>绝对鼠标选项</value>
+  <data name="DS4OutputTriggersDefault" xml:space="preserve">
+    <value>默认 （模拟+按钮）</value>
   </data>
-  <data name="Active" xml:space="preserve">
-    <value>激活</value>
+  <data name="DeadZone" xml:space="preserve">
+    <value>死区</value>
+  </data>
+  <data name="MaxZone" xml:space="preserve">
+    <value>外圈死区</value>
   </data>
   <data name="AntiDeadZone" xml:space="preserve">
     <value>反死区</value>
+  </data>
+  <data name="Axial" xml:space="preserve">
+    <value>轴向</value>
+  </data>
+  <data name="AxisConfig" xml:space="preserve">
+    <value>轴向相关配置</value>
+  </data>
+  <data name="Controls" xml:space="preserve">
+    <value>控制</value>
+  </data>
+  <data name="Cubic" xml:space="preserve">
+    <value>三次方</value>
+  </data>
+  <data name="DeadZone X" xml:space="preserve">
+    <value>X轴死区</value>
+  </data>
+  <data name="DeadZone Y" xml:space="preserve">
+    <value>Y轴死区</value>
+  </data>
+  <data name="DeadZoneType" xml:space="preserve">
+    <value>死区类型</value>
+  </data>
+  <data name="EaseoutCubic" xml:space="preserve">
+    <value>缓出三次</value>
+  </data>
+  <data name="EaseoutQuad" xml:space="preserve">
+    <value>缓出二次</value>
+  </data>
+  <data name="EnhancedPrecision" xml:space="preserve">
+    <value>精度</value>
+  </data>
+  <data name="FlickStick" xml:space="preserve">
+    <value>快速横移鼠标</value>
+  </data>
+  <data name="Linear" xml:space="preserve">
+    <value>线性</value>
+  </data>
+  <data name="MaxOutput" xml:space="preserve">
+    <value>最大输出</value>
+  </data>
+  <data name="MouseOffset" xml:space="preserve">
+    <value>鼠标偏移</value>
+  </data>
+  <data name="MouseVerticalScale" xml:space="preserve">
+    <value>鼠标垂直倍率</value>
+  </data>
+  <data name="OutputCurve" xml:space="preserve">
+    <value>输出曲线</value>
+  </data>
+  <data name="OutputMode" xml:space="preserve">
+    <value>输出模式</value>
+  </data>
+  <data name="Quadratic" xml:space="preserve">
+    <value>二次方</value>
+  </data>
+  <data name="Radial" xml:space="preserve">
+    <value>圆形</value>
+  </data>
+  <data name="Sensitivity" xml:space="preserve">
+    <value>灵敏度</value>
+  </data>
+  <data name="SixAxisAccel" xml:space="preserve">
+    <value>六轴（加速度）</value>
+  </data>
+  <data name="SquareStick" xml:space="preserve">
+    <value>方形摇杆</value>
+  </data>
+  <data name="VerticalScale" xml:space="preserve">
+    <value>垂直倍率</value>
   </data>
   <data name="AntiSnapback" xml:space="preserve">
     <value>反回弹</value>
@@ -989,14 +888,20 @@
   <data name="AntiSnapbackTiming" xml:space="preserve">
     <value>反回弹时间</value>
   </data>
-  <data name="Appdata" xml:space="preserve">
-    <value>应用数据</value>
+  <data name="Touchpad" xml:space="preserve">
+    <value>触摸板</value>
   </data>
-  <data name="Axial" xml:space="preserve">
-    <value>轴向</value>
+  <data name="ViGEm117MinNeeded" xml:space="preserve">
+    <value>只能与ViGEmBus 1.17.333.0以及更新版本使用</value>
   </data>
-  <data name="AxisConfig" xml:space="preserve">
-    <value>轴向相关配置</value>
+  <data name="AbsoluteMouse" xml:space="preserve">
+    <value>绝对鼠标</value>
+  </data>
+  <data name="AbsoluteMouseOptions" xml:space="preserve">
+    <value>绝对鼠标选项</value>
+  </data>
+  <data name="AntiRadius" xml:space="preserve">
+    <value>反向半径</value>
   </data>
   <data name="BindingWin.AbsMouse" xml:space="preserve">
     <value>绝对鼠标</value>
@@ -1037,29 +942,26 @@
   <data name="Confirm" xml:space="preserve">
     <value>确认</value>
   </data>
-  <data name="Controls" xml:space="preserve">
-    <value>控制</value>
+  <data name="ControllerRegOptWin.LinkMode" xml:space="preserve">
+    <value>链接模式</value>
   </data>
-  <data name="Current" xml:space="preserve">
-    <value>当前</value>
+  <data name="ControllerRegOptWin.MuteLEDMode" xml:space="preserve">
+    <value>禁音LED模式</value>
   </data>
-  <data name="DeadZone" xml:space="preserve">
-    <value>死区</value>
+  <data name="ControllerRegOptWin.PlayerLEDMode" xml:space="preserve">
+    <value>玩家LED模式</value>
   </data>
-  <data name="DeadZone X" xml:space="preserve">
-    <value>X轴死区</value>
-  </data>
-  <data name="DeadZone Y" xml:space="preserve">
-    <value>Y轴死区</value>
-  </data>
-  <data name="DeadZoneType" xml:space="preserve">
-    <value>死区类型</value>
+  <data name="ControllerRegOptWin.WinTitle" xml:space="preserve">
+    <value>控制器类型选项</value>
   </data>
   <data name="DeltaAcceleration" xml:space="preserve">
     <value>加速度变化值</value>
   </data>
   <data name="DirectionalSwipe" xml:space="preserve">
     <value>定向滑动</value>
+  </data>
+  <data name="EasingDuration" xml:space="preserve">
+    <value>延缓时间</value>
   </data>
   <data name="Enabled" xml:space="preserve">
     <value>启用</value>
@@ -1075,21 +977,6 @@
   </data>
   <data name="FlashRate" xml:space="preserve">
     <value>闪烁频率</value>
-  </data>
-  <data name="FlickStick" xml:space="preserve">
-    <value>快速横移鼠标</value>
-  </data>
-  <data name="ControllerRegOptWin.WinTitle" xml:space="preserve">
-    <value>控制器类型选项</value>
-  </data>
-  <data name="ControllerRegOptWin.PlayerLEDMode" xml:space="preserve">
-    <value>玩家LED模式</value>
-  </data>
-  <data name="ControllerRegOptWin.LinkMode" xml:space="preserve">
-    <value>链接模式</value>
-  </data>
-  <data name="ControllerRegOptWin.MuteLEDMode" xml:space="preserve">
-    <value>禁音LED模式</value>
   </data>
   <data name="FullBtnPull" xml:space="preserve">
     <value>按钮完全按下</value>
@@ -1115,9 +1002,6 @@
   <data name="IdleDisconnect" xml:space="preserve">
     <value>空闲断开</value>
   </data>
-  <data name="Intro" xml:space="preserve">
-    <value>介绍</value>
-  </data>
   <data name="LangPackControl.UseLangPack" xml:space="preserve">
     <value>使用语言包</value>
   </data>
@@ -1126,9 +1010,6 @@
   </data>
   <data name="Lightbar" xml:space="preserve">
     <value>灯条</value>
-  </data>
-  <data name="Linear" xml:space="preserve">
-    <value>线性</value>
   </data>
   <data name="LinkProfileId" xml:space="preserve">
     <value>链接配置/ID</value>
@@ -1139,14 +1020,11 @@
   <data name="MainWin.EnableServer" xml:space="preserve">
     <value>启用服务器</value>
   </data>
-  <data name="MaxOutput" xml:space="preserve">
-    <value>最大输出</value>
+  <data name="MainWin.OneEuroMinCutoff" xml:space="preserve">
+    <value>1€ 最小截止</value>
   </data>
   <data name="MaxTravel" xml:space="preserve">
     <value>最大行程</value>
-  </data>
-  <data name="MaxZone" xml:space="preserve">
-    <value>外圈死区</value>
   </data>
   <data name="MinFactor" xml:space="preserve">
     <value>最小因数</value>
@@ -1166,14 +1044,8 @@
   <data name="MouseJoystick" xml:space="preserve">
     <value>摇杆</value>
   </data>
-  <data name="MouseOffset" xml:space="preserve">
-    <value>鼠标偏移</value>
-  </data>
   <data name="MouseSensitivity" xml:space="preserve">
     <value>鼠标灵明度</value>
-  </data>
-  <data name="MouseVerticalScale" xml:space="preserve">
-    <value>鼠标垂直倍率</value>
   </data>
   <data name="Multiplier" xml:space="preserve">
     <value>倍率</value>
@@ -1194,49 +1066,13 @@
     <value>外圈按钮</value>
   </data>
   <data name="OuterBtnDead" xml:space="preserve">
-    <value>外圈按钮死区</value>
-  </data>
-  <data name="OutputCurve" xml:space="preserve">
-    <value>输出曲线</value>
-  </data>
-  <data name="OutputMode" xml:space="preserve">
-    <value>输出模式</value>
-  </data>
-  <data name="OutputSlotMan.InputNum" xml:space="preserve">
-    <value>输入 #</value>
-  </data>
-  <data name="OutputSlotMan.XInputNum" xml:space="preserve">
-    <value>XInput #</value>
+    <value>外圈死区</value>
   </data>
   <data name="Passthru" xml:space="preserve">
     <value>直通</value>
   </data>
-  <data name="Pitch" xml:space="preserve">
-    <value>俯仰</value>
-  </data>
   <data name="Port" xml:space="preserve">
     <value>端口</value>
-  </data>
-  <data name="PresetOptWin.OutputController" xml:space="preserve">
-    <value>输出控制器</value>
-  </data>
-  <data name="PresetOptWin.PresetMenu" xml:space="preserve">
-    <value>预设菜单</value>
-  </data>
-  <data name="ProgramFolder" xml:space="preserve">
-    <value>程序文件夹</value>
-  </data>
-  <data name="Radial" xml:space="preserve">
-    <value>圆形</value>
-  </data>
-  <data name="ReadingsControl.BatteryZero" xml:space="preserve">
-    <value>电池电量：0%</value>
-  </data>
-  <data name="ReadingsControl.InputDelayNA" xml:space="preserve">
-    <value>输入延迟：N/A</value>
-  </data>
-  <data name="ReadingsControl.SixAxisXText" xml:space="preserve">
-    <value>六轴：为了可读性X轴已翻转</value>
   </data>
   <data name="RecordBox.AddRumble" xml:space="preserve">
     <value>添加震动</value>
@@ -1280,41 +1116,17 @@
   <data name="RecordBoxWin.WinTitle" xml:space="preserve">
     <value>编辑宏</value>
   </data>
+  <data name="Regular" xml:space="preserve">
+    <value>常规</value>
+  </data>
   <data name="RenameProfileWin.TypeNewProfileName" xml:space="preserve">
     <value>请为选中的XML文件输入新名字</value>
   </data>
   <data name="RenameProfileWin.WinTitle" xml:space="preserve">
     <value>重命名配置</value>
   </data>
-  <data name="Requested" xml:space="preserve">
-    <value>已请求</value>
-  </data>
   <data name="Rotation" xml:space="preserve">
     <value>旋转</value>
-  </data>
-  <data name="Roll" xml:space="preserve">
-    <value>横滚</value>
-  </data>
-  <data name="Regular" xml:space="preserve">
-    <value>常规</value>
-  </data>
-  <data name="SaveWhere.AppDataDescText" xml:space="preserve">
-    <value>对于那些偏好常规安装的人，设置保存路径在 %appdata%\DS4Windows</value>
-  </data>
-  <data name="SaveWhere.DontDelete" xml:space="preserve">
-    <value>先不要删除其他设置</value>
-  </data>
-  <data name="SaveWhere.MultipleSaves" xml:space="preserve">
-    <value>检测到多个保存路径</value>
-  </data>
-  <data name="SaveWhere.PickWhere" xml:space="preserve">
-    <value>选择你想要保存配置和设置文件的位置</value>
-  </data>
-  <data name="SaveWhere.ProgramFolderDescText" xml:space="preserve">
-    <value>适合那些想要免安装版的人。注：这个选项在没有UAC权限时无法在需要管理员权限的文件夹使用。</value>
-  </data>
-  <data name="SaveWhere.WinTitle" xml:space="preserve">
-    <value>保存位置</value>
   </data>
   <data name="ScanCode" xml:space="preserve">
     <value>扫描码</value>
@@ -1322,23 +1134,14 @@
   <data name="SelectedProfile" xml:space="preserve">
     <value>选中的配置</value>
   </data>
-  <data name="Sensitivity" xml:space="preserve">
-    <value>灵敏度</value>
-  </data>
   <data name="ShiftModifier" xml:space="preserve">
     <value>Shift修饰键</value>
-  </data>
-  <data name="SixAxisAccel" xml:space="preserve">
-    <value>六轴（加速度）</value>
   </data>
   <data name="SkipVersion" xml:space="preserve">
     <value>跳过版本</value>
   </data>
   <data name="SnapToCenter" xml:space="preserve">
     <value>吸附到中心</value>
-  </data>
-  <data name="SquareStick" xml:space="preserve">
-    <value>方形摇杆</value>
   </data>
   <data name="Test" xml:space="preserve">
     <value>测试</value>
@@ -1351,9 +1154,6 @@
   </data>
   <data name="Toggle" xml:space="preserve">
     <value>开关</value>
-  </data>
-  <data name="Touchpad" xml:space="preserve">
-    <value>触摸板</value>
   </data>
   <data name="TriggerEffect" xml:space="preserve">
     <value>扳机效果</value>
@@ -1376,23 +1176,11 @@
   <data name="UseSmoothing" xml:space="preserve">
     <value>使用平滑</value>
   </data>
-  <data name="VerticalScale" xml:space="preserve">
-    <value>垂直倍率</value>
-  </data>
-  <data name="ViGEm117MinNeeded" xml:space="preserve">
-    <value>只能与ViGEmBus 1.17.333.0以及更新版本使用</value>
-  </data>
-  <data name="Welcome.BluetoothSettings" xml:space="preserve">
-    <value>蓝牙设置</value>
-  </data>
   <data name="Width" xml:space="preserve">
     <value>宽度</value>
   </data>
   <data name="XCenter" xml:space="preserve">
     <value>X 中心</value>
-  </data>
-  <data name="Yaw" xml:space="preserve">
-    <value>偏航</value>
   </data>
   <data name="YCenter" xml:space="preserve">
     <value>Y 中心</value>
@@ -1400,8 +1188,75 @@
   <data name="Yes" xml:space="preserve">
     <value>是</value>
   </data>
-  <data name="Welcome.WinTitle" xml:space="preserve">
-    <value>欢迎来到 DS4Windows</value>
+  <data name="Active" xml:space="preserve">
+    <value>激活</value>
+  </data>
+  <data name="Current" xml:space="preserve">
+    <value>当前</value>
+  </data>
+  <data name="Intro" xml:space="preserve">
+    <value>介绍</value>
+  </data>
+  <data name="OutputSlotMan.InputNum" xml:space="preserve">
+    <value>输入 #</value>
+  </data>
+  <data name="OutputSlotMan.XInputNum" xml:space="preserve">
+    <value>XInput #</value>
+  </data>
+  <data name="Pitch" xml:space="preserve">
+    <value>俯仰</value>
+  </data>
+  <data name="PresetOptWin.OutputController" xml:space="preserve">
+    <value>输出控制器</value>
+  </data>
+  <data name="PresetOptWin.PresetMenu" xml:space="preserve">
+    <value>预设菜单</value>
+  </data>
+  <data name="ReadingsControl.BatteryZero" xml:space="preserve">
+    <value>电池电量：0%</value>
+  </data>
+  <data name="ReadingsControl.InputDelayNA" xml:space="preserve">
+    <value>输入延迟：N/A</value>
+  </data>
+  <data name="ReadingsControl.SixAxisXText" xml:space="preserve">
+    <value>六轴：为了可读性X轴已翻转</value>
+  </data>
+  <data name="Requested" xml:space="preserve">
+    <value>已请求</value>
+  </data>
+  <data name="Roll" xml:space="preserve">
+    <value>横滚</value>
+  </data>
+  <data name="Yaw" xml:space="preserve">
+    <value>偏航</value>
+  </data>
+  <data name="Appdata" xml:space="preserve">
+    <value>应用数据</value>
+  </data>
+  <data name="ProgramFolder" xml:space="preserve">
+    <value>程序文件夹</value>
+  </data>
+  <data name="SaveWhere.AppDataDescText" xml:space="preserve">
+    <value>对于那些偏好常规安装的人，设置保存路径在 %appdata%\DS4Windows</value>
+  </data>
+  <data name="SaveWhere.DontDelete" xml:space="preserve">
+    <value>先不要删除其他设置</value>
+  </data>
+  <data name="SaveWhere.MultipleSaves" xml:space="preserve">
+    <value>检测到多个保存路径</value>
+  </data>
+  <data name="SaveWhere.PickWhere" xml:space="preserve">
+    <value>选择你想要保存配置和设置文件的位置</value>
+  </data>
+  <data name="SaveWhere.ProgramFolderDescText" xml:space="preserve">
+    <value>适合那些想要免安装版的人。
+注：这个选项在没有UAC权限时无法在需要管理员权限的文件夹使用。</value>
+  </data>
+  <data name="SaveWhere.WinTitle" xml:space="preserve">
+    <value>保存位置</value>
+  </data>
+  <data name="Welcome.BluetoothSettings" xml:space="preserve">
+    <value>蓝牙设置</value>
   </data>
   <data name="Welcome.Step1HelpText" xml:space="preserve">
     <value>如果这个窗口在安装完成后再次出现，你可能需要重新启动你的电脑。</value>
@@ -1427,14 +1282,17 @@
   <data name="Welcome.Step4Text" xml:space="preserve">
     <value>（可选）步骤4：安装HidHide驱动</value>
   </data>
-  <data name="Welcome.Step5Text" xml:space="preserve">
-    <value>（可选）步骤5：安装FakerInput驱动</value>
-  </data>
   <data name="Welcome.Step5HelpText" xml:space="preserve">
     <value>使用FakerInput驱动来设置全局的虚拟键盘，相对鼠标，和绝对鼠标。在某些情况下，
     SendInput失效时可以发送虚拟的键盘与鼠标事件。这些情况包括提升优先级的进程与游戏，UAC提示框，
     以及一些反作弊系统会屏蔽SendInput事件。为了能让DS4Windows在一些带有反作弊保护的游戏，
     比如 Valorant，中正常运行，FakerInput是必要的。</value>
+  </data>
+  <data name="Welcome.Step5Text" xml:space="preserve">
+    <value>（可选）步骤5：安装FakerInput驱动</value>
+  </data>
+  <data name="Welcome.WinTitle" xml:space="preserve">
+    <value>欢迎来到 DS4Windows</value>
   </data>
   <data name="SpecialActionEdit.CheckBattery" xml:space="preserve">
     <value>检查电池电量</value>
@@ -1466,11 +1324,17 @@
   <data name="SpecialActionEdit.MultiAction" xml:space="preserve">
     <value>多动作按钮</value>
   </data>
+  <data name="SpecialActionEdit.PressingUnloadTrigger" xml:space="preserve">
+    <value>按下卸载按键</value>
+  </data>
   <data name="SpecialActionEdit.PressKey" xml:space="preserve">
     <value>按下/切换按键</value>
   </data>
   <data name="SpecialActionEdit.RecordMacro" xml:space="preserve">
     <value>录制宏</value>
+  </data>
+  <data name="SpecialActionEdit.ReleasingUnloadTrigger" xml:space="preserve">
+    <value>释放卸载按键</value>
   </data>
   <data name="SpecialActionEdit.RepeatWhileHeld" xml:space="preserve">
     <value>按下时充浮</value>
@@ -1487,6 +1351,9 @@
   <data name="SpecialActionEdit.SelectMacro" xml:space="preserve">
     <value>选择一个宏</value>
   </data>
+  <data name="SpecialActionEdit.SetUnloadTrigger" xml:space="preserve">
+    <value>设置取消加载触发键</value>
+  </data>
   <data name="SpecialActionEdit.SixAxisWheelCalib" xml:space="preserve">
     <value>六轴方向盘的校准</value>
   </data>
@@ -1499,8 +1366,8 @@
   <data name="SpecialActionEdit.UnloadTriggerRelease" xml:space="preserve">
     <value>触发键松开时取消加载</value>
   </data>
-  <data name="SpecialActionEdit.SetUnloadTrigger" xml:space="preserve">
-    <value>设置取消加载触发键</value>
+  <data name="SpecialActionEdit.UntoggleKeyBy" xml:space="preserve">
+    <value>取消切换键</value>
   </data>
   <data name="SpecialActionEdit.ViaLightbar" xml:space="preserve">
     <value>通过灯条显示</value>
@@ -1508,9 +1375,82 @@
   <data name="SpecialActionEdit.ViaNotification" xml:space="preserve">
     <value>通过通知显示</value>
   </data>
+  <data name="UnloadTrigger" xml:space="preserve">
+    <value>卸载触发器</value>
+  </data>
+  <data name="Custom" xml:space="preserve">
+    <value>自定义曲线</value>
+  </data>
+  <data name="AdvancedSupport" xml:space="preserve">
+    <value>高级支持</value>
+  </data>
+  <data name="UseDs3PitchRollSim" xml:space="preserve">
+    <value>[实验性] 使用 DS3 陀螺仪模拟</value>
+  </data>
+  <data name="StickCalibration" xml:space="preserve">
+    <value>摇杆校准</value>
+  </data>
+  <data name="XAxisOffset" xml:space="preserve">
+    <value>X 轴偏移</value>
+  </data>
+  <data name="YAxisOffset" xml:space="preserve">
+    <value>Y 轴偏移</value>
+  </data>
+  <data name="AutomaticallyRecalibrateStick" xml:space="preserve">
+    <value>自动摇杆校准</value>
+  </data>
+  <data name="ProcessPriority" xml:space="preserve">
+    <value>进程优先级</value>
+  </data>
+  <data name="RealTimeNoAdmin" xml:space="preserve">
+    <value>选择实时优先级，需要在管理模式下运行程序。</value>
+  </data>
+  <data name="ProfileSwitchNotification" xml:space="preserve">
+    <value>系统通知配置切换</value>
+  </data>
+  <data name="LightbarMode" xml:space="preserve">
+    <value>灯条模式</value>
+  </data>
+  <data name="SolidColor" xml:space="preserve">
+    <value>纯色</value>
+  </data>
+  <data name="Macro" xml:space="preserve">
+    <value>宏</value>
+  </data>
+  <data name="Add" xml:space="preserve">
+    <value>添加</value>
+  </data>
+  <data name="ColorAndLength" xml:space="preserve">
+    <value>颜色和续航</value>
+  </data>
+  <data name="SpecialActionEdit.CalibrateGyro" xml:space="preserve">
+    <value>校准陀螺仪</value>
+  </data>
+  <data name="HoldFor" xml:space="preserve">
+    <value>请等待</value>
+  </data>
+  <data name="FailedToRetrieveLatestVersion" xml:space="preserve">
+    <value>检索最新版本失败</value>
+  </data>
+  <data name="CancelCurrentMacro" xml:space="preserve">
+    <value>取消当前宏</value>
+  </data>
+  <data name="CancelCurrentMacroTooltip" xml:space="preserve">
+    <value>表示运行此宏命令是否会停止当前正在运行的宏命令</value>
+  </data>
+  <data name="ExportSpecialActions" xml:space="preserve">
+    <value>导出动作</value>
+  </data>
+  <data name="InverseMotors" xml:space="preserve">
+    <value>震动电机互换</value>
+  </data>
   <data name="LowBatteryNotify" xml:space="preserve">
     <value>低电量时通知</value>
     <comment>光条设置中启用低电量系统通知的复选框</comment>
+  </data>
+  <data name="LowBatteryNotification" xml:space="preserve">
+    <value>控制器 {0} 电量低（{1}%）。请尽快充电。</value>
+    <comment>参数：0=控制器编号，1=电量百分比</comment>
   </data>
   <data name="ThresholdPrefix" xml:space="preserve">
     <value>(阈值：</value>
@@ -1524,384 +1464,489 @@
     <value>当电池电量下降到上述阈值时显示系统通知</value>
     <comment>Tooltip for low battery notification checkbox</comment>
   </data>
-  <data name="LowBatteryNotification" xml:space="preserve">
-    <value>控制器 {0} 电量低（{1}%）。请尽快充电。</value>
-    <comment>参数：0=控制器编号，1=电量百分比</comment>
+  <data name="FlashAtOption" xml:space="preserve">
+    <value>占比闪烁</value>
+  </data>
+  <data name="PulseAtOption" xml:space="preserve">
+    <value>呼吸</value>
+  </data>
+  <data name="FlashAtTip" xml:space="preserve">
+    <value>点击更改闪烁颜色。黑色 = 默认颜色</value>
+  </data>
+  <data name="WhileChargingLabel" xml:space="preserve">
+    <value>充电时：</value>
+  </data>
+  <data name="ChargingNormal" xml:space="preserve">
+    <value>正常</value>
+  </data>
+  <data name="ChargingPulse" xml:space="preserve">
+    <value>脉冲</value>
+  </data>
+  <data name="ChargingRainbow" xml:space="preserve">
+    <value>彩虹</value>
+  </data>
+  <data name="ChargingColor" xml:space="preserve">
+    <value>颜色</value>
+  </data>
+  <data name="ColorByBattery" xml:space="preserve">
+    <value>按电池百分比变色</value>
+  </data>
+  <data name="LightByBatteryTip" xml:space="preserve">
+    <value>当DS4充满电后，闲置超时后灯光也会变暗。</value>
+  </data>
+  <data name="AlwaysRainbow" xml:space="preserve">
+    <value>始终彩虹</value>
+  </data>
+  <data name="SecsPerCycle" xml:space="preserve">
+    <value>秒/周期</value>
+  </data>
+  <data name="MaxLightFormat" xml:space="preserve">
+    <value>最大亮度 {0:N2}%</value>
+  </data>
+  <data name="EmptyColor" xml:space="preserve">
+    <value>电量空</value>
+  </data>
+  <data name="MaxLightPrefix" xml:space="preserve">
+    <value>最大亮度 </value>
+  </data>
+  <data name="TiltUp" xml:space="preserve">
+    <value>上倾</value>
+  </data>
+  <data name="TiltDown" xml:space="preserve">
+    <value>下倾</value>
+  </data>
+  <data name="TiltLeft" xml:space="preserve">
+    <value>左倾</value>
+  </data>
+  <data name="TiltRight" xml:space="preserve">
+    <value>右倾</value>
+  </data>
+  <data name="TriggersLabel" xml:space="preserve">
+    <value>触发按键</value>
+  </data>
+  <data name="TurnBehaviorTurnsGyro" xml:space="preserve">
+    <value>按键反转</value>
+  </data>
+  <data name="GyroTriggerBehavior" xml:space="preserve">
+    <value>勾选时，按下扳机启用陀螺仪；取消勾选时，按下扳机关闭陀螺仪。</value>
+  </data>
+  <data name="EvalCond" xml:space="preserve">
+    <value>按键组合行为</value>
+  </data>
+  <data name="And" xml:space="preserve">
+    <value>与</value>
+  </data>
+  <data name="Or" xml:space="preserve">
+    <value>或</value>
+  </data>
+  <data name="SteeringWheel360" xml:space="preserve">
+    <value>360° 方向盘</value>
+  </data>
+  <data name="SteeringWheelAxis" xml:space="preserve">
+    <value>方向盘轴</value>
+  </data>
+  <data name="LeftXAxis" xml:space="preserve">
+    <value>左 X 轴</value>
+  </data>
+  <data name="LeftYAxis" xml:space="preserve">
+    <value>左 Y 轴</value>
+  </data>
+  <data name="RightXAxis" xml:space="preserve">
+    <value>右 X 轴</value>
+  </data>
+  <data name="RightYAxis" xml:space="preserve">
+    <value>右 Y 轴</value>
+  </data>
+  <data name="TriggerLRAxis" xml:space="preserve">
+    <value>扳机 L+R 轴</value>
+  </data>
+  <data name="VJoy1XAxis" xml:space="preserve">
+    <value>VJoy1 X 轴</value>
+  </data>
+  <data name="VJoy1YAxis" xml:space="preserve">
+    <value>VJoy1 Y 轴</value>
+  </data>
+  <data name="VJoy1ZAxis" xml:space="preserve">
+    <value>VJoy1 Z 轴</value>
+  </data>
+  <data name="VJoy2XAxis" xml:space="preserve">
+    <value>VJoy2 X 轴</value>
+  </data>
+  <data name="VJoy2YAxis" xml:space="preserve">
+    <value>VJoy2 Y 轴</value>
+  </data>
+  <data name="VJoy2ZAxis" xml:space="preserve">
+    <value>VJoy2 Z 轴</value>
+  </data>
+  <data name="SteeringWheelRange" xml:space="preserve">
+    <value>方向盘范围</value>
+  </data>
+  <data name="Calibrate" xml:space="preserve">
+    <value>校准</value>
+  </data>
+  <data name="Units" xml:space="preserve">
+    <value>单位</value>
+  </data>
+  <data name="OneEuroMinCutoff" xml:space="preserve">
+    <value>1€ 最小截止</value>
+  </data>
+  <data name="OneEuroBeta" xml:space="preserve">
+    <value>1€ Beta</value>
+  </data>
+  <data name="GyroCalibration" xml:space="preserve">
+    <value>陀螺仪校准</value>
+  </data>
+  <data name="ToggleTrigger" xml:space="preserve">
+    <value>常开按键：</value>
+  </data>
+  <data name="GyroSensitivityLabel" xml:space="preserve">
+    <value>陀螺仪灵敏度：</value>
+  </data>
+  <data name="XAxis" xml:space="preserve">
+    <value>X 轴</value>
+  </data>
+  <data name="Invert" xml:space="preserve">
+    <value>倒置</value>
+  </data>
+  <data name="InvertX" xml:space="preserve">
+    <value>X</value>
+  </data>
+  <data name="InvertY" xml:space="preserve">
+    <value>Y</value>
+  </data>
+  <data name="JitterCompensation" xml:space="preserve">
+    <value>抖动补偿</value>
+  </data>
+  <data name="MinThreshold" xml:space="preserve">
+    <value>最小阈值</value>
+  </data>
+  <data name="Smoothing" xml:space="preserve">
+    <value>平滑</value>
+  </data>
+  <data name="SmoothingOptions" xml:space="preserve">
+    <value>平滑选项</value>
+  </data>
+  <data name="OneEuroFilter" xml:space="preserve">
+    <value>1€ 滤波器</value>
+  </data>
+  <data name="WeightedAverage" xml:space="preserve">
+    <value>加权平均</value>
+  </data>
+  <data name="SmoothWeight" xml:space="preserve">
+    <value>平滑权重</value>
+  </data>
+  <data name="OutputStick" xml:space="preserve">
+    <value>输出摇杆</value>
+  </data>
+  <data name="OutputAxes" xml:space="preserve">
+    <value>输出轴</value>
+  </data>
+  <data name="HorizontalAndVertical" xml:space="preserve">
+    <value>水平和垂直</value>
+  </data>
+  <data name="HorizontalOnly" xml:space="preserve">
+    <value>仅水平</value>
+  </data>
+  <data name="VerticalOnly" xml:space="preserve">
+    <value>仅垂直</value>
+  </data>
+  <data name="MinimumX" xml:space="preserve">
+    <value>最小 X</value>
+  </data>
+  <data name="MinimumY" xml:space="preserve">
+    <value>最小 Y</value>
+  </data>
+  <data name="Weight" xml:space="preserve">
+    <value>权重</value>
+  </data>
+  <data name="SwipeUp" xml:space="preserve">
+    <value>上滑</value>
+  </data>
+  <data name="SwipeDown" xml:space="preserve">
+    <value>下滑</value>
+  </data>
+  <data name="SwipeLeft" xml:space="preserve">
+    <value>左滑</value>
+  </data>
+  <data name="SwipeRight" xml:space="preserve">
+    <value>右滑</value>
+  </data>
+  <data name="DegreesPerSecond" xml:space="preserve">
+    <value>度/秒</value>
+  </data>
+  <data name="DelayTime" xml:space="preserve">
+    <value>延迟时间</value>
+  </data>
+  <data name="Milliseconds" xml:space="preserve">
+    <value>毫秒</value>
+  </data>
+  <data name="UseDs3PitchRollSimTooltip" xml:space="preserve">
+    <value>为期望 DS3 风格陀螺仪模拟的应用程序启用此功能。</value>
+  </data>
+  <data name="DoubleTap" xml:space="preserve">
+    <value>双击</value>
+  </data>
+  <data name="TapAndHold" xml:space="preserve">
+    <value>单击并保持来拖拽，单击时略有延迟</value>
+  </data>
+  <data name="LowerRightAsRMB" xml:space="preserve">
+    <value>右下角作为右键</value>
+  </data>
+  <data name="BestUsedRightSide" xml:space="preserve">
+    <value>最好用于将右侧用作鼠标功能</value>
+  </data>
+  <data name="PassthruClickAction" xml:space="preserve">
+    <value>透传点击动作（DS4模式）</value>
+  </data>
+  <data name="StartSlideScrollOff" xml:space="preserve">
+    <value>启动时禁用滑动/滚动</value>
+  </data>
+  <data name="TouchpadOffTip" xml:space="preserve">
+    <value>按下PS键 + 触摸板重新启用</value>
+  </data>
+  <data name="RotationLabel" xml:space="preserve">
+    <value>旋转</value>
+  </data>
+  <data name="Trackball" xml:space="preserve">
+    <value>轨迹球</value>
+  </data>
+  <data name="FrictionLabel" xml:space="preserve">
+    <value>摩擦：</value>
+  </data>
+  <data name="InvertLabel" xml:space="preserve">
+    <value>反转</value>
+  </data>
+  <data name="DisableInvertLabel" xml:space="preserve">
+    <value>禁用反转</value>
+  </data>
+  <data name="Cross" xml:space="preserve">
+    <value>-叉-</value>
+  </data>
+  <data name="Circle" xml:space="preserve">
+    <value>-圈-</value>
+  </data>
+  <data name="Square" xml:space="preserve">
+    <value>方块</value>
+  </data>
+  <data name="Triangle" xml:space="preserve">
+    <value>三角</value>
+  </data>
+  <data name="Up" xml:space="preserve">
+    <value>上</value>
+  </data>
+  <data name="Down" xml:space="preserve">
+    <value>下</value>
+  </data>
+  <data name="Left" xml:space="preserve">
+    <value>左</value>
+  </data>
+  <data name="Right" xml:space="preserve">
+    <value>右</value>
+  </data>
+  <data name="FingerOnTouchpad" xml:space="preserve">
+    <value>单指触摸</value>
+  </data>
+  <data name="TwoFingersOnTouchpad" xml:space="preserve">
+    <value>双指触摸</value>
+  </data>
+  <data name="PS" xml:space="preserve">
+    <value>PS</value>
+  </data>
+  <data name="TouchpadClick" xml:space="preserve">
+    <value>触摸板点击</value>
+  </data>
+  <data name="FunctionLeft" xml:space="preserve">
+    <value>左侧功能键</value>
+  </data>
+  <data name="FunctionRight" xml:space="preserve">
+    <value>右侧功能键</value>
+  </data>
+  <data name="BottomLeftPaddle" xml:space="preserve">
+    <value>左下拨片</value>
+  </data>
+  <data name="BottomRightPaddle" xml:space="preserve">
+    <value>右下拨片</value>
+  </data>
+  <data name="AlwaysOn" xml:space="preserve">
+    <value>始终开启</value>
+  </data>
+  <data name="OutputStickLabel" xml:space="preserve">
+    <value>输出摇杆</value>
+  </data>
+  <data name="OutputAxesLabel" xml:space="preserve">
+    <value>输出轴向</value>
+  </data>
+  <data name="MinimumXLabel" xml:space="preserve">
+    <value>最小X</value>
+  </data>
+  <data name="MinimumYLabel" xml:space="preserve">
+    <value>最小Y</value>
+  </data>
+  <data name="MaxZoneXLabel" xml:space="preserve">
+    <value>最大区域 X</value>
+  </data>
+  <data name="MaxZoneYLabel" xml:space="preserve">
+    <value>最大区域 Y</value>
+  </data>
+  <data name="SnapToCenterOnRelease" xml:space="preserve">
+    <value>释放时居中</value>
+  </data>
+  <data name="DebouncingHeader" xml:space="preserve">
+    <value>去抖动</value>
+  </data>
+  <data name="SecondsUnit" xml:space="preserve">
+    <value>秒</value>
+  </data>
+  <data name="MinutesUnit" xml:space="preserve">
+    <value>分钟</value>
+  </data>
+  <data name="PPSUnit" xml:space="preserve">
+    <value>像素/秒</value>
+  </data>
+  <data name="ForReadoutLabel" xml:space="preserve">
+    <value>用于读数</value>
+  </data>
+  <data name="UseControllerForMapping" xml:space="preserve">
+    <value>你也可以用控制器来改变设置</value>
+  </data>
+  <data name="EnableTouchToggleTip" xml:space="preserve">
+    <value>启用触摸板切换</value>
+  </data>
+  <data name="ProfileLabel" xml:space="preserve">
+    <value>配置文件：</value>
+  </data>
+  <data name="SelectPreset" xml:space="preserve">
+    <value>选择预设</value>
+  </data>
+  <data name="KeepSizeMessage" xml:space="preserve">
+    <value>关闭后保持此窗口大小</value>
+  </data>
+  <data name="SpecialActionsTab" xml:space="preserve">
+    <value>特殊动作</value>
+  </data>
+  <data name="ControllerReadings" xml:space="preserve">
+    <value>控制器读数</value>
+  </data>
+  <data name="MenuDisconnect" xml:space="preserve">
+    <value>断开连接菜单</value>
+  </data>
+  <data name="ServiceStart" xml:space="preserve">
+    <value>启动</value>
+  </data>
+  <data name="ServiceStop" xml:space="preserve">
+    <value>停止</value>
+  </data>
+  <data name="MenuOpen" xml:space="preserve">
+    <value>打开</value>
+  </data>
+  <data name="MenuMinimize" xml:space="preserve">
+    <value>最小化</value>
+  </data>
+  <data name="MenuOpenProgramFolder" xml:space="preserve">
+    <value>打开程序文件夹</value>
+  </data>
+  <data name="MenuExit" xml:space="preserve">
+    <value>退出</value>
+  </data>
+  <data name="PriorityNormal" xml:space="preserve">
+    <value>正常</value>
+  </data>
+  <data name="PriorityAboveNormal" xml:space="preserve">
+    <value>高于正常</value>
+  </data>
+  <data name="PriorityHigh" xml:space="preserve">
+    <value>高</value>
+  </data>
+  <data name="PriorityRealTime" xml:space="preserve">
+    <value>实时</value>
+  </data>
+  <data name="ForceCheckBox" xml:space="preserve">
+    <value>强制</value>
+  </data>
+  <data name="CustomCurveLabel" xml:space="preserve">
+    <value>自定义曲线:</value>
+  </data>
+  <data name="TwoStageModeDisabled" xml:space="preserve">
+    <value>禁用</value>
+  </data>
+  <data name="TwoStageModeDisabledDesc" xml:space="preserve">
+    <value>禁用双阶段扳机。只能为 L2 或 R2 绑定一个动作。</value>
+  </data>
+  <data name="TwoStageModeNormal" xml:space="preserve">
+    <value>正常</value>
+  </data>
+  <data name="TwoStageModeNormalDesc" xml:space="preserve">
+    <value>正常（简单）双阶段扳机激活。在未达到最大输出时激活轻按动作。当扳机达到最大值时同时激活重按动作。</value>
+  </data>
+  <data name="TwoStageModeExclusive" xml:space="preserve">
+    <value>独占</value>
+  </data>
+  <data name="TwoStageModeExclusiveDesc" xml:space="preserve">
+    <value>在未达到最大输出时激活轻按动作。当扳机达到最大输出时，停用轻按动作，然后激活重按动作。</value>
+  </data>
+  <data name="TwoStageModeHairTrigger" xml:space="preserve">
+    <value>扳机</value>
+  </data>
+  <data name="TwoStageModeHairTriggerDesc" xml:space="preserve">
+    <value>与正常双阶段扳机模式类似，但有一个区别。在未达到最大输出时激活轻按动作。
+    当扳机达到最大值时同时激活重按动作。当扳机从重按部分释放时，
+    重按和轻按动作都停用。激活重按动作也会再次激活轻按动作。</value>
+  </data>
+  <data name="TwoStageModeHipFire" xml:space="preserve">
+    <value>快速开火</value>
+  </data>
+  <data name="TwoStageModeHipFireDesc" xml:space="preserve">
+    <value>考虑快速开火延迟时间。扳机在时间到期前不会激活任何动作。时间到期后，
+    根据扳机输出确定当前动作。此模式允许跳过轻按动作，仅触发重按动作。</value>
+  </data>
+  <data name="TwoStageModeHipFireExclusive" xml:space="preserve">
+    <value>快速开火独占</value>
+  </data>
+  <data name="TwoStageModeHipFireExclusiveDesc" xml:space="preserve">
+    <value>与快速开火模式类似，主要区别是只会激活一个动作。</value>
+  </data>
+  <data name="HipFireDelayTooltip" xml:space="preserve">
+    <value>与双阶段模式“快速开火”和“快速开火独占”一起使用的延迟时间。动作首次执行前的延迟时间。</value>
+  </data>
+  <data name="TriggerEffectFullClick" xml:space="preserve">
+    <value>微动手感</value>
+  </data>
+  <data name="TriggerEffectRigid" xml:space="preserve">
+    <value>硬</value>
+  </data>
+  <data name="TriggerEffectPulse" xml:space="preserve">
+    <value>脉冲</value>
+  </data>
+  <data name="TriggerEffectNoneDesc" xml:space="preserve">
+    <value>无力反馈效果，扳机手感正常。</value>
+  </data>
+  <data name="TriggerEffectFullClickDesc" xml:space="preserve">
+    <value>扳机在按压到一定位置时模拟清晰的点击感，增强操作确认感。</value>
+  </data>
+  <data name="TriggerEffectRigidDesc" xml:space="preserve">
+    <value>扳机变得非常硬，难以按压，模拟重型武器或高阻力的扳机。</value>
+  </data>
+  <data name="TriggerEffectPulseDesc" xml:space="preserve">
+    <value>扳机以脉冲方式震动，适合模拟连续射击或特定反馈。</value>
+  </data>
+  <data name="PercentSign" xml:space="preserve">
+    <value>%</value>
+  </data>
+  <data name="BtPollRateTip" xml:space="preserve">
+    <value>决定使用蓝牙连接的DS4硬件的回报率（当配置保存时应用）</value>
+  </data>
+  <data name="ButtonActivationMode" xml:space="preserve">
+    <value>按键激活模式</value>
   </data>
   
-	<data name="FlashAtOption" xml:space="preserve">
-		<value>占比闪烁</value>
+	<!-- Touch Button Activation Modes -->
+	<data name="TouchButtonModeClick" xml:space="preserve">
+		<value>点击</value>
 	</data>
-	<data name="PulseAtOption" xml:space="preserve">
-		<value>呼吸</value>
+	<data name="TouchButtonModeTouch" xml:space="preserve">
+		<value>触摸</value>
 	</data>
-	<data name="PercentSign" xml:space="preserve">
-		<value>%</value>
+	<data name="TouchButtonModeRelease" xml:space="preserve">
+		<value>释放</value>
 	</data>
-	<data name="FlashAtTip" xml:space="preserve">
-		<value>点击更改闪烁颜色。黑色 = 默认颜色</value>
-	</data>
-	<data name="WhileChargingLabel" xml:space="preserve">
-		<value>充电时：</value>
-	</data>
-	<data name="ChargingNormal" xml:space="preserve">
-		<value>正常</value>
-	</data>
-	<data name="ChargingPulse" xml:space="preserve">
-		<value>脉冲</value>
-	</data>
-	<data name="ChargingRainbow" xml:space="preserve">
-		<value>彩虹</value>
-	</data>
-	<data name="ChargingColor" xml:space="preserve">
-		<value>颜色</value>
-	</data>
-	<data name="ColorByBattery" xml:space="preserve">
-		<value>按电池百分比变色</value>
-	</data>
-	<data name="LightByBatteryTip" xml:space="preserve">
-		<value>当DS4充满电后，闲置超时后灯光也会变暗。</value>
-	</data>
-	<data name="AlwaysRainbow" xml:space="preserve">
-		<value>始终彩虹</value>
-	</data>
-	<data name="SecsPerCycle" xml:space="preserve">
-		<value>秒/周期</value>
-	</data>
-	<data name="MaxLightFormat" xml:space="preserve">
-		<value>最大亮度 {0:N2}%</value>
-	</data>
-	<data name="EmptyColor" xml:space="preserve">
-		<value>电量空</value>
-	</data>
-	<data name="MaxLightPrefix" xml:space="preserve">
-		<value>最大亮度 </value>
-	</data>
-	
-	<data name="TiltUp" xml:space="preserve"><value>上倾</value></data>
-	<data name="TiltDown" xml:space="preserve"><value>下倾</value></data>
-	<data name="TiltLeft" xml:space="preserve"><value>左倾</value></data>
-	<data name="TiltRight" xml:space="preserve"><value>右倾</value></data>
-	<data name="TriggersLabel" xml:space="preserve"><value>触发按键</value></data>
-	<data name="TurnBehaviorTurnsGyro" xml:space="preserve"><value>按键反转</value></data>
-	<data name="GyroTriggerBehavior" xml:space="preserve"><value>勾选时，按下扳机启用陀螺仪；取消勾选时，按下扳机关闭陀螺仪。</value></data>
-	<data name="Toggle" xml:space="preserve"><value>切换</value></data>
-	<data name="EvalCond" xml:space="preserve"><value>按键组合行为</value></data>
-	<data name="And" xml:space="preserve"><value>与</value></data>
-	<data name="Or" xml:space="preserve"><value>或</value></data>
-	<data name="SteeringWheel360" xml:space="preserve"><value>360° 方向盘</value></data>
-	<data name="SteeringWheelAxis" xml:space="preserve"><value>方向盘轴</value></data>
-	<data name="None" xml:space="preserve"><value>无</value></data>
-	<data name="LeftXAxis" xml:space="preserve"><value>左 X 轴</value></data>
-	<data name="LeftYAxis" xml:space="preserve"><value>左 Y 轴</value></data>
-	<data name="RightXAxis" xml:space="preserve"><value>右 X 轴</value></data>
-	<data name="RightYAxis" xml:space="preserve"><value>右 Y 轴</value></data>
-	<data name="TriggerLRAxis" xml:space="preserve"><value>扳机 L+R 轴</value></data>
-	<data name="VJoy1XAxis" xml:space="preserve"><value>VJoy1 X 轴</value></data>
-	<data name="VJoy1YAxis" xml:space="preserve"><value>VJoy1 Y 轴</value></data>
-	<data name="VJoy1ZAxis" xml:space="preserve"><value>VJoy1 Z 轴</value></data>
-	<data name="VJoy2XAxis" xml:space="preserve"><value>VJoy2 X 轴</value></data>
-	<data name="VJoy2YAxis" xml:space="preserve"><value>VJoy2 Y 轴</value></data>
-	<data name="VJoy2ZAxis" xml:space="preserve"><value>VJoy2 Z 轴</value></data>
-	<data name="SteeringWheelRange" xml:space="preserve"><value>方向盘范围</value></data>
-	<data name="Calibrate" xml:space="preserve"><value>校准</value></data>
-	<data name="Units" xml:space="preserve"><value>单位</value></data>
-	<data name="UseSmoothing" xml:space="preserve"><value>使用平滑</value></data>
-	<data name="OneEuroMinCutoff" xml:space="preserve"><value>1€ 最小截止</value></data>
-	<data name="OneEuroBeta" xml:space="preserve"><value>1€ Beta</value></data>
-	<data name="GyroCalibration" xml:space="preserve"><value>陀螺仪校准</value></data>
-	<data name="TurnBehaviorTrigger" xml:space="preserve"><value>触发按键：</value></data>
-	<data name="InvertBehavior" xml:space="preserve"><value>按键反转</value></data>
-	<data name="ToggleTrigger" xml:space="preserve"><value>常开按键：</value></data>
-	<data name="GyroSensitivityLabel" xml:space="preserve"><value>陀螺仪灵敏度：</value></data>
-	<data name="XAxis" xml:space="preserve"><value>X 轴</value></data>
-	<data name="Yaw" xml:space="preserve"><value>偏航</value></data>
-	<data name="Roll" xml:space="preserve"><value>翻滚</value></data>
-	<data name="Invert" xml:space="preserve"><value>反转</value></data>
-	<data name="InvertX" xml:space="preserve"><value>X</value></data>
-	<data name="InvertY" xml:space="preserve"><value>Y</value></data>
-	<data name="JitterCompensation" xml:space="preserve"><value>抖动补偿</value></data>
-	<data name="GyroTriggerJitterCompensationTooltip" xml:space="preserve"><value>在曲线低端增加额外的抑制，以减少设备抖动的影响。</value></data>
-	<data name="MinThreshold" xml:space="preserve"><value>最小阈值</value></data>
-	<data name="Smoothing" xml:space="preserve"><value>平滑</value></data>
-	<data name="SmoothingOptions" xml:space="preserve"><value>平滑选项</value></data>
-	<data name="OneEuroFilter" xml:space="preserve"><value>1€ 滤波器</value></data>
-	<data name="WeightedAverage" xml:space="preserve"><value>加权平均</value></data>
-	<data name="SmoothWeight" xml:space="preserve"><value>平滑权重</value></data>
-	<data name="OutputStick" xml:space="preserve"><value>输出摇杆</value></data>
-	<data name="LeftStick" xml:space="preserve"><value>左摇杆</value></data>
-	<data name="RightStick" xml:space="preserve"><value>右摇杆</value></data>
-	<data name="OutputAxes" xml:space="preserve"><value>输出轴</value></data>
-	<data name="HorizontalAndVertical" xml:space="preserve"><value>水平和垂直</value></data>
-	<data name="HorizontalOnly" xml:space="preserve"><value>仅水平</value></data>
-	<data name="VerticalOnly" xml:space="preserve"><value>仅垂直</value></data>
-	<data name="MinimumX" xml:space="preserve"><value>最小 X</value></data>
-	<data name="MinimumY" xml:space="preserve"><value>最小 Y</value></data>
-	<data name="Weight" xml:space="preserve"><value>权重</value></data>
-	<data name="SwipeUp" xml:space="preserve"><value>上滑</value></data>
-	<data name="SwipeDown" xml:space="preserve"><value>下滑</value></data>
-	<data name="SwipeLeft" xml:space="preserve"><value>左滑</value></data>
-	<data name="SwipeRight" xml:space="preserve"><value>右滑</value></data>
-	<data name="DegreesPerSecond" xml:space="preserve"><value>度/秒</value></data>
-	<data name="DelayTime" xml:space="preserve"><value>延迟时间</value></data>
-	<data name="Milliseconds" xml:space="preserve"><value>毫秒</value></data>
-	<data name="UseDs3PitchRollSim" xml:space="preserve"><value>[实验性] 使用 DS3 陀螺仪模拟</value></data>
-	<data name="UseDs3PitchRollSimTooltip" xml:space="preserve"><value>为期望 DS3 风格陀螺仪模拟的应用程序启用此功能。</value></data>
-	
-	<!-- Touchpad 标签页通用 -->
-	<data name="JitterCompensation" xml:space="preserve">
-		<value>抖动补偿</value>
-	</data>
-	<data name="DoubleTap" xml:space="preserve">
-		<value>双击</value>
-	</data>
-	<data name="TapAndHold" xml:space="preserve">
-		<value>单击并保持来拖拽，单击时略有延迟</value>
-	</data>
-	<data name="LowerRightAsRMB" xml:space="preserve">
-		<value>右下角作为右键</value>
-	</data>
-	<data name="BestUsedRightSide" xml:space="preserve">
-		<value>最好用于将右侧用作鼠标功能</value>
-	</data>
-	<data name="PassthruClickAction" xml:space="preserve">
-		<value>透传点击动作（DS4模式）</value>
-	</data>
-	<data name="StartSlideScrollOff" xml:space="preserve">
-		<value>启动时禁用滑动/滚动</value>
-	</data>
-	<data name="TouchpadOffTip" xml:space="preserve">
-		<value>按下PS键 + 触摸板重新启用</value>
-	</data>
-	<data name="RotationLabel" xml:space="preserve">
-		<value>旋转</value>
-	</data>
-	<data name="MinThresholdLabel" xml:space="preserve">
-		<value>最小阈值</value>
-	</data>
-	<data name="Trackball" xml:space="preserve">
-		<value>轨迹球</value>
-	</data>
-	<data name="FrictionLabel" xml:space="preserve">
-		<value>摩擦：</value>
-	</data>
-	<data name="InvertLabel" xml:space="preserve">
-		<value>反转</value>
-	</data>
-	<data name="DisableInvertLabel" xml:space="preserve">
-		<value>禁用反转</value>
-	</data>
-
-	<!-- 按钮名称（用于菜单项） -->
-	<data name="Cross" xml:space="preserve">
-		<value>叉</value>
-	</data>
-	<data name="Circle" xml:space="preserve">
-		<value>圈</value>
-	</data>
-	<data name="Square" xml:space="preserve">
-		<value>方块</value>
-	</data>
-	<data name="Triangle" xml:space="preserve">
-		<value>三角</value>
-	</data>
-	<data name="Up" xml:space="preserve">
-		<value>上</value>
-	</data>
-	<data name="Down" xml:space="preserve">
-		<value>下</value>
-	</data>
-	<data name="Left" xml:space="preserve">
-		<value>左</value>
-	</data>
-	<data name="Right" xml:space="preserve">
-		<value>右</value>
-	</data>
-	<data name="FingerOnTouchpad" xml:space="preserve">
-		<value>单指触摸</value>
-	</data>
-	<data name="TwoFingersOnTouchpad" xml:space="preserve">
-		<value>双指触摸</value>
-	</data>
-	<data name="Options" xml:space="preserve">
-		<value>选项</value>
-	</data>
-	<data name="Share" xml:space="preserve">
-		<value>分享</value>
-	</data>
-	<data name="PS" xml:space="preserve">
-		<value>PS</value>
-	</data>
-	<data name="TouchpadClick" xml:space="preserve">
-		<value>触摸板点击</value>
-	</data>
-	<data name="Mute" xml:space="preserve">
-		<value>静音</value>
-	</data>
-	<data name="SideL" xml:space="preserve">
-		<value>左侧</value>
-	</data>
-	<data name="SideR" xml:space="preserve">
-		<value>右侧</value>
-	</data>
-	<data name="FunctionLeft" xml:space="preserve">
-		<value>左侧功能键</value>
-	</data>
-	<data name="FunctionRight" xml:space="preserve">
-		<value>右侧功能键</value>
-	</data>
-	<data name="BottomLeftPaddle" xml:space="preserve">
-		<value>左下拨片</value>
-	</data>
-	<data name="BottomRightPaddle" xml:space="preserve">
-		<value>右下拨片</value>
-	</data>
-
-	<!-- Swipe 方向 -->
-	<data name="SwipeUp" xml:space="preserve">
-		<value>上滑</value>
-	</data>
-	<data name="SwipeDown" xml:space="preserve">
-		<value>下滑</value>
-	</data>
-	<data name="SwipeLeft" xml:space="preserve">
-		<value>左滑</value>
-	</data>
-	<data name="SwipeRight" xml:space="preserve">
-		<value>右滑</value>
-	</data>
-
-	<!-- MouseJoystick 标签页 -->
-	<data name="OutputStickLabel" xml:space="preserve">
-		<value>输出摇杆</value>
-	</data>
-	<data name="LeftStick" xml:space="preserve">
-		<value>左摇杆</value>
-	</data>
-	<data name="RightStick" xml:space="preserve">
-		<value>右摇杆</value>
-	</data>
-	<data name="OutputAxesLabel" xml:space="preserve">
-		<value>输出轴向</value>
-	</data>
-	<data name="HorizontalAndVertical" xml:space="preserve">
-		<value>水平和垂直</value>
-	</data>
-	<data name="HorizontalOnly" xml:space="preserve">
-		<value>仅水平</value>
-	</data>
-	<data name="VerticalOnly" xml:space="preserve">
-		<value>仅垂直</value>
-	</data>
-	<data name="MinimumXLabel" xml:space="preserve">
-		<value>最小X</value>
-	</data>
-	<data name="MinimumYLabel" xml:space="preserve">
-		<value>最小Y</value>
-	</data>
-	<data name="Smoothing" xml:space="preserve">
-		<value>平滑</value>
-	</data>
-	<data name="SmoothingOptions" xml:space="preserve">
-		<value>平滑选项</value>
-	</data>
-	<data name="OneEuroMinCutoff" xml:space="preserve">
-		<value>1€ 最小截止</value>
-	</data>
-	<data name="OneEuroBeta" xml:space="preserve">
-		<value>1€ Beta</value>
-	</data>
-	<data name="InvertX" xml:space="preserve">
-		<value>反转X</value>
-	</data>
-	<data name="InvertY" xml:space="preserve">
-		<value>反转Y</value>
-	</data>
-
-	<!-- AbsoluteMouse 标签页 -->
-	<data name="MaxZoneXLabel" xml:space="preserve">
-		<value>最大区域 X</value>
-	</data>
-	<data name="MaxZoneYLabel" xml:space="preserve">
-		<value>最大区域 Y</value>
-	</data>
-	<data name="SnapToCenterOnRelease" xml:space="preserve">
-		<value>释放时居中</value>
-	</data>
-	
-	<data name="DebouncingHeader" xml:space="preserve"><value>去抖动</value></data>
-	<data name="MillisecondsUnit" xml:space="preserve"><value>毫秒</value></data>
-	<data name="SecondsUnit" xml:space="preserve"><value>秒</value></data>
-	<data name="MinutesUnit" xml:space="preserve"><value>分钟</value></data>
-	<data name="PercentSign" xml:space="preserve"><value>%</value></data>
-	<data name="PPSUnit" xml:space="preserve"><value>像素/秒</value></data>
-	<data name="ForReadoutLabel" xml:space="preserve"><value>用于读数</value></data>
-	<data name="UseControllerForMapping" xml:space="preserve"><value>你也可以用控制器来改变设置</value></data>
-	<data name="EnableTouchToggleTip" xml:space="preserve"><value>启用触摸板切换</value></data>
-	<data name="BtPollRateTip" xml:space="preserve"><value>决定使用蓝牙连接的DS4硬件的回报率（当配置保存时应用）</value></data>
-	
-	<data name="ProfileLabel" xml:space="preserve">
-		<value>配置文件：</value>
-	</data>
-	<data name="SelectPreset" xml:space="preserve">
-		<value>选择预设</value>
-	</data>
-	<data name="KeepSizeMessage" xml:space="preserve">
-		<value>关闭后保持此窗口大小</value>
-	</data>
-	<data name="SpecialActionsTab" xml:space="preserve">
-		<value>特殊动作</value>
-	</data>
-	<data name="ControllerReadings" xml:space="preserve">
-		<value>控制器读数</value>
-	</data>
-	
-	
-	<data name="MenuDisconnect" xml:space="preserve">
-		<value>断开连接菜单</value>
-	</data>
-	<data name="ServiceStart" xml:space="preserve">
-		<value>启动</value>
-	</data>
-	<data name="ServiceStop" xml:space="preserve">
-		<value>停止</value>
-	</data>
-	<data name="MenuOpen" xml:space="preserve">
-		<value>打开</value>
-	</data>
-	<data name="MenuMinimize" xml:space="preserve">
-		<value>最小化</value>
-	</data>
-	<data name="MenuOpenProgramFolder" xml:space="preserve">
-		<value>打开程序文件夹</value>
-	</data>
-	<data name="MenuExit" xml:space="preserve">
-		<value>退出</value>
-	</data>
-	
-	<data name="ProfileSwitchNotification" xml:space="preserve">
-		<value>系统通知配置切换</value>
-	</data>
-	<data name="ProcessPriority" xml:space="preserve">
-		<value>进程优先级</value>
-	</data>
-	
-	<data name="PriorityNormal" xml:space="preserve"><value>正常</value></data>
-	<data name="PriorityAboveNormal" xml:space="preserve"><value>高于正常</value></data>
-	<data name="PriorityHigh" xml:space="preserve"><value>高</value></data>
-	<data name="PriorityRealTime" xml:space="preserve"><value>实时</value></data>
-	
-	<data name="StickCalibration" xml:space="preserve">
-		<value>摇杆校准</value>
-	</data>
-	<data name="AutomaticallyRecalibrateStick" xml:space="preserve">
-		<value>自动摇杆校准</value>
-	</data>
-	
-  <data name="InverseMotors" xml:space="preserve">
-    <value>震动电机互换</value>
-  </data>
-    <data name="AntiRadius" xml:space="preserve">
-    <value>反向半径</value>
-  </data>
 </root>

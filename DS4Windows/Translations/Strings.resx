@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <root>
   <!-- 
     Microsoft ResX Schema 
@@ -305,9 +305,6 @@
   </data>
   <data name="WarningsOnly" xml:space="preserve">
     <value>Warnings only</value>
-  </data>
-  <data name="RumbleMaxSecs" xml:space="preserve">
-    <value>sec</value>
   </data>
   <data name="RumbleMaxSecsTip" xml:space="preserve">
     <value>Auto stop rumble in secs (0=auto stop disabled)</value>
@@ -1505,9 +1502,6 @@ Please click OK to confirm that you have read the message. Press Cancel to be re
 	<data name="PulseAtOption" xml:space="preserve">
 		<value>Pulse at</value>
 	</data>
-	<data name="PercentSign" xml:space="preserve">
-		<value>%</value>
-	</data>
 	<data name="FlashAtTip" xml:space="preserve">
 		<value>Click to change flash color. Black = default color</value>
 	</data>
@@ -1555,13 +1549,11 @@ Please click OK to confirm that you have read the message. Press Cancel to be re
 	<data name="TriggersLabel" xml:space="preserve"><value>Triggers</value></data>
 	<data name="TurnBehaviorTurnsGyro" xml:space="preserve"><value>Turn Behavior - Turns Gyro</value></data>
 	<data name="GyroTriggerBehavior" xml:space="preserve"><value>When checked, gyro is enabled when trigger is pressed. When unchecked, gyro is disabled when trigger is pressed.</value></data>
-	<data name="Toggle" xml:space="preserve"><value>Toggle</value></data>
 	<data name="EvalCond" xml:space="preserve"><value>Eval Cond.</value></data>
 	<data name="And" xml:space="preserve"><value>And</value></data>
 	<data name="Or" xml:space="preserve"><value>Or</value></data>
 	<data name="SteeringWheel360" xml:space="preserve"><value>360 Steering Wheel</value></data>
 	<data name="SteeringWheelAxis" xml:space="preserve"><value>Steering wheel axis</value></data>
-	<data name="None" xml:space="preserve"><value>None</value></data>
 	<data name="LeftXAxis" xml:space="preserve"><value>Left X-Axis</value></data>
 	<data name="LeftYAxis" xml:space="preserve"><value>Left Y-Axis</value></data>
 	<data name="RightXAxis" xml:space="preserve"><value>Right X-Axis</value></data>
@@ -1576,22 +1568,16 @@ Please click OK to confirm that you have read the message. Press Cancel to be re
 	<data name="SteeringWheelRange" xml:space="preserve"><value>Steering wheel range</value></data>
 	<data name="Calibrate" xml:space="preserve"><value>Calibrate</value></data>
 	<data name="Units" xml:space="preserve"><value>units</value></data>
-	<data name="UseSmoothing" xml:space="preserve"><value>Use Smoothing</value></data>
 	<data name="OneEuroMinCutoff" xml:space="preserve"><value>1€ MinCutoff</value></data>
 	<data name="OneEuroBeta" xml:space="preserve"><value>1€ Beta</value></data>
 	<data name="GyroCalibration" xml:space="preserve"><value>Gyro Calibration</value></data>
-	<data name="TurnBehaviorTrigger" xml:space="preserve"><value>Turn Behavior Trigger:</value></data>
-	<data name="InvertBehavior" xml:space="preserve"><value>Turn Behavior - Turns Gyro</value></data>
 	<data name="ToggleTrigger" xml:space="preserve"><value>Toggle Trigger:</value></data>
 	<data name="GyroSensitivityLabel" xml:space="preserve"><value>Gyro Sensitivity:</value></data>
 	<data name="XAxis" xml:space="preserve"><value>X Axis</value></data>
-	<data name="Yaw" xml:space="preserve"><value>Yaw</value></data>
-	<data name="Roll" xml:space="preserve"><value>Roll</value></data>
 	<data name="Invert" xml:space="preserve"><value>Invert</value></data>
 	<data name="InvertX" xml:space="preserve"><value>X</value></data>
 	<data name="InvertY" xml:space="preserve"><value>Y</value></data>
 	<data name="JitterCompensation" xml:space="preserve"><value>Jitter Compensation</value></data>
-	<data name="GyroTriggerJitterCompensationTooltip" xml:space="preserve"><value>Adds additional throttling at the low end of the curve to account for device shaking.</value></data>
 	<data name="MinThreshold" xml:space="preserve"><value>Min Threshold</value></data>
 	<data name="Smoothing" xml:space="preserve"><value>Smoothing</value></data>
 	<data name="SmoothingOptions" xml:space="preserve"><value>Smoothing Options</value></data>
@@ -1599,8 +1585,6 @@ Please click OK to confirm that you have read the message. Press Cancel to be re
 	<data name="WeightedAverage" xml:space="preserve"><value>Weighted Average</value></data>
 	<data name="SmoothWeight" xml:space="preserve"><value>Smooth Weight</value></data>
 	<data name="OutputStick" xml:space="preserve"><value>Output Stick</value></data>
-	<data name="LeftStick" xml:space="preserve"><value>Left Stick</value></data>
-	<data name="RightStick" xml:space="preserve"><value>Right Stick</value></data>
 	<data name="OutputAxes" xml:space="preserve"><value>Output Axes</value></data>
 	<data name="HorizontalAndVertical" xml:space="preserve"><value>Horizontal and Vertical</value></data>
 	<data name="HorizontalOnly" xml:space="preserve"><value>Horizontal Only</value></data>
@@ -1615,13 +1599,9 @@ Please click OK to confirm that you have read the message. Press Cancel to be re
 	<data name="DegreesPerSecond" xml:space="preserve"><value>deg/sec.</value></data>
 	<data name="DelayTime" xml:space="preserve"><value>Delay Time</value></data>
 	<data name="Milliseconds" xml:space="preserve"><value>ms</value></data>
-	<data name="UseDs3PitchRollSim" xml:space="preserve"><value>[EXPERIMENTAL] Use DS3 gyro simulation</value></data>
 	<data name="UseDs3PitchRollSimTooltip" xml:space="preserve"><value>Enables DS3-style gyro simulation for applications that expect it.</value></data>
 	
 	<!-- Touchpad 标签页通用 -->
-	<data name="JitterCompensation" xml:space="preserve">
-		<value>Jitter Compensation</value>
-	</data>
 	<data name="DoubleTap" xml:space="preserve">
 		<value>Double Tap</value>
 	</data>
@@ -1645,9 +1625,6 @@ Please click OK to confirm that you have read the message. Press Cancel to be re
 	</data>
 	<data name="RotationLabel" xml:space="preserve">
 		<value>Rotation</value>
-	</data>
-	<data name="MinThresholdLabel" xml:space="preserve">
-		<value>Min Threshold</value>
 	</data>
 	<data name="Trackball" xml:space="preserve">
 		<value>Trackball</value>
@@ -1726,42 +1703,23 @@ Please click OK to confirm that you have read the message. Press Cancel to be re
 	<data name="BottomRightPaddle" xml:space="preserve">
 		<value>Bottom Right Paddle</value>
 	</data>
+	<data name="AlwaysOn" xml:space="preserve">
+		<value>Always On</value>
+	</data>
+	<data name="GyroTriggerL1" xml:space="preserve"><value>L1</value></data>
+	<data name="GyroTriggerL2" xml:space="preserve"><value>L2</value></data>
+	<data name="GyroTriggerR1" xml:space="preserve"><value>R1</value></data>
+	<data name="GyroTriggerR2" xml:space="preserve"><value>R2</value></data>
+	<data name="GyroTriggerL3" xml:space="preserve"><value>L3</value></data>
+	<data name="GyroTriggerR3" xml:space="preserve"><value>R3</value></data>
 
 	<!-- Swipe 方向 -->
-	<data name="SwipeUp" xml:space="preserve">
-		<value>Swipe Up</value>
-	</data>
-	<data name="SwipeDown" xml:space="preserve">
-		<value>Swipe Down</value>
-	</data>
-	<data name="SwipeLeft" xml:space="preserve">
-		<value>Swipe Left</value>
-	</data>
-	<data name="SwipeRight" xml:space="preserve">
-		<value>Swipe Right</value>
-	</data>
-
 	<!-- MouseJoystick 标签页 -->
 	<data name="OutputStickLabel" xml:space="preserve">
 		<value>Output Stick</value>
 	</data>
-	<data name="LeftStick" xml:space="preserve">
-		<value>Left Stick</value>
-	</data>
-	<data name="RightStick" xml:space="preserve">
-		<value>Right Stick</value>
-	</data>
 	<data name="OutputAxesLabel" xml:space="preserve">
 		<value>Output Axes</value>
-	</data>
-	<data name="HorizontalAndVertical" xml:space="preserve">
-		<value>Horizontal and Vertical</value>
-	</data>
-	<data name="HorizontalOnly" xml:space="preserve">
-		<value>Horizontal Only</value>
-	</data>
-	<data name="VerticalOnly" xml:space="preserve">
-		<value>Vertical Only</value>
 	</data>
 	<data name="MinimumXLabel" xml:space="preserve">
 		<value>Minimum X</value>
@@ -1769,25 +1727,6 @@ Please click OK to confirm that you have read the message. Press Cancel to be re
 	<data name="MinimumYLabel" xml:space="preserve">
 		<value>Minimum Y</value>
 	</data>
-	<data name="Smoothing" xml:space="preserve">
-		<value>Smoothing</value>
-	</data>
-	<data name="SmoothingOptions" xml:space="preserve">
-		<value>Smoothing Options</value>
-	</data>
-	<data name="OneEuroMinCutoff" xml:space="preserve">
-		<value>1€ MinCutoff</value>
-	</data>
-	<data name="OneEuroBeta" xml:space="preserve">
-		<value>1€ Beta</value>
-	</data>
-	<data name="InvertX" xml:space="preserve">
-		<value>Invert X</value>
-	</data>
-	<data name="InvertY" xml:space="preserve">
-		<value>Invert Y</value>
-	</data>
-
 	<!-- AbsoluteMouse 标签页 -->
 	<data name="MaxZoneXLabel" xml:space="preserve">
 		<value>Max Zone X</value>
@@ -1801,10 +1740,8 @@ Please click OK to confirm that you have read the message. Press Cancel to be re
 	
 	<!-- Debouncing -->
 	<data name="DebouncingHeader" xml:space="preserve"><value>Debouncing</value></data>
-	<data name="MillisecondsUnit" xml:space="preserve"><value>ms</value></data>
 	<data name="SecondsUnit" xml:space="preserve"><value>sec</value></data>
 	<data name="MinutesUnit" xml:space="preserve"><value>mins</value></data>
-	<data name="PercentSign" xml:space="preserve"><value>%</value></data>
 	<data name="PPSUnit" xml:space="preserve"><value>pps</value></data>
 
 	<!-- Use Controller -->
@@ -1856,4 +1793,90 @@ Please click OK to confirm that you have read the message. Press Cancel to be re
 	<data name="PriorityAboveNormal" xml:space="preserve"><value>Above Normal</value></data>
 	<data name="PriorityHigh" xml:space="preserve"><value>High</value></data>
 	<data name="PriorityRealTime" xml:space="preserve"><value>Real Time</value></data>
+	<data name="ForceCheckBox" xml:space="preserve"><value>Force</value></data>
+	<data name="CustomCurveLabel" xml:space="preserve"><value>Custom Curve:</value></data>
+	
+	<!-- Two Stage Mode Tooltip -->
+	<data name="TwoStageModeDisabled" xml:space="preserve">
+		<value>Disabled</value>
+	</data>
+	<data name="TwoStageModeDisabledDesc" xml:space="preserve">
+		<value>Disables use of Two Stage Triggers. Only bind one action to L2 or R2</value>
+	</data>
+	<data name="TwoStageModeNormal" xml:space="preserve">
+		<value>Normal</value>
+	</data>
+	<data name="TwoStageModeNormalDesc" xml:space="preserve">
+		<value>Normal (simple) Two Stage Trigger activation. Activates Soft Pull action when under maximum output. Activates Full Pull action as well when trigger reaches maximum value.</value>
+	</data>
+	<data name="TwoStageModeExclusive" xml:space="preserve">
+		<value>Exclusive</value>
+	</data>
+	<data name="TwoStageModeExclusiveDesc" xml:space="preserve">
+		<value>Activates Soft Pull action when under maximum output. When trigger reaches maximum output, deactivate Soft Pull action and then activate Full Pull action</value>
+	</data>
+	<data name="TwoStageModeHairTrigger" xml:space="preserve">
+		<value>Hair Trigger</value>
+	</data>
+	<data name="TwoStageModeHairTriggerDesc" xml:space="preserve">
+		<value>Similar to Normal Two Stage Trigger mode with one difference. Activates Soft Pull action when under maximum output. Activates Full Pull action as well when trigger reaches maximum value. When the trigger is partially released from Full Pull, both Full Pull and Soft Pull actions deactivate. Activating Full Pull action will activate the Soft Pull again as well.</value>
+	</data>
+	<data name="TwoStageModeHipFire" xml:space="preserve">
+		<value>Hip Fire</value>
+	</data>
+	<data name="TwoStageModeHipFireDesc" xml:space="preserve">
+		<value>Takes the Hip Fire Delay time into account. The trigger will not activate an action until the time has expired. Once the time has expired, the current action for the trigger output will be determined. This mode allows skipping the activation of Soft Pull and only firing a Full Pull action.</value>
+	</data>
+	<data name="TwoStageModeHipFireExclusive" xml:space="preserve">
+		<value>Hip Fire Exclusive</value>
+	</data>
+	<data name="TwoStageModeHipFireExclusiveDesc" xml:space="preserve">
+		<value>Similar to Hip Fire mode. The main difference is only one action will ever be activated.</value>
+	</data>
+
+	<!-- Hip Fire Tooltip -->
+	<data name="HipFireDelayTooltip" xml:space="preserve">
+		<value>Time delay used with Two Stage Modes Hip Fire and Hip Fire Exclusive. The time delay before an action is first executed.</value>
+	</data>
+	
+	<!-- Trigger Effects -->
+	<data name="TriggerEffectFullClick" xml:space="preserve">
+		<value>Full Click</value>
+	</data>
+	<data name="TriggerEffectRigid" xml:space="preserve">
+		<value>Rigid</value>
+	</data>
+	<data name="TriggerEffectPulse" xml:space="preserve">
+		<value>Pulse</value>
+	</data>
+	<!-- Trigger Effect Descriptions -->
+	<data name="TriggerEffectNoneDesc" xml:space="preserve">
+		<value>No force feedback effect. The trigger feels normal.</value>
+	</data>
+	<data name="TriggerEffectFullClickDesc" xml:space="preserve">
+		<value>Simulates a crisp click feeling when the trigger reaches a certain point. 
+    Enhances confirmation of actions.</value>
+	</data>
+	<data name="TriggerEffectRigidDesc" xml:space="preserve">
+		<value>The trigger becomes very stiff and hard to press, 
+    imulating heavy weapons or high-resistance triggers.</value>
+	</data>
+	<data name="TriggerEffectPulseDesc" xml:space="preserve">
+		<value>The trigger vibrates in a pulsing pattern, 
+    suitable for simulating continuous firing or specific feedback.</value>
+	</data>	
+	<data name="ButtonActivationMode" xml:space="preserve">
+		<value>Button Activation Mode</value>
+	</data>
+			
+	<!-- Touch Button Activation Modes -->
+	<data name="TouchButtonModeClick" xml:space="preserve">
+		<value>Click</value>
+	</data>
+	<data name="TouchButtonModeTouch" xml:space="preserve">
+		<value>Touch</value>
+	</data>
+	<data name="TouchButtonModeRelease" xml:space="preserve">
+		<value>Release</value>
+	</data>
 </root>

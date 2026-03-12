@@ -30,25 +30,44 @@ using Microsoft.Win32;
 using DS4Windows;
 using DS4Windows.StickModifiers;
 using DS4WinWPF.DS4Forms.ViewModels.Util;
+using DS4WinWPF.Translations;
 using DS4Windows.InputDevices;
+
 
 namespace DS4WinWPF.DS4Forms.ViewModels
 {
     public class ProfileSettingsViewModel
     {
-        private List<string> gyroTriggerItems = new List<string>()
-        {
-            "Cross", "Circle", "Square", "Triangle",
+        // private List<string> gyroTriggerItems = new List<string>()
+        // {
+            // "Cross", "Circle", "Square", "Triangle",
+            // "L1", "L2", "R1", "R2",
+            // "Up", "Down", "Left", "Right",
+            // "L3", "R3", "Finger on Touchpad", "2 Fingers on Touchpad",
+            // "Options", "Share", "PS", "Touchpad Click",
+            // "Mute", "Side L", "Side R",
+            // // START Extra buttons for DualSense Edge controller
+            // "Function Left", "Function Right", "Bottom Left Paddle", "Bottom Right Paddle",
+            // // END Extra buttons for DualSense Edge controller
+            // Strings.AlwaysOn,
+        // };
+		
+		private List<string> gyroTriggerItems = new List<string>()
+		{
+			Strings.Cross, Strings.Circle, Strings.Square, Strings.Triangle,
+			// Strings.L1, Strings.L2, Strings.R1, Strings.R2,
             "L1", "L2", "R1", "R2",
-            "Up", "Down", "Left", "Right",
-            "L3", "R3", "Finger on Touchpad", "2 Fingers on Touchpad",
-            "Options", "Share", "PS", "Touchpad Click",
-            "Mute", "Side L", "Side R",
+			Strings.Up, Strings.Down, Strings.Left, Strings.Right,
+			// Strings.L3, Strings.R3,
+			"L3", "R3",
+			Strings.FingerOnTouchpad, Strings.TwoFingersOnTouchpad,
+			Strings.Options, Strings.Share, Strings.PS, Strings.TouchpadClick,
+			Strings.Mute, Strings.SideL, Strings.SideR,
             // START Extra buttons for DualSense Edge controller
-            "Function Left", "Function Right", "Bottom Left Paddle", "Bottom Right Paddle",
-            // END Extra buttons for DualSense Edge controller
-            "Always On",
-        };
+			Strings.FunctionLeft, Strings.FunctionRight, Strings.BottomLeftPaddle, Strings.BottomRightPaddle,
+            // END Extra buttons for DualSense Edge controller 
+			Strings.AlwaysOn,
+		};
 
         private int device;
         public int Device { get => device; }
@@ -1768,16 +1787,16 @@ namespace DS4WinWPF.DS4Forms.ViewModels
             new TriggerModeChoice("Normal", TriggerMode.Normal),
         };
 
-        private List<TwoStageChoice> twoStageModeChoices = new List<TwoStageChoice>()
-        {
-            new TwoStageChoice("Disabled", TwoStageTriggerMode.Disabled),
-            new TwoStageChoice("Normal", TwoStageTriggerMode.Normal),
-            new TwoStageChoice("Exclusive", TwoStageTriggerMode.ExclusiveButtons),
-            new TwoStageChoice("Hair Trigger", TwoStageTriggerMode.HairTrigger),
-            new TwoStageChoice("Hip Fire", TwoStageTriggerMode.HipFire),
-            new TwoStageChoice("Hip Fire Exclusive", TwoStageTriggerMode.HipFireExclusiveButtons),
-        };
-        public List<TwoStageChoice> TwoStageModeChoices { get => twoStageModeChoices; }
+		private List<TwoStageChoice> twoStageModeChoices = new List<TwoStageChoice>()
+		{
+			new TwoStageChoice(Strings.TwoStageModeDisabled, TwoStageTriggerMode.Disabled),
+			new TwoStageChoice(Strings.TwoStageModeNormal, TwoStageTriggerMode.Normal),
+			new TwoStageChoice(Strings.TwoStageModeExclusive, TwoStageTriggerMode.ExclusiveButtons),
+			new TwoStageChoice(Strings.TwoStageModeHairTrigger, TwoStageTriggerMode.HairTrigger),
+			new TwoStageChoice(Strings.TwoStageModeHipFire, TwoStageTriggerMode.HipFire),
+			new TwoStageChoice(Strings.TwoStageModeHipFireExclusive, TwoStageTriggerMode.HipFireExclusiveButtons),
+		};
+		public List<TwoStageChoice> TwoStageModeChoices { get => twoStageModeChoices; }
 
         public TwoStageTriggerMode L2TriggerMode
         {
@@ -1819,13 +1838,13 @@ namespace DS4WinWPF.DS4Forms.ViewModels
             set => Global.R2OutputSettings[device].hipFireMS = value;
         }
 
-        private List<TriggerEffectChoice> triggerEffectChoices = new List<TriggerEffectChoice>()
-        {
-            new TriggerEffectChoice("None", DS4Windows.InputDevices.TriggerEffects.None),
-            new TriggerEffectChoice("Full Click", DS4Windows.InputDevices.TriggerEffects.FullClick),
-            new TriggerEffectChoice("Rigid", DS4Windows.InputDevices.TriggerEffects.Rigid),
-            new TriggerEffectChoice("Pulse", DS4Windows.InputDevices.TriggerEffects.Pulse),
-        };
+		private List<TriggerEffectChoice> triggerEffectChoices = new List<TriggerEffectChoice>()
+		{
+			new TriggerEffectChoice(Strings.TriggerEffectNone, DS4Windows.InputDevices.TriggerEffects.None),
+			new TriggerEffectChoice(Strings.TriggerEffectFullClick, DS4Windows.InputDevices.TriggerEffects.FullClick),
+			new TriggerEffectChoice(Strings.TriggerEffectRigid, DS4Windows.InputDevices.TriggerEffects.Rigid),
+			new TriggerEffectChoice(Strings.TriggerEffectPulse, DS4Windows.InputDevices.TriggerEffects.Pulse),
+		};
         public List<TriggerEffectChoice> TriggerEffectChoices { get => triggerEffectChoices; }
 
         public DS4Windows.InputDevices.TriggerEffects L2TriggerEffect
@@ -2818,7 +2837,7 @@ namespace DS4WinWPF.DS4Forms.ViewModels
             set => Global.GyroMouseStickInf[device].smoothWeight = value;
         }
 
-        private string touchDisInvertString = "None";
+        private string touchDisInvertString = Strings.None;
         public string TouchDisInvertString
         {
             get => touchDisInvertString;
@@ -2831,7 +2850,7 @@ namespace DS4WinWPF.DS4Forms.ViewModels
         public event EventHandler TouchDisInvertStringChanged;
 
 
-        private string gyroControlsTrigDisplay = "Always On";
+        private string gyroControlsTrigDisplay = Strings.AlwaysOn;
         public string GyroControlsTrigDisplay
         {
             get => gyroControlsTrigDisplay;
@@ -2865,7 +2884,7 @@ namespace DS4WinWPF.DS4Forms.ViewModels
         }
 
 
-        private string gyroMouseTrigDisplay = "Always On";
+        private string gyroMouseTrigDisplay = Strings.AlwaysOn;
         public string GyroMouseTrigDisplay
         {
             get => gyroMouseTrigDisplay;
@@ -2877,7 +2896,7 @@ namespace DS4WinWPF.DS4Forms.ViewModels
         }
         public event EventHandler GyroMouseTrigDisplayChanged;
 		
-		private string gyroMouseToggleTrigDisplay = "Always On";
+		private string gyroMouseToggleTrigDisplay = Strings.AlwaysOn;
 		public string GyroMouseToggleTrigDisplay
 		{
 			get => gyroMouseToggleTrigDisplay;
@@ -2889,7 +2908,7 @@ namespace DS4WinWPF.DS4Forms.ViewModels
 		}
 		public event EventHandler GyroMouseToggleTrigDisplayChanged;
 
-        private string gyroMouseStickTrigDisplay = "Always On";
+        private string gyroMouseStickTrigDisplay = Strings.AlwaysOn;
         public string GyroMouseStickTrigDisplay
         {
             get => gyroMouseStickTrigDisplay;
@@ -2901,7 +2920,7 @@ namespace DS4WinWPF.DS4Forms.ViewModels
         }
         public event EventHandler GyroMouseStickTrigDisplayChanged;
 		
-		private string gyroMouseStickToggleTrigDisplay = "Always On";
+		private string gyroMouseStickToggleTrigDisplay = Strings.AlwaysOn;
 		public string GyroMouseStickToggleTrigDisplay
 		{
 			get => gyroMouseStickToggleTrigDisplay;
@@ -2913,7 +2932,7 @@ namespace DS4WinWPF.DS4Forms.ViewModels
 		}
 		public event EventHandler GyroMouseStickToggleTrigDisplayChanged;
 
-        private string gyroSwipeTrigDisplay = "Always On";
+        private string gyroSwipeTrigDisplay = Strings.AlwaysOn;
         public string GyroSwipeTrigDisplay
         {
             get => gyroSwipeTrigDisplay;
@@ -3346,7 +3365,7 @@ namespace DS4WinWPF.DS4Forms.ViewModels
             if (triggerList.Count == 0)
             {
                 triggerList.Add(-1);
-                triggerName.Add("None");
+                triggerName.Add(Strings.None);
             }
 
             Global.TouchDisInvertTriggers[device] = triggerList.ToArray();
@@ -3368,14 +3387,14 @@ namespace DS4WinWPF.DS4Forms.ViewModels
                 }
                 else if (trigid == -1)
                 {
-                    triggerName.Add("None");
+                    triggerName.Add(Strings.None);
                     break;
                 }
             }
 
             if (triggerName.Count == 0)
             {
-                triggerName.Add("None");
+                triggerName.Add(Strings.None);
             }
 
             TouchDisInvertString = string.Join(", ", triggerName.ToArray());
@@ -3415,7 +3434,7 @@ namespace DS4WinWPF.DS4Forms.ViewModels
             if (triggerList.Count == 0)
             {
                 triggerList.Add(-1);
-                triggerName.Add("Always On");
+                triggerName.Add(Strings.AlwaysOn);
                 alwaysOnItem.IsChecked = true;
             }
 
@@ -3441,7 +3460,7 @@ namespace DS4WinWPF.DS4Forms.ViewModels
                 {
                     MenuItem current = menu.Items[itemCount - 1] as MenuItem;
                     current.IsChecked = true;
-                    triggerName.Add("Always On");
+                    triggerName.Add(Strings.AlwaysOn);
                     break;
                 }
             }
@@ -3450,7 +3469,7 @@ namespace DS4WinWPF.DS4Forms.ViewModels
             {
                 MenuItem current = menu.Items[itemCount - 1] as MenuItem;
                 current.IsChecked = true;
-                triggerName.Add("Always On");
+                triggerName.Add(Strings.AlwaysOn);
             }
 
             GyroMouseTrigDisplay = string.Join(", ", triggerName.ToArray());
@@ -3490,7 +3509,7 @@ namespace DS4WinWPF.DS4Forms.ViewModels
             if (triggerList.Count == 0)
             {
                 triggerList.Add(-1);
-                triggerName.Add("Always On");
+                triggerName.Add(Strings.AlwaysOn);
                 alwaysOnItem.IsChecked = true;
             }
 
@@ -3516,7 +3535,7 @@ namespace DS4WinWPF.DS4Forms.ViewModels
                 {
                     MenuItem current = menu.Items[itemCount-1] as MenuItem;
                     current.IsChecked = true;
-                    triggerName.Add("Always On");
+                    triggerName.Add(Strings.AlwaysOn);
                     break;
                 }
             }
@@ -3525,7 +3544,7 @@ namespace DS4WinWPF.DS4Forms.ViewModels
             {
                 MenuItem current = menu.Items[itemCount - 1] as MenuItem;
                 current.IsChecked = true;
-                triggerName.Add("Always On");
+                triggerName.Add(Strings.AlwaysOn);
             }
 
             GyroMouseStickTrigDisplay = string.Join(", ", triggerName.ToArray());
@@ -3564,7 +3583,7 @@ namespace DS4WinWPF.DS4Forms.ViewModels
 			if (triggerList.Count == 0)
 			{
 				triggerList.Add(-1);
-				triggerName.Add("Always On");
+				triggerName.Add(Strings.AlwaysOn);
 				alwaysOnItem.IsChecked = true;
 			}
 
@@ -3591,7 +3610,7 @@ namespace DS4WinWPF.DS4Forms.ViewModels
 				{
 					MenuItem current = menu.Items[itemCount - 1] as MenuItem;
 					current.IsChecked = true;
-					triggerName.Add("Always On");
+					triggerName.Add(Strings.AlwaysOn);
 					break;
 				}
 			}
@@ -3600,7 +3619,7 @@ namespace DS4WinWPF.DS4Forms.ViewModels
 			{
 				MenuItem current = menu.Items[itemCount - 1] as MenuItem;
 				current.IsChecked = true;
-				triggerName.Add("Always On");
+				triggerName.Add(Strings.AlwaysOn);
 			}
 
 			GyroMouseToggleTrigDisplay = string.Join(", ", triggerName.ToArray());
@@ -3639,7 +3658,7 @@ namespace DS4WinWPF.DS4Forms.ViewModels
 			if (triggerList.Count == 0)
 			{
 				triggerList.Add(-1);
-				triggerName.Add("Always On");
+				triggerName.Add(Strings.AlwaysOn);
 				alwaysOnItem.IsChecked = true;
 			}
 
@@ -3667,7 +3686,7 @@ namespace DS4WinWPF.DS4Forms.ViewModels
 				{
 					MenuItem current = menu.Items[itemCount - 1] as MenuItem;
 					current.IsChecked = true;
-					triggerName.Add("Always On");
+					triggerName.Add(Strings.AlwaysOn);
 					break;
 				}
 			}
@@ -3676,7 +3695,7 @@ namespace DS4WinWPF.DS4Forms.ViewModels
 			{
 				MenuItem current = menu.Items[itemCount - 1] as MenuItem;
 				current.IsChecked = true;
-				triggerName.Add("Always On");
+				triggerName.Add(Strings.AlwaysOn);
 			}
 
 			GyroMouseStickToggleTrigDisplay = string.Join(", ", triggerName.ToArray());
@@ -3716,7 +3735,7 @@ namespace DS4WinWPF.DS4Forms.ViewModels
             if (triggerList.Count == 0)
             {
                 triggerList.Add(-1);
-                triggerName.Add("Always On");
+                triggerName.Add(Strings.AlwaysOn);
                 alwaysOnItem.IsChecked = true;
             }
 
@@ -3742,7 +3761,7 @@ namespace DS4WinWPF.DS4Forms.ViewModels
                 {
                     MenuItem current = menu.Items[itemCount - 1] as MenuItem;
                     current.IsChecked = true;
-                    triggerName.Add("Always On");
+                    triggerName.Add(Strings.AlwaysOn);
                     break;
                 }
             }
@@ -3751,7 +3770,7 @@ namespace DS4WinWPF.DS4Forms.ViewModels
             {
                 MenuItem current = menu.Items[itemCount - 1] as MenuItem;
                 current.IsChecked = true;
-                triggerName.Add("Always On");
+                triggerName.Add(Strings.AlwaysOn);
             }
 
             GyroSwipeTrigDisplay = string.Join(", ", triggerName.ToArray());
@@ -3792,7 +3811,7 @@ namespace DS4WinWPF.DS4Forms.ViewModels
             if (triggerList.Count == 0)
             {
                 triggerList.Add(-1);
-                triggerName.Add("Always On");
+                triggerName.Add(Strings.AlwaysOn);
                 alwaysOnItem.IsChecked = true;
             }
 
@@ -3818,7 +3837,7 @@ namespace DS4WinWPF.DS4Forms.ViewModels
                 {
                     MenuItem current = menu.Items[itemCount - 1] as MenuItem;
                     current.IsChecked = true;
-                    triggerName.Add("Always On");
+                    triggerName.Add(Strings.AlwaysOn);
                     break;
                 }
             }
@@ -3827,7 +3846,7 @@ namespace DS4WinWPF.DS4Forms.ViewModels
             {
                 MenuItem current = menu.Items[itemCount - 1] as MenuItem;
                 current.IsChecked = true;
-                triggerName.Add("Always On");
+                triggerName.Add(Strings.AlwaysOn);
             }
 
             GyroControlsTrigDisplay = string.Join(", ", triggerName.ToArray());
@@ -3922,7 +3941,7 @@ namespace DS4WinWPF.DS4Forms.ViewModels
         private Dictionary<ControlSelection, string> presetInputLabelDict =
             new Dictionary<ControlSelection, string>()
             {
-                [ControlSelection.None] = "None",
+                [ControlSelection.None] = Strings.None,
                 [ControlSelection.DPad] = "DPad",
                 [ControlSelection.LeftStick] = "Left Stick",
                 [ControlSelection.RightStick] = "Right Stick",

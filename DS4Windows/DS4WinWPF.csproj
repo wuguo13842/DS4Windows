@@ -283,6 +283,11 @@
 			<AutoGen>True</AutoGen>
 			<DependentUpon>Settings.settings</DependentUpon>
 		</Compile>
+		<Compile Update="Translations\Strings.Designer.cs">
+		  <DesignTime>True</DesignTime>
+		  <AutoGen>True</AutoGen>
+		  <DependentUpon>Strings.resx</DependentUpon>
+		</Compile>
 	</ItemGroup>
 
 	<ItemGroup>
@@ -306,12 +311,6 @@
 			<Generator>PublicResXFileCodeGenerator</Generator>
 			<LastGenOutput>Strings.Designer.cs</LastGenOutput>
 		</EmbeddedResource>
-
-		<Compile Update="Translations\Strings.Designer.cs">
-			<DesignTime>True</DesignTime>
-			<AutoGen>True</AutoGen>
-			<DependentUpon>Strings.resx</DependentUpon>
-		</Compile>
 
 		<EmbeddedResource Update="Translations\Strings.ar.resx">
 			<DependentUpon>Strings.resx</DependentUpon>
@@ -407,8 +406,6 @@
 	
   <!-- 编译完成后执行 PowerShell 脚本移动语言文件夹 -->
   <Target Name="MoveLangFoldersAfterBuild" AfterTargets="AfterBuild">
-    <Exec Command="powershell -ExecutionPolicy Bypass -File &quot;$(MSBuildProjectDirectory)\Move-LangFolders.ps1&quot; -OutputPath &quot;$(OutDir.TrimEnd('\'))&quot;" 
-          Condition="Exists('$(MSBuildProjectDirectory)\Move-LangFolders.ps1')" 
-          IgnoreExitCode="false" />
+    <Exec Command="powershell -ExecutionPolicy Bypass -File &quot;$(MSBuildProjectDirectory)\Move-LangFolders.ps1&quot; -OutputPath &quot;$(OutDir.TrimEnd('\'))&quot;" Condition="Exists('$(MSBuildProjectDirectory)\Move-LangFolders.ps1')" IgnoreExitCode="false" />
   </Target>
 </Project>

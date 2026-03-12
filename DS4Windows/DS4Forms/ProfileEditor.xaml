@@ -14,13 +14,16 @@
              d:DesignHeight="550" d:DesignWidth="1000"
 			 xmlns:sys="clr-namespace:System;assembly=mscorlib">
     <UserControl.Resources>
-		<sys:Double x:Key="FirstColumnMinWidth">100</sys:Double>
-		<GridLength x:Key="FirstColumnWidth">*</GridLength>
-		<sys:Double x:Key="SecondColumnMaxWidth">120</sys:Double>
-		<GridLength x:Key="SecondColumnWidth">Auto</GridLength>
-		<sys:Double x:Key="SecondColumnMaxWidthForStar">110</sys:Double>
-		<GridLength x:Key="FirstColumnStarWidth">*</GridLength>
-		<GridLength x:Key="SecondColumnStarWidth">*</GridLength>
+		<GridLength x:Key="AxisConfig_LSRS_1_Width">*</GridLength>
+		<sys:Double x:Key="AxisConfig_LSRS_1_MinWidth">80</sys:Double>
+	
+		<GridLength x:Key="AxisConfig_LSRS_2_Width">110</GridLength>
+		<sys:Double x:Key="AxisConfig_LSRS_2_MinWidth">100</sys:Double>
+		<sys:Double x:Key="AxisConfig_LSRS_2_MaxWidth">110</sys:Double>
+		
+		<GridLength x:Key="AxisConfig_DeltaAcceleration_2_Width">*</GridLength>
+		<sys:Double x:Key="AxisConfig_DeltaAcceleration_2_MaxWidth">110</sys:Double>
+		
         <xctk:InverseBoolConverter x:Key="InverseBoolConverter"/>
         <localConvert:InvertBoolToVisibilityConverter x:Key="InvertBoolToVisibilityConverter" />
         <local:ControlIndexCheck x:Key="controlIndexCheck" />
@@ -291,7 +294,7 @@
 						<Grid Margin="0,4,0,0">
 							<Grid.ColumnDefinitions>
 								<ColumnDefinition Width="*"/>
-								<ColumnDefinition Width="10"/> <!-- 间距 -->
+								<ColumnDefinition Width="5"/> <!-- 间距 -->
 								<ColumnDefinition Width="*"/>
 							</Grid.ColumnDefinitions>
 
@@ -357,8 +360,8 @@
 																	<RowDefinition Height="Auto"/>
 																</Grid.RowDefinitions>
 																<Grid.ColumnDefinitions>
-																	<ColumnDefinition Width="{StaticResource FirstColumnWidth}" MinWidth="{StaticResource FirstColumnMinWidth}"/>
-																	<ColumnDefinition Width="{StaticResource SecondColumnWidth}" MaxWidth="{StaticResource SecondColumnMaxWidth}"/>
+																	<ColumnDefinition Width="{StaticResource AxisConfig_LSRS_1_Width}" MinWidth="{StaticResource AxisConfig_LSRS_1_MinWidth}"/>
+																	<ColumnDefinition Width="{StaticResource AxisConfig_LSRS_2_Width}"/>
 																</Grid.ColumnDefinitions>
 																
 																<!-- DeadZone -->
@@ -397,7 +400,7 @@
 																			<TextBlock TextWrapping="Wrap" Text="{lex:Loc StickMaxOutputTooltip}"/>
 																		</xctk:DoubleUpDown.ToolTip>
 																	</xctk:DoubleUpDown>
-																	<CheckBox Grid.Column="1" Content="Force" VerticalAlignment="Center" 
+																	<CheckBox Grid.Column="1" Content="{lex:Loc ForceCheckBox}"  VerticalAlignment="Bottom" 
 																			  IsChecked="{Binding LSMaxOutputForce}" 
 																			  ToolTip="{lex:Loc StickMaxOutputForceTooltip}" Margin="8,0,0,0"/>
 																</Grid>
@@ -444,8 +447,8 @@
 														<RowDefinition Height="Auto"/> <!-- 第16行给Delta Acceleration -->
 													</Grid.RowDefinitions>
 													<Grid.ColumnDefinitions>
-														<ColumnDefinition Width="{StaticResource FirstColumnWidth}" MinWidth="{StaticResource FirstColumnMinWidth}"/>
-														<ColumnDefinition Width="{StaticResource SecondColumnWidth}" MaxWidth="{StaticResource SecondColumnMaxWidth}"/>
+														<ColumnDefinition Width="{StaticResource AxisConfig_LSRS_1_Width}" MinWidth="{StaticResource AxisConfig_LSRS_1_MinWidth}"/>
+														<ColumnDefinition Width="{StaticResource AxisConfig_LSRS_2_Width}"/>
 													</Grid.ColumnDefinitions>
 													
 													<!-- Output Curve -->
@@ -462,7 +465,7 @@
 													</ComboBox>
 
 													<!-- Custom Curve -->
-													<Label Grid.Row="1" Grid.Column="0" Content="Custom Curve:" VerticalAlignment="Center" Margin="0,0,0,5"/>
+													<Label Grid.Row="1" Grid.Column="0" Content="{lex:Loc CustomCurveLabel}" VerticalAlignment="Center" Margin="0,0,0,5"/>
 													<DockPanel Grid.Row="1" Grid.Column="1" IsEnabled="{Binding LSCustomCurveSelected}" Margin="0,0,0,5">
 														<Button x:Name="lsCustomEditorBtn" Content="..." Tag="LS" Width="20" 
 																DockPanel.Dock="Right" Click="CustomEditorBtn_Click" Margin="5,0,0,0"/>
@@ -500,7 +503,7 @@
 													<!-- Fuzz -->
 													<Label Grid.Row="4" Grid.Column="0" Content="{lex:Loc Fuzz}" ContentStringFormat="{}{0}:" VerticalAlignment="Center" Margin="0,0,0,5"/>
 													<DockPanel Grid.Row="4" Grid.Column="1" Margin="0,0,0,5">
-														<TextBlock Text="units" DockPanel.Dock="Right" FontSize="10" Margin="5,0,0,0" VerticalAlignment="Center"/>
+														<TextBlock Text="{lex:Loc Units}" DockPanel.Dock="Right" FontSize="10" Margin="5,0,0,0" VerticalAlignment="Center"/>
 														<xctk:IntegerUpDown Value="{Binding LSFuzz}" 
 																			HorizontalAlignment="Stretch"
 																			Minimum="0" Maximum="100">
@@ -522,8 +525,8 @@
 														<xctk:DoubleUpDown Grid.Column="1" FormatString="F1" Value="{Binding LSAntiSnapbackDelta, FallbackValue=135}"
 																		   HorizontalAlignment="Stretch"
 																		   Minimum="0.0" Maximum="256.0" Increment="1.0" 
-																		   IsEnabled="{Binding LSAntiSnapback}" Margin="8,0,8,0"/>
-														<TextBlock Grid.Column="2" Text="units" FontSize="10" VerticalAlignment="Center"/>
+																		   IsEnabled="{Binding LSAntiSnapback}" Margin="8,0,0,0"/>
+														<TextBlock Grid.Column="2" Text="{lex:Loc Units}" FontSize="10" VerticalAlignment="Center" Margin="5,0,0,0"/>
 													</Grid>
 
 													<!-- Anti Snapback Timing -->
@@ -537,7 +540,7 @@
 																			HorizontalAlignment="Stretch"
 																			Minimum="0" Maximum="1000" Increment="1" 
 																			IsEnabled="{Binding LSAntiSnapback}"/>
-														<TextBlock Grid.Column="1" Text="ms" FontSize="10" Margin="8,0,0,0" VerticalAlignment="Center"/>
+														<TextBlock Grid.Column="1" Text="{lex:Loc Milliseconds}" FontSize="10" Margin="5,0,0,0" VerticalAlignment="Center"/>
 													</Grid>
 
 													<!-- Outer Button - 第一行 -->
@@ -565,7 +568,7 @@
 																		   HorizontalAlignment="Stretch"
 																		   Minimum="0.0" Maximum="1.0" Increment="0.1"
 																		   ToolTip="{lex:Loc StickOuterBindDeadTooltip}"/>
-														<CheckBox Grid.Column="1" Content="Invert" IsChecked="{Binding LSOuterBindInvert}" 
+														<CheckBox Grid.Column="1" Content="{lex:Loc Invert}" IsChecked="{Binding LSOuterBindInvert}" 
 																  ToolTip="{lex:Loc StickOuterBindInvertTooltip}" Margin="8,0,0,0"/>
 													</Grid>
 
@@ -600,18 +603,16 @@
 															<!-- Delta Enabled -->
 															<Grid Margin="0,0,0,5">
 																<Grid.ColumnDefinitions>
-																	<ColumnDefinition Width="{StaticResource FirstColumnWidth}" MinWidth="{StaticResource FirstColumnMinWidth}"/>
-																	<ColumnDefinition Width="{StaticResource SecondColumnWidth}" MaxWidth="{StaticResource SecondColumnMaxWidth}"/>
+																	<ColumnDefinition Width="{StaticResource AxisConfig_LSRS_1_Width}" MinWidth="{StaticResource AxisConfig_LSRS_1_MinWidth}"/>
+																	<ColumnDefinition Width="{StaticResource AxisConfig_LSRS_2_Width}"/>
 																</Grid.ColumnDefinitions>
 																<Label Content="{lex:Loc Enabled}" ContentStringFormat="{}{0}:" VerticalAlignment="Center"/>
-																<CheckBox Grid.Column="1" IsChecked="{Binding LSDeltaAccelEnabled}" 
-																		  VerticalAlignment="Center" HorizontalAlignment="Right"/>
+																<CheckBox Grid.Column="1" VerticalAlignment="Center" HorizontalAlignment="Right"/>
 
 															</Grid>
 
 															<!-- Delta Settings Expander -->
-															<Expander IsExpanded="{Binding LSDeltaAccelEnabled,Mode=OneTime}" Header="{lex:Loc Settings}"  
-																	  IsEnabled="{Binding LSDeltaAccelEnabled}">
+															<Expander Header="{lex:Loc Settings}">
 																<!-- 统一的外部Grid - Expander内的所有控件 -->
 																<Grid Margin="0,5,0,0">
 																	<Grid.RowDefinitions>
@@ -622,8 +623,8 @@
 																		<RowDefinition Height="Auto"/>
 																	</Grid.RowDefinitions>
 																	<Grid.ColumnDefinitions>
-																		<ColumnDefinition Width="{StaticResource FirstColumnStarWidth}" MinWidth="{StaticResource FirstColumnMinWidth}"/>
-																		<ColumnDefinition Width="{StaticResource SecondColumnStarWidth}" MaxWidth="{StaticResource SecondColumnMaxWidthForStar}"/>
+																		<ColumnDefinition Width="{StaticResource AxisConfig_LSRS_1_Width}" MinWidth="{StaticResource AxisConfig_LSRS_1_MinWidth}"/>
+																		<ColumnDefinition Width="{StaticResource AxisConfig_LSRS_2_Width}"/>
 																	</Grid.ColumnDefinitions>
 																	
 																	<!-- Multiplier -->
@@ -647,7 +648,7 @@
 																	<!-- Easing Duration -->
 																	<Label Grid.Row="3" Grid.Column="0" Content="{lex:Loc EasingDuration}" ContentStringFormat="{}{0}:" VerticalAlignment="Center" Margin="0,0,0,5"/>
 																	<DockPanel Grid.Row="3" Grid.Column="1" Margin="0,0,0,5">
-																		<TextBlock Text="sec" DockPanel.Dock="Right" FontSize="10" 
+																		<TextBlock Text="{lex:Loc SecondsUnit}" DockPanel.Dock="Right" FontSize="10" 
 																				  Margin="5,0,0,0" VerticalAlignment="Center"/>
 																		<xctk:DoubleUpDown FormatString="F2" Value="{Binding LSDeltaEasingDuration}"
 																						  HorizontalAlignment="Stretch"
@@ -679,8 +680,8 @@
 														<RowDefinition Height="Auto"/>
 													</Grid.RowDefinitions>
 													<Grid.ColumnDefinitions>
-														<ColumnDefinition Width="{StaticResource FirstColumnWidth}" MinWidth="{StaticResource FirstColumnMinWidth}"/>
-														<ColumnDefinition Width="{StaticResource SecondColumnWidth}" MaxWidth="{StaticResource SecondColumnMaxWidth}"/>
+														<ColumnDefinition Width="{StaticResource AxisConfig_LSRS_1_Width}" MinWidth="{StaticResource AxisConfig_LSRS_1_MinWidth}"/>
+														<ColumnDefinition Width="{StaticResource AxisConfig_LSRS_2_Width}"/>
 													</Grid.ColumnDefinitions>
 													
 													<!-- Real World Calibration -->
@@ -784,8 +785,8 @@
 																	<RowDefinition Height="Auto"/>
 																</Grid.RowDefinitions>
 																<Grid.ColumnDefinitions>
-																	<ColumnDefinition Width="{StaticResource FirstColumnWidth}" MinWidth="{StaticResource FirstColumnMinWidth}"/>
-																	<ColumnDefinition Width="{StaticResource SecondColumnWidth}" MaxWidth="{StaticResource SecondColumnMaxWidth}"/>
+																	<ColumnDefinition Width="{StaticResource AxisConfig_LSRS_1_Width}" MinWidth="{StaticResource AxisConfig_LSRS_1_MinWidth}"/>
+																	<ColumnDefinition Width="{StaticResource AxisConfig_LSRS_2_Width}"/>
 																</Grid.ColumnDefinitions>
 																
 																<!-- DeadZone -->
@@ -824,7 +825,7 @@
 																			<TextBlock TextWrapping="Wrap" Text="{lex:Loc StickMaxOutputTooltip}"/>
 																		</xctk:DoubleUpDown.ToolTip>
 																	</xctk:DoubleUpDown>
-																	<CheckBox Grid.Column="1" Content="Force" VerticalAlignment="Center" 
+																	<CheckBox Grid.Column="1" Content="{lex:Loc ForceCheckBox}"  VerticalAlignment="Bottom" 
 																			  IsChecked="{Binding RSMaxOutputForce}" 
 																			  ToolTip="{lex:Loc StickMaxOutputForceTooltip}" Margin="8,0,0,0"/>
 																</Grid>
@@ -871,8 +872,8 @@
 														<RowDefinition Height="Auto"/> <!-- 第16行给Delta Acceleration -->
 													</Grid.RowDefinitions>
 													<Grid.ColumnDefinitions>
-														<ColumnDefinition Width="{StaticResource FirstColumnWidth}" MinWidth="{StaticResource FirstColumnMinWidth}"/>
-														<ColumnDefinition Width="{StaticResource SecondColumnWidth}" MaxWidth="{StaticResource SecondColumnMaxWidth}"/>
+														<ColumnDefinition Width="{StaticResource AxisConfig_LSRS_1_Width}" MinWidth="{StaticResource AxisConfig_LSRS_1_MinWidth}"/>
+														<ColumnDefinition Width="{StaticResource AxisConfig_LSRS_2_Width}"/>
 													</Grid.ColumnDefinitions>
 													
 													<!-- Output Curve -->
@@ -889,7 +890,7 @@
 													</ComboBox>
 
 													<!-- Custom Curve -->
-													<Label Grid.Row="1" Grid.Column="0" Content="Custom Curve:" VerticalAlignment="Center" Margin="0,0,0,5"/>
+													<Label Grid.Row="1" Grid.Column="0" Content="{lex:Loc CustomCurveLabel}" VerticalAlignment="Center" Margin="0,0,0,5"/>
 													<DockPanel Grid.Row="1" Grid.Column="1" IsEnabled="{Binding RSCustomCurveSelected}" Margin="0,0,0,5">
 														<Button x:Name="rsCustomEditorBtn" Content="..." Tag="RS" Width="20" 
 																DockPanel.Dock="Right" Click="CustomEditorBtn_Click" Margin="5,0,0,0"/>
@@ -927,7 +928,7 @@
 													<!-- Fuzz -->
 													<Label Grid.Row="4" Grid.Column="0" Content="{lex:Loc Fuzz}" ContentStringFormat="{}{0}:" VerticalAlignment="Center" Margin="0,0,0,5"/>
 													<DockPanel Grid.Row="4" Grid.Column="1" Margin="0,0,0,5">
-														<TextBlock Text="units" DockPanel.Dock="Right" FontSize="10" Margin="5,0,0,0" VerticalAlignment="Center"/>
+														<TextBlock Text="{lex:Loc Units}" DockPanel.Dock="Right" FontSize="10" Margin="5,0,0,0" VerticalAlignment="Center"/>
 														<xctk:IntegerUpDown Value="{Binding RSFuzz}" 
 																			HorizontalAlignment="Stretch"
 																			Minimum="0" Maximum="100">
@@ -949,8 +950,8 @@
 														<xctk:DoubleUpDown Grid.Column="1" FormatString="F1" Value="{Binding RSAntiSnapbackDelta, FallbackValue=135}"
 																		   HorizontalAlignment="Stretch"
 																		   Minimum="0.0" Maximum="256.0" Increment="1.0" 
-																		   IsEnabled="{Binding RSAntiSnapback}" Margin="8,0,8,0"/>
-														<TextBlock Grid.Column="2" Text="units" FontSize="10" VerticalAlignment="Center"/>
+																		   IsEnabled="{Binding RSAntiSnapback}" Margin="8,0,0,0"/>
+														<TextBlock Grid.Column="2" Text="{lex:Loc Units}" FontSize="10" VerticalAlignment="Center" Margin="5,0,0,0"/>
 													</Grid>
 
 													<!-- Anti Snapback Timing -->
@@ -964,7 +965,7 @@
 																			HorizontalAlignment="Stretch"
 																			Minimum="0" Maximum="1000" Increment="1" 
 																			IsEnabled="{Binding RSAntiSnapback}"/>
-														<TextBlock Grid.Column="1" Text="ms" FontSize="10" Margin="8,0,0,0" VerticalAlignment="Center"/>
+														<TextBlock Grid.Column="1" Text="{lex:Loc Milliseconds}" FontSize="10" Margin="5,0,0,0" VerticalAlignment="Center"/>
 													</Grid>
 
 													<!-- Outer Button - 第一行 -->
@@ -992,7 +993,7 @@
 																		   HorizontalAlignment="Stretch"
 																		   Minimum="0.0" Maximum="1.0" Increment="0.1"
 																		   ToolTip="{lex:Loc StickOuterBindDeadTooltip}"/>
-														<CheckBox Grid.Column="1" Content="Invert" IsChecked="{Binding RSOuterBindInvert}" 
+														<CheckBox Grid.Column="1" Content="{lex:Loc Invert}" IsChecked="{Binding RSOuterBindInvert}" 
 																  ToolTip="{lex:Loc StickOuterBindInvertTooltip}" Margin="8,0,0,0"/>
 													</Grid>
 
@@ -1027,17 +1028,15 @@
 															<!-- Delta Enabled -->
 															<Grid Margin="0,0,0,5">
 																<Grid.ColumnDefinitions>
-																	<ColumnDefinition Width="{StaticResource FirstColumnWidth}" MinWidth="{StaticResource FirstColumnMinWidth}"/>
-																	<ColumnDefinition Width="{StaticResource SecondColumnWidth}" MaxWidth="{StaticResource SecondColumnMaxWidth}"/>
+																	<ColumnDefinition Width="{StaticResource AxisConfig_LSRS_1_Width}" MinWidth="{StaticResource AxisConfig_LSRS_1_MinWidth}"/>
+																	<ColumnDefinition Width="{StaticResource AxisConfig_LSRS_2_Width}"/>
 																</Grid.ColumnDefinitions>
 																<Label Content="{lex:Loc Enabled}" ContentStringFormat="{}{0}:" VerticalAlignment="Center"/>
-																<CheckBox Grid.Column="1" IsChecked="{Binding RSDeltaAccelEnabled}" 
-																		  VerticalAlignment="Center" HorizontalAlignment="Right"/>
+																<CheckBox Grid.Column="1" VerticalAlignment="Center" HorizontalAlignment="Right"/>
 															</Grid>
 
 															<!-- Delta Settings Expander -->
-															<Expander IsExpanded="{Binding RSDeltaAccelEnabled,Mode=OneTime}" Header="{lex:Loc Settings}" 
-																	  IsEnabled="{Binding RSDeltaAccelEnabled}">
+															<Expander Header="{lex:Loc Settings}">
 																<!-- 统一的外部Grid - Expander内的所有控件 -->
 																<Grid Margin="0,5,0,0">
 																	<Grid.RowDefinitions>
@@ -1048,8 +1047,8 @@
 																		<RowDefinition Height="Auto"/>
 																	</Grid.RowDefinitions>
 																	<Grid.ColumnDefinitions>
-																		<ColumnDefinition Width="{StaticResource FirstColumnStarWidth}" MinWidth="{StaticResource FirstColumnMinWidth}"/>
-																		<ColumnDefinition Width="{StaticResource SecondColumnStarWidth}" MaxWidth="{StaticResource SecondColumnMaxWidthForStar}"/>
+																		<ColumnDefinition Width="{StaticResource AxisConfig_LSRS_1_Width}" MinWidth="{StaticResource AxisConfig_LSRS_1_MinWidth}"/>
+																		<ColumnDefinition Width="{StaticResource AxisConfig_LSRS_2_Width}"/>
 																	</Grid.ColumnDefinitions>
 																	
 																	<!-- Multiplier -->
@@ -1073,7 +1072,7 @@
 																	<!-- Easing Duration -->
 																	<Label Grid.Row="3" Grid.Column="0" Content="{lex:Loc EasingDuration}" ContentStringFormat="{}{0}:" VerticalAlignment="Center" Margin="0,0,0,5"/>
 																	<DockPanel Grid.Row="3" Grid.Column="1" Margin="0,0,0,5">
-																		<TextBlock Text="sec" DockPanel.Dock="Right" FontSize="10" 
+																		<TextBlock Text="{lex:Loc SecondsUnit}" DockPanel.Dock="Right" FontSize="10" 
 																				  Margin="5,0,0,0" VerticalAlignment="Center"/>
 																		<xctk:DoubleUpDown FormatString="F2" Value="{Binding RSDeltaEasingDuration}"
 																						  HorizontalAlignment="Stretch"
@@ -1105,8 +1104,8 @@
 														<RowDefinition Height="Auto"/>
 													</Grid.RowDefinitions>
 													<Grid.ColumnDefinitions>
-														<ColumnDefinition Width="{StaticResource FirstColumnWidth}" MinWidth="{StaticResource FirstColumnMinWidth}"/>
-														<ColumnDefinition Width="{StaticResource SecondColumnWidth}" MaxWidth="{StaticResource SecondColumnMaxWidth}"/>
+														<ColumnDefinition Width="{StaticResource AxisConfig_LSRS_1_Width}" MinWidth="{StaticResource AxisConfig_LSRS_1_MinWidth}"/>
+														<ColumnDefinition Width="{StaticResource AxisConfig_LSRS_2_Width}"/>
 													</Grid.ColumnDefinitions>
 													
 													<!-- Real World Calibration -->
@@ -1239,57 +1238,62 @@
                                              Margin="{StaticResource spaceMargin}" />
                                 </DockPanel>
 
+								<!-- L2 Two Stage Mode ComboBox -->
                                 <Label Content="{lex:Loc TwoStageMode}" ContentStringFormat="{}{0}:" Grid.Row="8" Grid.Column="0" />
-                                <ComboBox Grid.Row="8" Grid.Column="1" ItemsSource="{Binding Path=TwoStageModeChoices}"
-                                          DisplayMemberPath="DisplayName" SelectedValuePath="Mode" SelectedValue="{Binding L2TriggerMode}" Margin="{StaticResource spaceMargin}">
-                                    <ComboBox.ToolTip>
-                                        <TextBlock TextWrapping="Wrap">
-                                            <Bold>Disabled</Bold><LineBreak />
-                                            Disables use of Two Stage Triggers. Only bind one action to L2 or R2<LineBreak />
-                                            <LineBreak />
-                                            <Bold>Normal</Bold><LineBreak />
-                                            Normal (simple) Two Stage Trigger activation. Activates Soft Pull action when under maximum output. Activates Full Pull action as well when trigger reaches maximum value.<LineBreak />
-                                            <LineBreak />
-                                            <Bold>Exclusive</Bold><LineBreak />
-                                            Activates Soft Pull action when under maximum output. When trigger reaches maximum output, deactivate Soft Pull action and then activate Full Pull action<LineBreak />
-                                            <LineBreak />
-                                            <Bold>Hair Trigger</Bold><LineBreak />
-                                            Similar to Normal Two Stage Trigger mode with one difference. Activates Soft Pull action when under maximum output. Activates Full Pull action as well when trigger reaches maximum value. When the trigger is partially released from Full Pull, both Full Pull and Soft Pull actions deactivate. Activating Full Pull action will activate the Soft Pull again as well.<LineBreak />
-                                            <LineBreak />
-                                            <Bold>Hip Fire</Bold><LineBreak />
-                                            Takes the <Bold>Hip Fire Delay</Bold> time into account. The trigger will not activate an action until the time has expired. Once the time has expired, the current action for the trigger output will be determined. This mode allows skipping the activation of Soft Pull and only firing a Full Pull action.<LineBreak />
-                                            <LineBreak />
-                                            <Bold>Hip Fire Exclusive</Bold><LineBreak />
-                                            Similar to Hip Fire mode. The main difference is only one action will ever be activated.
-                                        </TextBlock>
-                                    </ComboBox.ToolTip>
-                                </ComboBox>
+								<ComboBox Grid.Row="8" Grid.Column="1" ItemsSource="{Binding Path=TwoStageModeChoices}"
+										  DisplayMemberPath="DisplayName" SelectedValuePath="Mode" SelectedValue="{Binding L2TriggerMode}" 
+										  Margin="{StaticResource spaceMargin}" VerticalAlignment="Center" VerticalContentAlignment="Center">
+									<ComboBox.ToolTip>
+										<TextBlock TextWrapping="Wrap">
+											<Bold><Run Text="{lex:Loc TwoStageModeDisabled}"/></Bold><LineBreak />
+											<Run Text="{lex:Loc TwoStageModeDisabledDesc}"/><LineBreak />
+											<LineBreak />
+											<Bold><Run Text="{lex:Loc TwoStageModeNormal}"/></Bold><LineBreak />
+											<Run Text="{lex:Loc TwoStageModeNormalDesc}"/><LineBreak />
+											<LineBreak />
+											<Bold><Run Text="{lex:Loc TwoStageModeExclusive}"/></Bold><LineBreak />
+											<Run Text="{lex:Loc TwoStageModeExclusiveDesc}"/><LineBreak />
+											<LineBreak />
+											<Bold><Run Text="{lex:Loc TwoStageModeHairTrigger}"/></Bold><LineBreak />
+											<Run Text="{lex:Loc TwoStageModeHairTriggerDesc}"/><LineBreak />
+											<LineBreak />
+											<Bold><Run Text="{lex:Loc TwoStageModeHipFire}"/></Bold><LineBreak />
+											<Run Text="{lex:Loc TwoStageModeHipFireDesc}"/><LineBreak />
+											<LineBreak />
+											<Bold><Run Text="{lex:Loc TwoStageModeHipFireExclusive}"/></Bold><LineBreak />
+											<Run Text="{lex:Loc TwoStageModeHipFireExclusiveDesc}"/>
+										</TextBlock>
+									</ComboBox.ToolTip>
+								</ComboBox>
 
-                                <ComboBox Grid.Row="8" Grid.Column="2" ItemsSource="{Binding Path=TwoStageModeChoices}"
-                                          DisplayMemberPath="DisplayName" SelectedValuePath="Mode" SelectedValue="{Binding R2TriggerMode}" Margin="{StaticResource spaceMargin}">
-                                    <ComboBox.ToolTip>
-                                        <TextBlock TextWrapping="Wrap">
-                                            <Bold>Disabled</Bold><LineBreak />
-                                            Disables use of Two Stage Triggers. Only bind one action to L2 or R2<LineBreak />
-                                            <LineBreak />
-                                            <Bold>Normal</Bold><LineBreak />
-                                            Normal (simple) Two Stage Trigger activation. Activates Soft Pull action when under maximum output. Activates Full Pull action as well when trigger reaches maximum value.<LineBreak />
-                                            <LineBreak />
-                                            <Bold>Exclusive</Bold><LineBreak />
-                                            Activates Soft Pull action when under maximum output. When trigger reaches maximum output, deactivate Soft Pull action and then activate Full Pull action<LineBreak />
-                                            <LineBreak />
-                                            <Bold>Hair Trigger</Bold><LineBreak />
-                                            Similar to Normal Two Stage Trigger mode with one difference. Activates Soft Pull action when under maximum output. Activates Full Pull action as well when trigger reaches maximum value. When the trigger is partially released from Full Pull, both Full Pull and Soft Pull actions deactivate. Activating Full Pull action will activate the Soft Pull again as well.<LineBreak />
-                                            <LineBreak />
-                                            <Bold>Hip Fire</Bold><LineBreak />
-                                            Takes the <Bold>Hip Fire Delay</Bold> time into account. The trigger will not activate an action until the time has expired. Once the time has expired, the current action for the trigger output will be determined. This mode allows skipping the activation of Soft Pull and only firing a Full Pull action.<LineBreak />
-                                            <LineBreak />
-                                            <Bold>Hip Fire Exclusive</Bold><LineBreak />
-                                            Similar to Hip Fire mode. The main difference is only one action will ever be activated.
-                                        </TextBlock>
-                                    </ComboBox.ToolTip>
-                                </ComboBox>
+								<!-- R2 Two Stage Mode ComboBox -->
+								<ComboBox Grid.Row="8" Grid.Column="2" ItemsSource="{Binding Path=TwoStageModeChoices}"
+										  DisplayMemberPath="DisplayName" SelectedValuePath="Mode" SelectedValue="{Binding R2TriggerMode}" 
+										  Margin="{StaticResource spaceMargin}" VerticalAlignment="Center" VerticalContentAlignment="Center">
+									<ComboBox.ToolTip>
+										<TextBlock TextWrapping="Wrap">
+											<Bold><Run Text="{lex:Loc TwoStageModeDisabled}"/></Bold><LineBreak />
+											<Run Text="{lex:Loc TwoStageModeDisabledDesc}"/><LineBreak />
+											<LineBreak />
+											<Bold><Run Text="{lex:Loc TwoStageModeNormal}"/></Bold><LineBreak />
+											<Run Text="{lex:Loc TwoStageModeNormalDesc}"/><LineBreak />
+											<LineBreak />
+											<Bold><Run Text="{lex:Loc TwoStageModeExclusive}"/></Bold><LineBreak />
+											<Run Text="{lex:Loc TwoStageModeExclusiveDesc}"/><LineBreak />
+											<LineBreak />
+											<Bold><Run Text="{lex:Loc TwoStageModeHairTrigger}"/></Bold><LineBreak />
+											<Run Text="{lex:Loc TwoStageModeHairTriggerDesc}"/><LineBreak />
+											<LineBreak />
+											<Bold><Run Text="{lex:Loc TwoStageModeHipFire}"/></Bold><LineBreak />
+											<Run Text="{lex:Loc TwoStageModeHipFireDesc}"/><LineBreak />
+											<LineBreak />
+											<Bold><Run Text="{lex:Loc TwoStageModeHipFireExclusive}"/></Bold><LineBreak />
+											<Run Text="{lex:Loc TwoStageModeHipFireExclusiveDesc}"/>
+										</TextBlock>
+									</ComboBox.ToolTip>
+								</ComboBox>
 
+								<!-- Full Button Pull Label -->
                                 <Label Content="{lex:Loc FullBtnPull}" ContentStringFormat="{}{0}:" Grid.Row="9" Grid.Column="0" />
                                 <DockPanel Grid.Row="9" Grid.Column="1">
                                     <Button Content="{lex:Loc Full}" MinWidth="40" Tag="{Binding L2FullPull, Source={StaticResource controlIndexCheck}}" Click="TriggerFullPullBtn_Click"
@@ -1297,6 +1301,8 @@
                                     <Label x:Name="l2FullPullLb" Content="{Binding MappingName,FallbackValue=Unassigned}"
                                            Margin="{StaticResource spaceMargin}" HorizontalAlignment="Center" DockPanel.Dock="Top"/>
                                 </DockPanel>
+								
+								<!-- L2 Full Pull -->
                                 <DockPanel Grid.Row="9" Grid.Column="2">
                                     <Button Content="{lex:Loc Full}" MinWidth="40" Tag="{Binding R2FullPull, Source={StaticResource controlIndexCheck}}" Click="TriggerFullPullBtn_Click"
                                             Margin="{StaticResource spaceMargin}" DockPanel.Dock="Top" />
@@ -1304,37 +1310,83 @@
                                            Margin="{StaticResource spaceMargin}" HorizontalAlignment="Center" DockPanel.Dock="Top" />
                                 </DockPanel>
 
+								<!-- Hip Fire Delay Label -->
                                 <Label Content="{lex:Loc HipFireDelay}" ContentStringFormat="{}{0}:" Grid.Row="10" Grid.Column="0" />
-                                <DockPanel Grid.Row="10" Grid.Column="1">
-                                    <Label Content="ms" DockPanel.Dock="Right" />
-                                    <xctk:IntegerUpDown d:IsHidden="True" Value="{Binding L2HipFireTime}" MinWidth="50" Maximum="5000" Minimum="0" Increment="10"
-                                                   Margin="{StaticResource spaceMargin}">
-                                        <xctk:IntegerUpDown.ToolTip>
-                                            <TextBlock TextWrapping="Wrap">
-                                                Time delay used with Two State Modes <Bold>Hire Fire</Bold> and <Bold>Hip Fire Exclusive</Bold>. The time delay before an action is first executed.
-                                            </TextBlock>
-                                        </xctk:IntegerUpDown.ToolTip>
-                                    </xctk:IntegerUpDown>
-                                </DockPanel>
+								
+								<!-- L2 Hip Fire Delay -->
+								<DockPanel Grid.Row="10" Grid.Column="1" LastChildFill="True">
+									<Label Content="{lex:Loc Milliseconds}" DockPanel.Dock="Right" 
+										   VerticalAlignment="Center" Margin="5,0,0,0"/>
+									<xctk:IntegerUpDown d:IsHidden="True" Value="{Binding L2HipFireTime}" 
+														MinWidth="50" Maximum="5000" Minimum="0" Increment="10"
+														Margin="{StaticResource spaceMargin}"
+														VerticalAlignment="Center" VerticalContentAlignment="Center">
+										<xctk:IntegerUpDown.ToolTip>
+											<TextBlock TextWrapping="Wrap" Text="{lex:Loc HipFireDelayTooltip}"/>
+										</xctk:IntegerUpDown.ToolTip>
+									</xctk:IntegerUpDown>
+								</DockPanel>
 
-                                <DockPanel Grid.Row="10" Grid.Column="2">
-                                    <Label Content="ms" DockPanel.Dock="Right" />
-                                    <xctk:IntegerUpDown d:IsHidden="True" Value="{Binding R2HipFireTime}" MinWidth="50" Maximum="5000" Minimum="0" Increment="10"
-                                                   Margin="{StaticResource spaceMargin}">
-                                        <xctk:IntegerUpDown.ToolTip>
-                                            <TextBlock TextWrapping="Wrap">
-                                                Time delay used with Two State Modes <Bold>Hire Fire</Bold> and <Bold>Hip Fire Exclusive</Bold>. The time delay before an action is first executed.
-                                            </TextBlock>
-                                        </xctk:IntegerUpDown.ToolTip>
-                                    </xctk:IntegerUpDown>
-                                </DockPanel>
+								<!-- R2 Hip Fire Delay -->
+								<DockPanel Grid.Row="10" Grid.Column="2" LastChildFill="True">
+									<Label Content="{lex:Loc Milliseconds}" DockPanel.Dock="Right" 
+										   VerticalAlignment="Center" Margin="5,0,0,0"/>
+									<xctk:IntegerUpDown d:IsHidden="True" Value="{Binding R2HipFireTime}" 
+														MinWidth="50" Maximum="5000" Minimum="0" Increment="10"
+														Margin="{StaticResource spaceMargin}"
+														VerticalAlignment="Center" VerticalContentAlignment="Center">
+										<xctk:IntegerUpDown.ToolTip>
+											<TextBlock TextWrapping="Wrap" Text="{lex:Loc HipFireDelayTooltip}"/>
+										</xctk:IntegerUpDown.ToolTip>
+									</xctk:IntegerUpDown>
+								</DockPanel>
 
+								<!-- Trigger Effect Label -->
                                 <Label Content="{lex:Loc TriggerEffect}" ContentStringFormat="{}{0}:" Grid.Row="11" Grid.Column="0" />
 
-                                <ComboBox Grid.Row="11" Grid.Column="1" ItemsSource="{Binding Path=TriggerEffectChoices}"
-                                          DisplayMemberPath="DisplayName" SelectedValuePath="Mode" SelectedValue="{Binding L2TriggerEffect}" Margin="{StaticResource spaceMargin}" />
-                                <ComboBox Grid.Row="11" Grid.Column="2" ItemsSource="{Binding Path=TriggerEffectChoices}"
-                                          DisplayMemberPath="DisplayName" SelectedValuePath="Mode" SelectedValue="{Binding R2TriggerEffect}" Margin="{StaticResource spaceMargin}" />
+							<!-- L2 Trigger Effect ComboBox -->
+							<ComboBox Grid.Row="11" Grid.Column="1" ItemsSource="{Binding Path=TriggerEffectChoices}"
+									  DisplayMemberPath="DisplayName" SelectedValuePath="Mode" 
+									  SelectedValue="{Binding L2TriggerEffect}" Margin="{StaticResource spaceMargin}" 
+									  VerticalAlignment="Center" VerticalContentAlignment="Center">
+								<ComboBox.ToolTip>
+									<TextBlock TextWrapping="Wrap">
+										<Bold><Run Text="{lex:Loc None}"/></Bold><LineBreak />
+										<Run Text="{lex:Loc TriggerEffectNoneDesc}"/><LineBreak />
+										<LineBreak />
+										<Bold><Run Text="{lex:Loc TriggerEffectFullClick}"/></Bold><LineBreak />
+										<Run Text="{lex:Loc TriggerEffectFullClickDesc}"/><LineBreak />
+										<LineBreak />
+										<Bold><Run Text="{lex:Loc TriggerEffectRigid}"/></Bold><LineBreak />
+										<Run Text="{lex:Loc TriggerEffectRigidDesc}"/><LineBreak />
+										<LineBreak />
+										<Bold><Run Text="{lex:Loc TriggerEffectPulse}"/></Bold><LineBreak />
+										<Run Text="{lex:Loc TriggerEffectPulseDesc}"/>
+									</TextBlock>
+								</ComboBox.ToolTip>
+							</ComboBox>
+
+							<!-- R2 Trigger Effect ComboBox -->
+							<ComboBox Grid.Row="11" Grid.Column="2" ItemsSource="{Binding Path=TriggerEffectChoices}"
+									  DisplayMemberPath="DisplayName" SelectedValuePath="Mode" 
+									  SelectedValue="{Binding R2TriggerEffect}" Margin="{StaticResource spaceMargin}" 
+									  VerticalAlignment="Center" VerticalContentAlignment="Center">
+								<ComboBox.ToolTip>
+									<TextBlock TextWrapping="Wrap">
+										<Bold><Run Text="{lex:Loc None}"/></Bold><LineBreak />
+										<Run Text="{lex:Loc TriggerEffectNoneDesc}"/><LineBreak />
+										<LineBreak />
+										<Bold><Run Text="{lex:Loc TriggerEffectFullClick}"/></Bold><LineBreak />
+										<Run Text="{lex:Loc TriggerEffectFullClickDesc}"/><LineBreak />
+										<LineBreak />
+										<Bold><Run Text="{lex:Loc TriggerEffectRigid}"/></Bold><LineBreak />
+										<Run Text="{lex:Loc TriggerEffectRigidDesc}"/><LineBreak />
+										<LineBreak />
+										<Bold><Run Text="{lex:Loc TriggerEffectPulse}"/></Bold><LineBreak />
+										<Run Text="{lex:Loc TriggerEffectPulseDesc}"/>
+									</TextBlock>
+								</ComboBox.ToolTip>
+							</ComboBox>
                             </Grid>
                         </GroupBox>
 
@@ -1387,7 +1439,7 @@
                                 <ComboBox Grid.Row="5" Grid.Column="1" SelectedIndex="{Binding SXOutputCurveIndex}"
                                           Margin="{StaticResource spaceMargin}">
                                     <ComboBoxItem Content="{lex:Loc Linear}" />
-                                    <ComboBoxItem Content="{lex:Loc EnhancePrecision}" />
+                                    <ComboBoxItem Content="{lex:Loc EnhancedPrecision}" />
                                     <ComboBoxItem Content="{lex:Loc Quadratic}" />
                                     <ComboBoxItem Content="{lex:Loc Cubic}" />
                                     <ComboBoxItem Content="{lex:Loc EaseoutQuad}" />
@@ -1560,7 +1612,7 @@
 														Value="{Binding FlashAt,FallbackValue=0}" MinWidth="50"
 														Minimum="-10" Maximum="100" Increment="10" 
 														VerticalAlignment="Center" Margin="8,0,0,0"/>
-									<Label Grid.Column="2" Content="{lex:Loc PercentSign}" 
+									<Label Grid.Column="2" Content="%" 
 										   VerticalAlignment="Center" Margin="4,0,0,0"/>
 									<Button x:Name="flashColorBtn" Grid.Column="3" Width="20" Height="20" 
 											Background="{Binding FlashColor,FallbackValue=Blue}"
@@ -1828,7 +1880,7 @@
 
 									<!-- Min Threshold -->
 									<StackPanel Orientation="Horizontal" Margin="{StaticResource spaceMargin}">
-										<Label Content="{lex:Loc MinThresholdLabel}" 
+										<Label Content="{lex:Loc MinThreshold}" 
 											   ContentStringFormat="{}{0}:" 
 											   VerticalAlignment="Center"/>
 										<xctk:DoubleUpDown d:IsHidden="True" MinWidth="80" Height="20" 
@@ -2338,16 +2390,38 @@
 														VerticalAlignment="Center" MinHeight="24"/>
 											</StackPanel>
 
-											<StackPanel Orientation="Horizontal" Margin="0,0,0,8">
-												<Label Content="{lex:Loc Fuzz}" ContentStringFormat="{}{0}:" VerticalAlignment="Center"/>
-												<xctk:IntegerUpDown d:IsHidden="True" Value="{Binding SASteeringWheelFuzz}"
-																	Minimum="0" Maximum="100" ToolTip="{lex:Loc SASteeringWheelFuzzTooltip}"
-																	Margin="{StaticResource spaceMargin}" VerticalAlignment="Center" MinHeight="24"/>
-												<TextBlock Text="{lex:Loc Units}" FontSize="10" Margin="{StaticResource spaceMargin}" 
+											<Grid Margin="0,0,0,8" VerticalAlignment="Center">
+												<Grid.ColumnDefinitions>
+													<ColumnDefinition Width="Auto"/>  <!-- Label列 -->
+													<ColumnDefinition Width="Auto"/>  <!-- IntegerUpDown列 -->
+													<ColumnDefinition Width="Auto"/>  <!-- TextBlock列 -->
+												</Grid.ColumnDefinitions>
+												
+												<!-- Label -->
+												<Label Grid.Column="0" 
+													   Content="{lex:Loc Fuzz}" 
+													   ContentStringFormat="{}{0}:" 
+													   VerticalAlignment="Center"/>
+												
+												<!-- IntegerUpDown -->
+												<xctk:IntegerUpDown Grid.Column="1" 
+																	d:IsHidden="True" 
+																	Value="{Binding SASteeringWheelFuzz}"
+																	Minimum="0" Maximum="100" 
+																	ToolTip="{lex:Loc SASteeringWheelFuzzTooltip}"
+																	Margin="8,0,0,0" 
+																	VerticalAlignment="Center" 
+																	MinHeight="24"/>
+												
+												<!-- Units TextBlock -->
+												<TextBlock Grid.Column="2" 
+														   Text="{lex:Loc Units}" 
+														   FontSize="10" 
+														   Margin="5,0,0,0" 
 														   VerticalAlignment="Center" />
-											</StackPanel>
+											</Grid>
 
-											<StackPanel Orientation="Horizontal" Margin="0,0,0,8">
+											<StackPanel Orientation="Horizontal" Margin="{StaticResource spaceMargin}">
 												<CheckBox Content="{lex:Loc UseSmoothing}" IsChecked="{Binding SASteeringWheelUseSmoothing}" 
 														  VerticalAlignment="Center"/>
 											</StackPanel>
@@ -2384,7 +2458,7 @@
 								<StackPanel x:Name="gyroMousePanel" Margin="{StaticResource spaceMargin}">
 									<!-- Turn Behavior Trigger -->
 									<StackPanel Orientation="Horizontal" Margin="{StaticResource spaceMargin}">
-										<Label Content="{lex:Loc TurnBehaviorTrigger}" VerticalAlignment="Center"/>
+										<Label Content="{lex:Loc TriggersLabel}" VerticalAlignment="Center"/>
 										<Button x:Name="gyroMouseTrigBtn" Content="{Binding GyroMouseTrigDisplay,FallbackValue='L2'}" 
 												MinWidth="160" Margin="8,0,0,0" Click="GyroMouseTrigBtn_Click"
 												VerticalAlignment="Center" MinHeight="24">
@@ -2411,7 +2485,7 @@
 											<ComboBoxItem Content="{lex:Loc Or}" />
 										</ComboBox>
 
-										<CheckBox x:Name="gyroMouseTurnsCheckBox" Grid.Column="2" Content="{lex:Loc InvertBehavior}" 
+										<CheckBox x:Name="gyroMouseTurnsCheckBox" Grid.Column="2" Content="{lex:Loc TurnBehaviorTurnsGyro}" 
 												  IsChecked="{Binding GyroMouseTurns}" ToolTip="{lex:Loc GyroTriggerBehavior}" 
 												  VerticalAlignment="Center" Margin="20,0,0,0"/>
 									</Grid>
@@ -2420,7 +2494,7 @@
 									<StackPanel Orientation="Horizontal" Margin="{StaticResource spaceMargin}">
 										<CheckBox x:Name="gyroMouseToggleCheckBox" Content="{lex:Loc ToggleTrigger}" 
 												  IsChecked="{Binding GyroMouseToggle}" VerticalAlignment="Center"/>
-										<Button x:Name="gyroMouseToggleTrigBtn" Content="{Binding GyroMouseToggleTrigDisplay,FallbackValue='L2'}" 
+										<Button x:Name="gyroMouseToggleTrigBtn" Content="{Binding GyroMouseToggleTrigDisplay,FallbackValue='Always On'}" 
 												MinWidth="160" Margin="8,0,0,0" Click="GyroMouseToggleTrigBtn_Click"
 												MinHeight="26" VerticalAlignment="Center">
 											<Button.ContextMenu>
@@ -2441,7 +2515,7 @@
 										<xctk:IntegerUpDown d:IsHidden="True" MinWidth="50" Margin="8,0,0,0" Value="{Binding GyroVertScale}"
 															Minimum="0" Maximum="400" Increment="10" 
 															VerticalAlignment="Center" MinHeight="24"/>
-										<Label Content="{lex:Loc PercentSign}" VerticalAlignment="Center" Margin="2,0,0,0"/>
+										<Label Content="%" VerticalAlignment="Center" Margin="2,0,0,0"/>
 									</StackPanel>
 
 									<Grid Margin="{StaticResource spaceMargin}">
@@ -2475,16 +2549,27 @@
 															VerticalAlignment="Center" MinHeight="24"/>
 									</StackPanel>
 
-									<CheckBox Content="{lex:Loc JitterCompensation}" Margin="{StaticResource spaceMargin}"
-											  IsChecked="{Binding GyroMouseJitterCompensation}" 
-											  ToolTip="{lex:Loc GyroTriggerJitterCompensationTooltip}" 
-											  VerticalAlignment="Center"/>
+									<StackPanel Orientation="Horizontal" Margin="{StaticResource spaceMargin}" VerticalAlignment="Center">
+										<CheckBox Content="{lex:Loc JitterCompensation}" 
+												  IsChecked="{Binding GyroMouseJitterCompensation}" 
+												  ToolTip="{lex:Loc GyroTriggerJitterCompensationTooltip}" 
+												  VerticalAlignment="Center"/>
 
-									<StackPanel Orientation="Horizontal" Margin="{StaticResource spaceMargin}">
-										<Label Content="{lex:Loc MinThreshold}" ContentStringFormat="{}{0}:" VerticalAlignment="Center"/>
-										<xctk:DoubleUpDown d:IsHidden="True" MinWidth="80" Height="20" Minimum="1.0" Maximum="40.0" 
-														   Increment="1.0" FormatString="F1" Value="{Binding GyroMouseMinThreshold,FallbackValue='1.0'}" 
-														   Margin="8,0,0,0" VerticalAlignment="Center"/>
+										<StackPanel Orientation="Horizontal" Margin="8,0,0,0" VerticalAlignment="Center">
+											<Label Content="{lex:Loc MinThreshold}" 
+												   ContentStringFormat="{}{0}:" 
+												   VerticalAlignment="Center"/>
+											<xctk:DoubleUpDown MinWidth="80" 
+															   Height="20" 
+															   Minimum="1.0" 
+															   Maximum="40.0" 
+															   Increment="1.0" 
+															   FormatString="F1" 
+															   Value="{Binding GyroMouseMinThreshold,FallbackValue='1.0'}" 
+															   Margin="8,0,0,0" 
+															   VerticalAlignment="Center" 
+															   MinHeight="24"/>
+										</StackPanel>
 									</StackPanel>
 
 									<CheckBox Content="{lex:Loc Smoothing}" IsChecked="{Binding GyroMouseSmooth,FallbackValue='False'}" 
@@ -2540,7 +2625,7 @@
 								<StackPanel x:Name="gyroMouseJoystickPanel">
 									<!-- Turn Behavior Trigger -->
 									<StackPanel Orientation="Horizontal" Margin="{StaticResource spaceMargin}">
-										<Label Content="{lex:Loc TurnBehaviorTrigger}" VerticalAlignment="Center"/>
+										<Label Content="{lex:Loc TriggersLabel}" VerticalAlignment="Center"/>
 										<Button x:Name="gyroMouseStickTrigBtn" Content="{Binding GyroMouseStickTrigDisplay,FallbackValue='L2'}" 
 												MinWidth="160" Margin="8,0,0,0" Click="GyroMouseStickTrigBtn_Click"
 												VerticalAlignment="Center" MinHeight="24">
@@ -2567,7 +2652,7 @@
 											<ComboBoxItem Content="{lex:Loc Or}" />
 										</ComboBox>
 
-										<CheckBox x:Name="gyroMouseStickTurnsCheckBox" Grid.Column="2" Content="{lex:Loc InvertBehavior}" 
+										<CheckBox x:Name="gyroMouseStickTurnsCheckBox" Grid.Column="2" Content="{lex:Loc TurnBehaviorTurnsGyro}" 
 												  IsChecked="{Binding GyroMouseStickTurns}" ToolTip="{lex:Loc GyroTriggerBehavior}" 
 												  VerticalAlignment="Center" Margin="20,0,0,0"/>
 									</Grid>
@@ -2620,13 +2705,13 @@
 										<xctk:DoubleUpDown d:IsHidden="True" Margin="8,0,0,0" Value="{Binding GyroMouseStickAntiDeadX}" MinWidth="60"
 														   FormatString="F0" Minimum="0.0" Maximum="100.0" Increment="10.0" 
 														   VerticalAlignment="Center" MinHeight="24"/>
-										<Label Content="{lex:Loc PercentSign}" VerticalAlignment="Center" Margin="2,0,0,0"/>
+										<Label Content="%" VerticalAlignment="Center" Margin="2,0,0,0"/>
 
 										<Label Content="{lex:Loc MinimumY}" Margin="8,0,0,0" VerticalAlignment="Center"/>
 										<xctk:DoubleUpDown d:IsHidden="True" Margin="8,0,0,0" Value="{Binding GyroMouseStickAntiDeadY}" MinWidth="60"
 														   FormatString="F0" Minimum="0.0" Maximum="100.0" Increment="10.0" 
 														   VerticalAlignment="Center" MinHeight="24"/>
-										<Label Content="{lex:Loc PercentSign}" VerticalAlignment="Center" Margin="2,0,0,0"/>
+										<Label Content="%" VerticalAlignment="Center" Margin="2,0,0,0"/>
 									</StackPanel>
 
 									<StackPanel Orientation="Horizontal" Margin="{StaticResource spaceMargin}">
@@ -2634,7 +2719,7 @@
 										<xctk:IntegerUpDown d:IsHidden="True" Margin="8,0,0,0" Value="{Binding GyroMouseStickVertScale}" MinWidth="60"
 															Minimum="0" Maximum="400" Increment="10" 
 															VerticalAlignment="Center" MinHeight="24"/>
-										<Label Content="{lex:Loc PercentSign}" VerticalAlignment="Center" Margin="2,0,0,0"/>
+										<Label Content="%" VerticalAlignment="Center" Margin="2,0,0,0"/>
 									</StackPanel>
 
 									<StackPanel Orientation="Horizontal" Margin="{StaticResource spaceMargin}">
@@ -2644,7 +2729,7 @@
 														   IsEnabled="{Binding GyroMouseStickMaxOutputEnabled,FallbackValue=False}"
 														   FormatString="F0" MinWidth="60" Maximum="100.0" Minimum="0.0" Increment="10.0" 
 														   VerticalAlignment="Center" MinHeight="24"/>
-										<Label Content="{lex:Loc PercentSign}" VerticalAlignment="Center" Margin="2,0,0,0"/>
+										<Label Content="%" VerticalAlignment="Center" Margin="2,0,0,0"/>
 									</StackPanel>
 
 									<Grid Margin="{StaticResource spaceMargin}">
@@ -2670,10 +2755,12 @@
 												  VerticalAlignment="Center"/>
 									</StackPanel>
 
-									<CheckBox Content="{lex:Loc JitterCompensation}" Margin="{StaticResource spaceMargin}"
-											  IsChecked="{Binding GyroMouseStickJitterCompensation}" 
-											  ToolTip="{lex:Loc GyroTriggerJitterCompensationTooltip}" 
-											  VerticalAlignment="Center"/>
+									<StackPanel Orientation="Horizontal" Margin="{StaticResource spaceMargin}" VerticalAlignment="Center">
+										<CheckBox Content="{lex:Loc JitterCompensation}" 
+												  IsChecked="{Binding GyroMouseJitterCompensation}" 
+												  ToolTip="{lex:Loc GyroTriggerJitterCompensationTooltip}" 
+												  VerticalAlignment="Center"/>
+									</StackPanel>
 
 									<CheckBox Content="{lex:Loc Smoothing}" IsChecked="{Binding GyroMouseStickSmooth}" 
 											  Margin="{StaticResource spaceMargin}" VerticalAlignment="Center"/>
@@ -2761,7 +2848,7 @@
 
 									<StackPanel Orientation="Horizontal" Margin="0,8,0,0">
 										<Label Content="{lex:Loc TriggersLabel}" VerticalAlignment="Center"/>
-										<Button x:Name="gyroSwipeTrigBtn" Content="{Binding GyroSwipeTrigDisplay,FallbackValue=Always On}" 
+										<Button x:Name="gyroSwipeTrigBtn" Content="{Binding GyroSwipeTrigDisplay,FallbackValue='Always On'}" 
 												MinWidth="160" Click="GyroSwipeTrigBtn_Click" Margin="8,0,0,0"
 												VerticalAlignment="Center" MinHeight="24">
 											<Button.ContextMenu>
@@ -2901,7 +2988,7 @@
 							<StackPanel Orientation="Horizontal" HorizontalAlignment="Left">
 								<xctk:IntegerUpDown x:Name="Debouncing" Value="{Binding DebouncingMs}" Minimum="0" Maximum="1000"
 													MinWidth="50" VerticalAlignment="Center" VerticalContentAlignment="Center"/>
-								<Label Content="{lex:Loc MillisecondsUnit}" VerticalAlignment="Center" Margin="5,0,0,0"/>
+								<Label Content="{lex:Loc Milliseconds}" VerticalAlignment="Center" Margin="5,0,0,0"/>
 							</StackPanel>
 						</GroupBox>
 
@@ -2911,7 +2998,7 @@
 								<UniformGrid Rows="1" Columns="3">
 									<UniformGrid Columns="2" HorizontalAlignment="Left">
 										<DockPanel LastChildFill="False">
-											<Label Content="{lex:Loc PercentSign}" DockPanel.Dock="Right" VerticalAlignment="Center"/>
+											<Label Content="%" DockPanel.Dock="Right" VerticalAlignment="Center"/>
 											<xctk:IntegerUpDown x:Name="RumbleBoostIUD" d:IsHidden="True" Value="{Binding RumbleBoost}" 
 																Minimum="0" Maximum="200" Increment="10" MinWidth="50" 
 																VerticalAlignment="Center" VerticalContentAlignment="Center"/>
@@ -3008,7 +3095,7 @@
 												Value="{Binding ButtonMouseVerticalScale,FallbackValue='100'}"
 												Minimum="0" Maximum="500" Increment="10" Margin="10,0,0,0"
 												VerticalAlignment="Center" VerticalContentAlignment="Center"/>
-							<Label Content="{lex:Loc PercentSign}" VerticalContentAlignment="Center" Margin="4,0,0,0" VerticalAlignment="Center"/>
+							<Label Content="%" VerticalContentAlignment="Center" Margin="4,0,0,0" VerticalAlignment="Center"/>
 						</StackPanel>
 
 						<!-- Mouse Offset -->
@@ -3017,7 +3104,7 @@
 							<xctk:DoubleUpDown d:IsHidden="True" MinWidth="50" FormatString="F3" DefaultValue="0" Minimum="0" Maximum="100"
 											   Value="{Binding ButtonMouseOffset,FallbackValue=0,UpdateSourceTrigger=LostFocus}"
 											   VerticalAlignment="Center" VerticalContentAlignment="Center"/>
-							<Label Content="{lex:Loc PercentSign}" VerticalAlignment="Center" Margin="2,0,0,0"/>
+							<Label Content="%" VerticalAlignment="Center" Margin="2,0,0,0"/>
 							<TextBlock Text="{Binding MouseOffsetSpeed,Mode=OneWay,StringFormat='\{0:0.00} {lex:Loc PPSUnit}'}"
 									   MinWidth="50" VerticalAlignment="Center" Margin="10,0,0,0" />
 						</StackPanel>
@@ -3143,7 +3230,7 @@
 										<Label Content="{lex:Loc AntiRadius}" ContentStringFormat="{}{0}:" Grid.Row="4" Grid.Column="0" 
 											   VerticalAlignment="Center"/>
 										<DockPanel Grid.Row="4" Grid.Column="1" LastChildFill="True">
-											<TextBlock Text="{lex:Loc PercentSign}" DockPanel.Dock="Right" 
+											<TextBlock Text="%" DockPanel.Dock="Right" 
 													   Margin="{StaticResource spaceMargin}" VerticalAlignment="Center"/>
 											<xctk:DoubleUpDown d:IsHidden="True" FormatString="F2" Value="{Binding AbsAntiRadius}"
 															  MinWidth="100" Minimum="0.0" Maximum="1.0" Increment="0.05"
