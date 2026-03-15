@@ -2674,9 +2674,10 @@
 										<Label Content="{lex:Loc DeadZone}" VerticalAlignment="Center"/>
 										<xctk:IntegerUpDown d:IsHidden="True" Margin="8,0,0,0" Value="{Binding GyroMouseStickDeadZone}" 
 															MinWidth="60" VerticalAlignment="Center" MinHeight="24"/>
-										<Label Content="{lex:Loc MaxZone}" Margin="8,0,0,0" VerticalAlignment="Center"/>
+										<Label Content="{lex:Loc GyroMaxZone}" Margin="8,0,0,0" VerticalAlignment="Center"/>
 										<xctk:IntegerUpDown d:IsHidden="True" Margin="8,0,0,0" Value="{Binding GyroMouseStickMaxZone}" 
-															MinWidth="60" Minimum="1" VerticalAlignment="Center" MinHeight="24"/>
+															MinWidth="60" Minimum="1" VerticalAlignment="Center" MinHeight="24"
+															ToolTip="{lex:Loc GyroMaxZoneTooltip}"/>
 									</StackPanel>
 
 									<StackPanel Orientation="Horizontal" Margin="{StaticResource spaceMargin}">

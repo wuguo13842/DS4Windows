@@ -344,10 +344,7 @@
     <value>自定义可执行文件名称</value>
   </data>
   <data name="CustomExeNameInfo" xml:space="preserve">
-    <value>一些游戏如果测到DS4Windows.exe 或 InputMapper.exe 正在运行，则会忽略 DS4 的输入。
-    对于这些游戏，解决方法是将 DS4Windows.exe 重命名，以规避检测。在这样自定义可执行文件的名称，
-    以允许 DS4Updater 自动更新已被重命名的DS4Windows。请不要输入扩展名（即 .exe)。
-    名称示例: whyme_DS4Windows</value>
+    <value>一些游戏如果测到DS4Windows.exe 或 InputMapper.exe 正在运行，则会忽略 DS4 的输入。&#10;  对于这些游戏，解决方法是将 DS4Windows.exe 重命名，以规避检测。&#10;  在这样自定义可执行文件的名称以允许 DS4Updater 自动更新已被重命名的DS4Windows。&#10;请不要输入扩展名（即 .exe)。&#10;- 名称示例: whyme_DS4Windows</value>
   </data>
   <data name="XInputChecker" xml:space="preserve">
     <value>XInput 检查器</value>
@@ -494,9 +491,7 @@
     <value>在某些情况下，限制摇杆的最大输出可能会有用。最大输出可以限制模拟摇杆的最终输出。</value>
   </data>
   <data name="AntiDeadzoneTooltip" xml:space="preserve">
-    <value>反死区作为一个与轴关联的偏移量，用于表示摇杆在某轴在离开其指定的死区后生成的最小输出值。
-    这主要是为了应对游戏中某轴的死区。例如在游戏中，一般的XInput LS死区约为8000（25%）。
-    如果没有分配反死区，摇杆就必须移动超过DS4Windows和游戏设定的死区才有输出。</value>
+    <value>反死区作为一个与轴关联的偏移量，用于表示摇杆在某轴在离开其指定的死区后生成的最小输出值。&#10;这主要是为了应对游戏中某轴的死区。例如在游戏中，一般的XInput LS死区约为8000（25%）。&#10;如果没有分配反死区，摇杆就必须移动超过DS4Windows和游戏设定的死区才有输出。</value>
   </data>
   <data name="StickInputCurveTooltip" xml:space="preserve">
     <value>旧的过时的设置。会在死区之前尝试对原生输入坐标应用一个曲线。不太灵光。</value>
@@ -533,11 +528,7 @@
     如果转动量小于  模糊值，输出值会保持不变（被过滤掉）.</value>
   </data>
   <data name="StickRotationTooltip" xml:space="preserve">
-    <value>正数为顺时针， 负数为逆时针。旋转设置旨在帮助校正模拟摇杆的方向，如果在移动模拟摇杆时你的拇指略微偏移。
-	
-    例如，当模拟摇杆完全向北移动时，你的拇指可能会从中心略微偏移。
-    由于我的手握持DS4的方式，当我完全将模拟摇杆移动到北方时，我的拇指会略微向右偏移。
-    所使用的值表示用于调整最终轴输出值的角度数。值的范围允许从-180到180。默认值为0</value>
+    <value>正数为顺时针， 负数为逆时针。旋转设置旨在帮助校正模拟摇杆的方向，如果在移动模拟摇杆时你的拇指略微偏移。&#10;&#10;例如，当模拟摇杆完全向北移动时，你的拇指可能会从中心略微偏移。&#10;由于我的手握持DS4的方式，当我完全将模拟摇杆移动到北方时，我的拇指会略微向右偏移。&#10;所使用的值表示用于调整最终轴输出值的角度数。值的范围允许从-180到180。默认值为0</value>
   </data>
   <data name="TouchpadJitterCompTooltip" xml:space="preserve">
     <value>限制触摸板下部分的移动。在触摸板上基本保持一个位置时可以减少意外的鼠标指针移动。</value>
@@ -570,28 +561,13 @@
     <value>DualSense 控制器特定震动设置</value>
   </data>
   <data name="DualSRumbleForceGenericRescale_Tip" xml:space="preserve">
-    <value>建议保持禁用。
-
-- 禁用： 震动会根据设定的等级重新调整原生震动（更好的质量）
-
-- 启用：DS4Windows的通用震动调整和DualSense的原生控制都会生效</value>
+    <value>建议保持禁用。&#10;- 禁用： 震动会根据设定的等级重新调整原生震动（更好的质量）&#10;- 启用：DS4Windows的通用震动调整和DualSense的原生控制都会生效</value>
   </data>
   <data name="DualSRumbleModes_Tip" xml:space="preserve">
-    <value>精确模式（推荐）：- 更好地复制 DualShock 4/Xbox 360 手柄的隆隆声感觉- 
-    更准确地执行游戏预期的隆隆声效果-隆隆声更有深度。在同一功率级别中，
-    游戏中的最小和最大隆隆声激活差异更大，从实际的低强度到所定义功率级别的最大强度不等。
-	
-传统模式：- 总体强度更高，但缺乏深度- 具有 "更尖锐 "的感觉- 
-    游戏中的最小和最大激活分别仅略低于和略高于所选择的功率级别强度。</value>
+    <value>精确模式（推荐）：&#10;- 更好地复制 DualShock 4/Xbox 360 手柄的隆隆声感觉&#10;- 更准确地执行游戏预期的隆隆声效果&#10;- 隆隆声更有深度。在同一功率级别中，游戏中的最小和最大隆隆声激活差异更大，&#10;  从实际的低强度到所定义功率级别的最大强度不等。&#10;&#10;传统模式：&#10;- 总体强度更高，但缺乏深度- 具有 "更尖锐 "的感觉&#10;- 游戏中的最小和最大激活分别仅略低于和略高于所选择的功率级别强度。</value>
   </data>
   <data name="DualSRumblePowerLevel_Tip" xml:space="preserve">
-    <value>DualSense 原生震动强度等级调整器。
-
-- 在精准模式下，震动强度 [最小值 -&gt; 最大值] 将为 [1% -&gt; 选择的强度等级]
-    - 例如 (62%): [最小值 = 1% -&gt; 最大值 = 62%]
-
-- 在传统模式下，震动强度 [最小值 -&gt; 最大值] 大约为 [强度等级 -12% -&gt; 强度等级 +12%]
-    - 例如 (62%): [最小值 = 50% -&gt; 最大值 = 74%]</value>
+    <value>DualSense 原生震动强度等级调整器。&#10;- 在精准模式下，震动强度 [最小值 -&gt; 最大值] 将为 [1% -&gt; 选择的强度等级]&#10;- 例如 (62%): [最小值 = 1% -&gt; 最大值 = 62%]&#10;- 在传统模式下，震动强度 [最小值 -&gt; 最大值] 大约为 [强度等级 -12% -&gt; 强度等级 +12%]&#10;- 例如 (62%): [最小值 = 50% -&gt; 最大值 = 74%]</value>
   </data>
   <data name="Accept" xml:space="preserve">
     <value>接受</value>
@@ -741,8 +717,7 @@
     <value>DS3 手柄支持</value>
   </data>
   <data name="FirstLaunch.DeviceIntroText" xml:space="preserve">
-    <value>由于其他映射软件默认支持多种设备（Steam输入），DS4Windows默认只启用DS4控制器的输入。
-    你可以在这里启用其他支持的设备的输入。当DS4Windows与其他映射同时运行的时候请小心冲突。</value>
+    <value>由于其他映射软件默认支持多种设备（Steam输入），DS4Windows默认只启用DS4控制器的输入。&#10;你可以在这里启用其他支持的设备的输入。当DS4Windows与其他映射同时运行的时候请小心冲突。</value>
   </data>
   <data name="FirstLaunch.DS3EnableCkbLabel" xml:space="preserve">
     <value>DS3 设备支持</value>
@@ -1249,8 +1224,7 @@
     <value>选择你想要保存配置和设置文件的位置</value>
   </data>
   <data name="SaveWhere.ProgramFolderDescText" xml:space="preserve">
-    <value>适合那些想要免安装版的人。
-注：这个选项在没有UAC权限时无法在需要管理员权限的文件夹使用。</value>
+    <value>适合那些想要免安装版的人。&#10;注：这个选项在没有UAC权限时无法在需要管理员权限的文件夹使用。</value>
   </data>
   <data name="SaveWhere.WinTitle" xml:space="preserve">
     <value>保存位置</value>
@@ -1274,7 +1248,7 @@
     <value>当灯闪烁时请到蓝牙设置并连接 "Wireless Controller"。如有提示输入配对码，请输入0000。当配对完成后，就可以了。玩得开心！</value>
   </data>
   <data name="Welcome.Step3HelpText" xml:space="preserve">
-    <value>步骤3：连接DualShock 4 控制器。 \n若要通过有线USB连接：只需使用micro-USB线连接DualShock 4和电脑。 \n\n若要通过蓝牙连接（可选）：长按PS和Share键3秒，灯条会开始双闪。</value>
+    <value>步骤3：连接DualShock 4 控制器。 &#10;若要通过有线USB连接：只需使用micro-USB线连接DualShock 4和电脑。 &#10;&#10;若要通过蓝牙连接（可选）：长按PS和Share键3秒，灯条会开始双闪。</value>
   </data>
   <data name="Welcome.Step4HelpText" xml:space="preserve">
     <value>使用HidHide来配置并对其他应用隐藏你的原生控制器输入。某些游戏只允许一个控制器，或双重输入可能会导致一些游戏内问题。</value>
@@ -1283,10 +1257,7 @@
     <value>（可选）步骤4：安装HidHide驱动</value>
   </data>
   <data name="Welcome.Step5HelpText" xml:space="preserve">
-    <value>使用FakerInput驱动来设置全局的虚拟键盘，相对鼠标，和绝对鼠标。在某些情况下，
-    SendInput失效时可以发送虚拟的键盘与鼠标事件。这些情况包括提升优先级的进程与游戏，UAC提示框，
-    以及一些反作弊系统会屏蔽SendInput事件。为了能让DS4Windows在一些带有反作弊保护的游戏，
-    比如 Valorant，中正常运行，FakerInput是必要的。</value>
+    <value>使用FakerInput驱动来设置全局的虚拟键盘，相对鼠标，和绝对鼠标。在某些情况下，&#10;SendInput失效时可以发送虚拟的键盘与鼠标事件。这些情况包括提升优先级的进程与游戏，UAC提示框，&#10;以及一些反作弊系统会屏蔽SendInput事件。为了能让DS4Windows在一些带有反作弊保护的游戏，&#10;比如 Valorant，中正常运行，FakerInput是必要的。</value>
   </data>
   <data name="Welcome.Step5Text" xml:space="preserve">
     <value>（可选）步骤5：安装FakerInput驱动</value>
@@ -1888,16 +1859,13 @@
     <value>扳机</value>
   </data>
   <data name="TwoStageModeHairTriggerDesc" xml:space="preserve">
-    <value>与正常双阶段扳机模式类似，但有一个区别。在未达到最大输出时激活轻按动作。
-    当扳机达到最大值时同时激活重按动作。当扳机从重按部分释放时，
-    重按和轻按动作都停用。激活重按动作也会再次激活轻按动作。</value>
+    <value>与正常双阶段扳机模式类似，但有一个区别。在未达到最大输出时激活轻按动作。&#10;当扳机达到最大值时同时激活重按动作。当扳机从重按部分释放时，&#10;重按和轻按动作都停用。激活重按动作也会再次激活轻按动作。</value>
   </data>
   <data name="TwoStageModeHipFire" xml:space="preserve">
     <value>快速开火</value>
   </data>
   <data name="TwoStageModeHipFireDesc" xml:space="preserve">
-    <value>考虑快速开火延迟时间。扳机在时间到期前不会激活任何动作。时间到期后，
-    根据扳机输出确定当前动作。此模式允许跳过轻按动作，仅触发重按动作。</value>
+    <value>考虑快速开火延迟时间。扳机在时间到期前不会激活任何动作。时间到期后，&#10;根据扳机输出确定当前动作。此模式允许跳过轻按动作，仅触发重按动作。</value>
   </data>
   <data name="TwoStageModeHipFireExclusive" xml:space="preserve">
     <value>快速开火独占</value>
@@ -1948,5 +1916,11 @@
 	</data>
 	<data name="TouchButtonModeRelease" xml:space="preserve">
 		<value>释放</value>
+	</data>	
+	<data name="GyroMaxZone" xml:space="preserve">
+		<value>角速度上限</value>
+	</data>
+	<data name="GyroMaxZoneTooltip" xml:space="preserve">
+		<value>陀螺仪摇杆达到最大输出所需的角速度阈值。&#10;- 值越小：小幅度动作即可推满摇杆，响应更灵敏。&#10;- 值越大：需更大幅度动作才能推满，控制更精细。</value>
 	</data>
 </root>

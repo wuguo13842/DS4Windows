@@ -1879,4 +1879,10 @@ Please click OK to confirm that you have read the message. Press Cancel to be re
 	<data name="TouchButtonModeRelease" xml:space="preserve">
 		<value>Release</value>
 	</data>
+	<data name="GyroMaxZone" xml:space="preserve">
+		<value>Max Angular Speed</value>
+	</data>
+	<data name="GyroMaxZoneTooltip" xml:space="preserve">
+		<value>The angular speed threshold at which the gyro stick reaches full output.&#10;- Lower values: smaller movements will saturate the stick, making it more sensitive.&#10;- Higher values: larger movements needed to reach full output, allowing finer control.</value>
+	</data>
 </root>
