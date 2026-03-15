@@ -358,9 +358,9 @@ namespace DS4Windows
         public const OutputStickAxes DEFAULT_OUTPUT_STICK_AXES = OutputStickAxes.XY;
         public const double SMOOTHING_WEIGHT_DEFAULT = 0.5;
         public const bool JITTER_COMPENSATION_DEFAULT = false;
-        public const int DEFAULT_DEADZONE = 30;
+        public const int DEFAULT_DEADZONE = 15;
         public const int DEFAULT_MAXZONE = 830;
-        public const double DEFAULT_ANTI_DEAD = 0.4;
+        public const double DEFAULT_ANTI_DEAD = 0.3;
         public const double DEFAULT_MAX_OUTPUT = 100.0;
         public const int DEFAULT_VERTICAL_SCALE = 100;
         public const uint DEFAULT_INVERTED = 0;

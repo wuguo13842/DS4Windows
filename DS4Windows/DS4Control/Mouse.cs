@@ -652,13 +652,13 @@ namespace DS4Windows
 			int absMaxX = msinfo.maxZone; // 最大绝对值，正数
 			int absMaxY = msinfo.maxZone;
 
-			if (absDeltaX > absDeadX && absMaxX > absDeadX) // 防止除零
+			if (absDeltaX > absDeadX && absMaxX > absDeadX)
 			{
 				// 将 [absDeadX, absMaxX] 线性映射到 [0, absMaxX]
-				long numerator = (long)(absDeltaX - absDeadX) * absMaxX;
-				int scaledX = (int)(numerator / (absMaxX - absDeadX));
-				// 限幅，防止因整数除法误差导致超过最大值
-				scaledX = Math.Min(scaledX, absMaxX);
+				// 使用浮点计算精确值，然后四舍五入取整
+				double exactX = (double)(absDeltaX - absDeadX) * absMaxX / (absMaxX - absDeadX);
+				int scaledX = (int)Math.Round(exactX);
+				scaledX = Math.Min(scaledX, absMaxX); // 确保不超限
 				deltaX = signX * scaledX;
 			}
 			else
@@ -668,8 +668,8 @@ namespace DS4Windows
 
 			if (absDeltaY > absDeadY && absMaxY > absDeadY)
 			{
-				long numerator = (long)(absDeltaY - absDeadY) * absMaxY;
-				int scaledY = (int)(numerator / (absMaxY - absDeadY));
+				double exactY = (double)(absDeltaY - absDeadY) * absMaxY / (absMaxY - absDeadY);
+				int scaledY = (int)Math.Round(exactY);
 				scaledY = Math.Min(scaledY, absMaxY);
 				deltaY = signY * scaledY;
 			}
@@ -791,8 +791,10 @@ namespace DS4Windows
 				}
 			}
 
-			byte axisXOut = (byte)(xNorm * maxDirX + 128.0);
-			byte axisYOut = (byte)(yNorm * maxDirY + 128.0);
+			double finalX = xNorm * maxDirX + 128.0;
+			byte axisXOut = (byte)Math.Round(finalX);
+			double finalY = yNorm * maxDirY + 128.0;
+			byte axisYOut = (byte)Math.Round(finalY);
 
 			bool outputX = msinfo.OutputHorizontal();
 			bool outputY = msinfo.OutputVertical();

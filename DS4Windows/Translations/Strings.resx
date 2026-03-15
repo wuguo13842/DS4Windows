@@ -1454,9 +1454,6 @@ Please click OK to confirm that you have read the message. Press Cancel to be re
   <data name="ColorAndLength" xml:space="preserve">
     <value>Colour and length</value>
   </data>
-  <data name="SpecialActionEdit.CalibrateGyro" xml:space="preserve">
-    <value>Calibrate gyro</value>
-  </data>
   <data name="HoldFor" xml:space="preserve">
     <value>Hold for</value>
   </data>
@@ -1591,6 +1588,16 @@ Please click OK to confirm that you have read the message. Press Cancel to be re
 	<data name="VerticalOnly" xml:space="preserve"><value>Vertical Only</value></data>
 	<data name="MinimumX" xml:space="preserve"><value>Minimum X</value></data>
 	<data name="MinimumY" xml:space="preserve"><value>Minimum Y</value></data>
+	<data name="GyroMaxZoneTooltip" xml:space="preserve">
+		<value>The angular speed threshold at which the gyro stick reaches full output.&#10;- Lower values: smaller movements will saturate the stick, making it more sensitive.&#10;- Higher values: larger movements needed to reach full output, allowing finer control.</value>
+	</data>
+	<data name="GyroDeadZone" xml:space="preserve"> <value>Gyro stick requires a minimum angular velocity threshold to register movement.&#10;- Smaller value: More responsive to small movements, but may introduce jitter.&#10;- Larger value: Requires larger movements to register, helps suppress jitter.</value> </data>
+	<data name="MinimumXTooltip" xml:space="preserve">
+		<value>Controls the initial response amplitude when the gyro stick just leaves the dead zone.&#10;Higher values cause more pronounced output jumps for small movements (more sensitive but may feel less smooth).</value>
+	</data>
+	<data name="MinimumYTooltip" xml:space="preserve">
+		<value>Controls the initial response amplitude when the gyro stick just leaves the dead zone.&#10;Higher values cause more pronounced output jumps for small movements (more sensitive but may feel less smooth).</value>
+	</data>
 	<data name="Weight" xml:space="preserve"><value>Weight</value></data>
 	<data name="SwipeUp" xml:space="preserve"><value>Swipe Up</value></data>
 	<data name="SwipeDown" xml:space="preserve"><value>Swipe Down</value></data>
@@ -1600,6 +1607,8 @@ Please click OK to confirm that you have read the message. Press Cancel to be re
 	<data name="DelayTime" xml:space="preserve"><value>Delay Time</value></data>
 	<data name="Milliseconds" xml:space="preserve"><value>ms</value></data>
 	<data name="UseDs3PitchRollSimTooltip" xml:space="preserve"><value>Enables DS3-style gyro simulation for applications that expect it.</value></data>
+	<data name="DeadZoneX" xml:space="preserve"><value>Dead Zone X</value></data>
+	<data name="DeadZoneY" xml:space="preserve"><value>Dead Zone Y</value></data>
 	
 	<!-- Touchpad 标签页通用 -->
 	<data name="DoubleTap" xml:space="preserve">
@@ -1702,6 +1711,75 @@ Please click OK to confirm that you have read the message. Press Cancel to be re
 	</data>
 	<data name="BottomRightPaddle" xml:space="preserve">
 		<value>Bottom Right Paddle</value>
+	</data>
+	<data name="Capture" xml:space="preserve">
+		<value>Capture</value>
+	</data>
+	<data name="L1" xml:space="preserve">
+		<value>L1</value>
+	</data>
+	<data name="R1" xml:space="preserve">
+		<value>R1</value>
+	</data>
+	<data name="L2" xml:space="preserve">
+		<value>L2</value>
+	</data>
+	<data name="L2FullPull" xml:space="preserve">
+		<value>L2 Full Pull</value>
+	</data>
+	<data name="R2" xml:space="preserve">
+		<value>R2</value>
+	</data>
+	<data name="R2FullPull" xml:space="preserve">
+		<value>R2 Full Pull</value>
+	</data>
+	<data name="L3" xml:space="preserve">
+		<value>L3</value>
+	</data>
+	<data name="R3" xml:space="preserve">
+		<value>R3</value>
+	</data>
+	<data name="LeftTouch" xml:space="preserve">
+		<value>Left Touch</value>
+	</data>
+	<data name="UpperTouch" xml:space="preserve">
+		<value>Upper Touch</value>
+	</data>
+	<data name="Multitouch" xml:space="preserve">
+		<value>Multitouch</value>
+	</data>
+	<data name="RightTouch" xml:space="preserve">
+		<value>Right Touch</value>
+	</data>
+	<data name="LeftStickUp" xml:space="preserve">
+		<value>Left Stick Up</value>
+	</data>
+	<data name="LeftStickDown" xml:space="preserve">
+		<value>Left Stick Down</value>
+	</data>
+	<data name="LeftStickLeft" xml:space="preserve">
+		<value>Left Stick Left</value>
+	</data>
+	<data name="LeftStickRight" xml:space="preserve">
+		<value>Left Stick Right</value>
+	</data>
+	<data name="RightStickUp" xml:space="preserve">
+		<value>Right Stick Up</value>
+	</data>
+	<data name="RightStickDown" xml:space="preserve">
+		<value>Right Stick Down</value>
+	</data>
+	<data name="RightStickLeft" xml:space="preserve">
+		<value>Right Stick Left</value>
+	</data>
+	<data name="RightStickRight" xml:space="preserve">
+		<value>Right Stick Right</value>
+	</data>
+	<data name="TouchStarted" xml:space="preserve">
+		<value>Touch Started</value>
+	</data>
+	<data name="TouchEnded" xml:space="preserve">
+		<value>Touch Ended</value>
 	</data>
 	<data name="AlwaysOn" xml:space="preserve">
 		<value>Always On</value>
@@ -1881,8 +1959,5 @@ Please click OK to confirm that you have read the message. Press Cancel to be re
 	</data>
 	<data name="GyroMaxZone" xml:space="preserve">
 		<value>Max Angular Speed</value>
-	</data>
-	<data name="GyroMaxZoneTooltip" xml:space="preserve">
-		<value>The angular speed threshold at which the gyro stick reaches full output.&#10;- Lower values: smaller movements will saturate the stick, making it more sensitive.&#10;- Higher values: larger movements needed to reach full output, allowing finer control.</value>
 	</data>
 </root>

@@ -1026,7 +1026,7 @@
     <value>倍率</value>
   </data>
   <data name="No" xml:space="preserve">
-    <value>不</value>
+    <value>否</value>
   </data>
   <data name="Normal" xml:space="preserve">
     <value>普通</value>
@@ -1394,9 +1394,6 @@
   <data name="ColorAndLength" xml:space="preserve">
     <value>颜色和续航</value>
   </data>
-  <data name="SpecialActionEdit.CalibrateGyro" xml:space="preserve">
-    <value>校准陀螺仪</value>
-  </data>
   <data name="HoldFor" xml:space="preserve">
     <value>请等待</value>
   </data>
@@ -1565,7 +1562,7 @@
     <value>1€ Beta</value>
   </data>
   <data name="GyroCalibration" xml:space="preserve">
-    <value>陀螺仪校准</value>
+    <value>校准陀螺仪</value>
   </data>
   <data name="ToggleTrigger" xml:space="preserve">
     <value>常开按键：</value>
@@ -1622,11 +1619,25 @@
     <value>仅垂直</value>
   </data>
   <data name="MinimumX" xml:space="preserve">
-    <value>最小 X</value>
+    <value>X 反死区</value>
   </data>
   <data name="MinimumY" xml:space="preserve">
-    <value>最小 Y</value>
+    <value>Y 反死区</value>
   </data>
+	<data name="GyroMaxZoneTooltip" xml:space="preserve">
+		<value>陀螺仪摇杆达到最大输出所需的角速度阈值。&#10;- 值越小：小幅度动作即可推满摇杆，响应更灵敏。&#10;- 值越大：需更大幅度动作才能推满，控制更精细。</value>
+	</data>
+	<data name="GyroDeadZone" xml:space="preserve">
+		<value>陀螺仪摇杆需要达到最小角速度阈值才能有动作。&#10;- 值越小：小幅度动作更灵敏，但引入抖动。&#10;- 值越大：需更大幅度动作才能动作，抑制抖动。</value>
+	</data>
+	<data name="MinimumXTooltip" xml:space="preserve">
+		<value>控制陀螺仪摇杆在刚离开死区时的初始响应幅度。&#10;值越大，轻微移动时摇杆输出跳变越明显（更灵敏但可能不平滑）。</value>
+	</data>
+	<data name="MinimumYTooltip" xml:space="preserve">
+		<value>控制陀螺仪摇杆在刚离开死区时的初始响应幅度。&#10;值越大，轻微移动时摇杆输出跳变越明显（更灵敏但可能不平滑）。</value>
+	</data>
+	<data name="DeadZoneX" xml:space="preserve"><value>X 死区</value></data>
+	<data name="DeadZoneY" xml:space="preserve"><value>Y 死区</value></data>
   <data name="Weight" xml:space="preserve">
     <value>权重</value>
   </data>
@@ -1690,54 +1701,77 @@
   <data name="DisableInvertLabel" xml:space="preserve">
     <value>禁用反转</value>
   </data>
-  <data name="Cross" xml:space="preserve">
-    <value>-叉-</value>
-  </data>
-  <data name="Circle" xml:space="preserve">
-    <value>-圈-</value>
-  </data>
-  <data name="Square" xml:space="preserve">
-    <value>方块</value>
-  </data>
-  <data name="Triangle" xml:space="preserve">
-    <value>三角</value>
-  </data>
-  <data name="Up" xml:space="preserve">
-    <value>上</value>
-  </data>
-  <data name="Down" xml:space="preserve">
-    <value>下</value>
-  </data>
-  <data name="Left" xml:space="preserve">
-    <value>左</value>
-  </data>
-  <data name="Right" xml:space="preserve">
-    <value>右</value>
-  </data>
-  <data name="FingerOnTouchpad" xml:space="preserve">
-    <value>单指触摸</value>
-  </data>
-  <data name="TwoFingersOnTouchpad" xml:space="preserve">
-    <value>双指触摸</value>
-  </data>
-  <data name="PS" xml:space="preserve">
-    <value>PS</value>
-  </data>
-  <data name="TouchpadClick" xml:space="preserve">
-    <value>触摸板点击</value>
-  </data>
-  <data name="FunctionLeft" xml:space="preserve">
-    <value>左侧功能键</value>
-  </data>
-  <data name="FunctionRight" xml:space="preserve">
-    <value>右侧功能键</value>
-  </data>
-  <data name="BottomLeftPaddle" xml:space="preserve">
-    <value>左下拨片</value>
-  </data>
-  <data name="BottomRightPaddle" xml:space="preserve">
-    <value>右下拨片</value>
-  </data>
+	<data name="Cross" xml:space="preserve">
+		<value>-叉-</value>
+	</data>
+	<data name="Circle" xml:space="preserve">
+		<value>-圈-</value>
+	</data>
+	<data name="Square" xml:space="preserve">
+		<value>方块</value>
+	</data>
+	<data name="Triangle" xml:space="preserve">
+		<value>三角</value>
+	</data>
+	<data name="Up" xml:space="preserve">
+		<value>上</value>
+	</data>
+	<data name="Down" xml:space="preserve">
+		<value>下</value>
+	</data>
+	<data name="Left" xml:space="preserve">
+		<value>左</value>
+	</data>
+	<data name="Right" xml:space="preserve">
+		<value>右</value>
+	</data>
+	<data name="FingerOnTouchpad" xml:space="preserve">
+		<value>单指触摸</value>
+	</data>
+	<data name="TwoFingersOnTouchpad" xml:space="preserve">
+		<value>双指触摸</value>
+	</data>
+	<data name="PS" xml:space="preserve">
+		<value>PS</value>
+	</data>
+	<data name="TouchpadClick" xml:space="preserve">
+		<value>触摸板点击</value>
+	</data>
+	<data name="FunctionLeft" xml:space="preserve">
+		<value>左侧功能键</value>
+	</data>
+	<data name="FunctionRight" xml:space="preserve">
+		<value>右侧功能键</value>
+	</data>
+	<data name="BottomLeftPaddle" xml:space="preserve">
+		<value>左下拨片</value>
+	</data>
+	<data name="BottomRightPaddle" xml:space="preserve">
+		<value>右下拨片</value>
+	</data>
+	<data name="Capture" xml:space="preserve"><value>捕获</value></data>
+	<data name="L1" xml:space="preserve"><value>L1</value></data>  <!-- 保留英文，不翻译 -->
+	<data name="R1" xml:space="preserve"><value>R1</value></data>
+	<data name="L2" xml:space="preserve"><value>L2</value></data>
+	<data name="L2FullPull" xml:space="preserve"><value>L2 全按</value></data>
+	<data name="R2" xml:space="preserve"><value>R2</value></data>
+	<data name="R2FullPull" xml:space="preserve"><value>R2 全按</value></data>
+	<data name="L3" xml:space="preserve"><value>L3</value></data>
+	<data name="R3" xml:space="preserve"><value>R3</value></data>
+	<data name="LeftTouch" xml:space="preserve"><value>左侧触摸</value></data>
+	<data name="UpperTouch" xml:space="preserve"><value>上部触摸</value></data>
+	<data name="Multitouch" xml:space="preserve"><value>多点触摸</value></data>
+	<data name="RightTouch" xml:space="preserve"><value>右侧触摸</value></data>
+	<data name="LeftStickUp" xml:space="preserve"><value>左摇杆上</value></data>
+	<data name="LeftStickDown" xml:space="preserve"><value>左摇杆下</value></data>
+	<data name="LeftStickLeft" xml:space="preserve"><value>左摇杆左</value></data>
+	<data name="LeftStickRight" xml:space="preserve"><value>左摇杆右</value></data>
+	<data name="RightStickUp" xml:space="preserve"><value>右摇杆上</value></data>
+	<data name="RightStickDown" xml:space="preserve"><value>右摇杆下</value></data>
+	<data name="RightStickLeft" xml:space="preserve"><value>右摇杆左</value></data>
+	<data name="RightStickRight" xml:space="preserve"><value>右摇杆右</value></data>
+	<data name="TouchStarted" xml:space="preserve"><value>触摸开始</value></data>
+	<data name="TouchEnded" xml:space="preserve"><value>触摸结束</value></data>
   <data name="AlwaysOn" xml:space="preserve">
     <value>始终开启</value>
   </data>
@@ -1919,8 +1953,5 @@
 	</data>	
 	<data name="GyroMaxZone" xml:space="preserve">
 		<value>角速度上限</value>
-	</data>
-	<data name="GyroMaxZoneTooltip" xml:space="preserve">
-		<value>陀螺仪摇杆达到最大输出所需的角速度阈值。&#10;- 值越小：小幅度动作即可推满摇杆，响应更灵敏。&#10;- 值越大：需更大幅度动作才能推满，控制更精细。</value>
 	</data>
 </root>
