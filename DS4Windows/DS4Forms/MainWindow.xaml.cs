@@ -46,6 +46,7 @@ using H.NotifyIcon.Core;
 
 using WPFLocalizeExtension.Extensions;
 using DS4WinWPF;
+using DS4Windows.InputDevices;
 
 namespace DS4WinWPF.DS4Forms
 {
@@ -406,7 +407,7 @@ namespace DS4WinWPF.DS4Forms
             Dispatcher.BeginInvoke((Action)(() =>
             {
                 bool ignoreSettings = sender is bool && (bool)sender;
-                if (!IsActive && (Global.Notifications == 2 || (Global.Notifications == 1 && e.Warning)) || ignoreSettings)
+                if ( (ignoreSettings && e.Warning) || (ignoreSettings && Global.Notifications == 2 && !e.Warning) || (!IsActive  && (Global.Notifications == 2 || (Global.Notifications == 1 && e.Warning))) )
                 {
                     if (notifyIcon.IsCreated)
                     {
@@ -1023,26 +1024,30 @@ Suspend support not enabled.", true);
         /// <summary>
         /// 陀螺仪校准按钮点击事件
         /// </summary>
-        private void CalibrateGyroBtn_Click(object sender, RoutedEventArgs e)
-        {
-            Button btn = sender as Button;
-            if (btn == null) return;
+		private void CalibrateGyroBtn_Click(object sender, RoutedEventArgs e)
+		{
+			Button btn = sender as Button;
+			if (btn == null) return;
 
-            int devIndex = Convert.ToInt32(btn.Tag);
-            if (devIndex < 0 || devIndex >= Program.rootHub.DS4Controllers.Length) return;
+			int devIndex = Convert.ToInt32(btn.Tag);
+			if (devIndex < 0 || devIndex >= Program.rootHub.DS4Controllers.Length) return;
 
-            DS4Device device = Program.rootHub.DS4Controllers[devIndex];
-            if (device != null)
-            {
-                // 调用陀螺仪校准重置（与 ProfileEditor 中的 GyroCalibration_Click 一致）
-                device.SixAxis.ResetContinuousCalibration();
-                if (device.JointDeviceSlotNumber != DS4Device.DEFAULT_JOINT_SLOT_NUMBER)
-                {
-                    DS4Device tempDev = Program.rootHub.DS4Controllers[device.JointDeviceSlotNumber];
-                    tempDev?.SixAxis.ResetContinuousCalibration();
-                }
-            }
-        }
+			DS4Device device = Program.rootHub.DS4Controllers[devIndex];
+			if (device != null)
+			{
+				// 发送系统通知（仅手动校准时触发）
+				string message = string.Format(Translations.Strings.GyroCalibrationStarted, devIndex + 1);
+				AppLogger.LogToTray(message, false, true);
+
+				// 调用陀螺仪校准重置（与 ProfileEditor 中的 GyroCalibration_Click 一致）
+				device.SixAxis.ResetContinuousCalibration();
+				if (device.JointDeviceSlotNumber != DS4Device.DEFAULT_JOINT_SLOT_NUMBER)
+				{
+					DS4Device tempDev = Program.rootHub.DS4Controllers[device.JointDeviceSlotNumber];
+					tempDev?.SixAxis.ResetContinuousCalibration();
+				}
+			}
+		}
 
         private void MainDS4Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)
         {

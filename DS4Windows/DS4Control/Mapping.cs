@@ -31,6 +31,8 @@ using Sensorit.Base;
 using DS4WinWPF.DS4Control;
 using DS4WinWPF.DS4Forms.ViewModels;
 using ThreadState = System.Threading.ThreadState;
+using DS4WinWPF.Translations;
+using DS4Windows.InputDevices;
 
 namespace DS4Windows
 {
@@ -4391,24 +4393,28 @@ namespace DS4Windows
 
                                 actionDone[index].dev[device] = true;
                             }
-                            else if (action.typeID == SpecialAction.ActionTypeId.GyroCalibrate)
-                            {
-                                actionFound = true;
+							else if (action.typeID == SpecialAction.ActionTypeId.GyroCalibrate)
+							{
+								actionFound = true;
 
-                                if (!actionDone[index].dev[device])
-                                {
-                                    var d = ctrl.DS4Controllers[device];
+								if (!actionDone[index].dev[device])
+								{
+									var d = ctrl.DS4Controllers[device];
 
-                                    d.SixAxis.ResetContinuousCalibration();
-                                    if (d.JointDeviceSlotNumber != DS4Device.DEFAULT_JOINT_SLOT_NUMBER)
-                                    {
-                                        DS4Device tempDev = ctrl.DS4Controllers[d.JointDeviceSlotNumber];
-                                        tempDev?.SixAxis.ResetContinuousCalibration();
-                                    }
+									// 添加系统通知（仅手动校准时触发）
+									string message = string.Format(DS4WinWPF.Translations.Strings.GyroCalibrationStarted, device + 1);
+									DS4Windows.AppLogger.LogToTray(message, false, true);
 
-                                    actionDone[index].dev[device] = true;
-                                }
-                            }
+									d.SixAxis.ResetContinuousCalibration();
+									if (d.JointDeviceSlotNumber != DS4Device.DEFAULT_JOINT_SLOT_NUMBER)
+									{
+										DS4Device tempDev = ctrl.DS4Controllers[d.JointDeviceSlotNumber];
+										tempDev?.SixAxis.ResetContinuousCalibration();
+									}
+
+									actionDone[index].dev[device] = true;
+								}
+							}
                         }
                         else
                         {

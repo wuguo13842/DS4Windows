@@ -1377,7 +1377,7 @@
     <value>选择实时优先级，需要在管理模式下运行程序。</value>
   </data>
   <data name="ProfileSwitchNotification" xml:space="preserve">
-    <value>系统通知配置切换</value>
+    <value>配置切换通知</value>
   </data>
   <data name="LightbarMode" xml:space="preserve">
     <value>灯条模式</value>
@@ -1420,6 +1420,10 @@
     <value>控制器 {0} 电量低（{1}%）。请尽快充电。</value>
     <comment>参数：0=控制器编号，1=电量百分比</comment>
   </data>
+	<data name="GyroCalibrationStarted" xml:space="preserve">
+		<value>控制器 {0} 陀螺仪校准开始。&#10;请静止平面上不要移动等待校准完成！！&#10;&#8203;&#10;&#8203;</value>
+		<comment>参数：0=控制器编号</comment>
+	</data>
   <data name="ThresholdPrefix" xml:space="preserve">
     <value>(阈值：</value>
     <comment>Prefix before threshold value, e.g. "(Threshold: "</comment>

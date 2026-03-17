@@ -1480,6 +1480,10 @@ Please click OK to confirm that you have read the message. Press Cancel to be re
     <value>Controller {0} battery low ({1}%). Please charge soon.</value>
     <comment>Low battery notification, parameters: {0}=controller number, {1}=battery percentage</comment>
   </data>
+	<data name="GyroCalibrationStarted" xml:space="preserve">
+		<value>Controller {0} gyro calibration started.&#10;Please place it on a stationary surface and do not move until calibration is complete!&#10;&#8203;&#10;&#8203;</value>
+		<comment>Notification when gyro calibration starts, parameter: {0}=controller number</comment>
+	</data>
   <data name="ThresholdPrefix" xml:space="preserve">
     <value>(Threshold:   </value>
     <comment>Prefix before threshold value, e.g. "(Threshold: "  </comment>

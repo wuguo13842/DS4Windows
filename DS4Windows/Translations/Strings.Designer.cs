@@ -5645,5 +5645,14 @@ namespace DS4WinWPF.Translations {
 				return ResourceManager.GetString("AlwaysOn", resourceCulture);
 			}
 		}
+		
+		/// <summary>
+		///   Looks up a localized string similar to GyroCalibrationStarted.
+		/// </summary>
+		public static string GyroCalibrationStarted {
+			get {
+				return ResourceManager.GetString("GyroCalibrationStarted", resourceCulture);
+			}
+		}
     }
 }

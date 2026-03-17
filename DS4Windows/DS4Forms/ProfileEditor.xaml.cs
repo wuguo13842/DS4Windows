@@ -24,6 +24,8 @@ using MessageBox = System.Windows.MessageBox;
 using MouseEventArgs = System.Windows.Input.MouseEventArgs;
 using OpenFileDialog = Microsoft.Win32.OpenFileDialog;
 using UserControl = System.Windows.Controls.UserControl;
+using DS4WinWPF.Translations;
+using DS4Windows.InputDevices;
 
 namespace DS4WinWPF.DS4Forms
 {
@@ -1834,20 +1836,24 @@ namespace DS4WinWPF.DS4Forms
             Global.CacheProfileCustomsFlags(profileSettingsVM.Device);
 		}
 
-        private void GyroCalibration_Click(object sender, RoutedEventArgs e)
-        {
-            int deviceNum = profileSettingsVM.FuncDevNum;
-            if (deviceNum < ControlService.CURRENT_DS4_CONTROLLER_LIMIT)
-            {
-                DS4Device d = App.rootHub.DS4Controllers[deviceNum];
-                d.SixAxis.ResetContinuousCalibration();
-                if (d.JointDeviceSlotNumber != DS4Device.DEFAULT_JOINT_SLOT_NUMBER)
-                {
-                    DS4Device tempDev = App.rootHub.DS4Controllers[d.JointDeviceSlotNumber];
-                    tempDev?.SixAxis.ResetContinuousCalibration();
-                }
-            }
-        }
+		private void GyroCalibration_Click(object sender, RoutedEventArgs e)
+		{
+			int deviceNum = profileSettingsVM.FuncDevNum;
+			if (deviceNum < ControlService.CURRENT_DS4_CONTROLLER_LIMIT)
+			{
+				// 发送系统通知（仅手动校准时触发）
+				string message = string.Format(Translations.Strings.GyroCalibrationStarted, deviceNum + 1);
+				AppLogger.LogToTray(message, false, true);
+
+				DS4Device d = App.rootHub.DS4Controllers[deviceNum];
+				d.SixAxis.ResetContinuousCalibration();
+				if (d.JointDeviceSlotNumber != DS4Device.DEFAULT_JOINT_SLOT_NUMBER)
+				{
+					DS4Device tempDev = App.rootHub.DS4Controllers[d.JointDeviceSlotNumber];
+					tempDev?.SixAxis.ResetContinuousCalibration();
+				}
+			}
+		}
 
         private void GyroSwipeTrigBtn_Click(object sender, RoutedEventArgs e)
         {
