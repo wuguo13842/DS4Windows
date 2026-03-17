@@ -25,12 +25,12 @@ using System.Diagnostics;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using System.Windows; // 添加此行以使用 Application.Current
 using System.Windows.Controls;
 using System.Windows.Data;
 using System.Windows.Media;
 using DS4Windows;
 using DS4WinWPF.DS4Control;
-using System.Windows;
 
 namespace DS4WinWPF.DS4Forms.ViewModels
 {
@@ -225,6 +225,7 @@ namespace DS4WinWPF.DS4Forms.ViewModels
         private bool gyroCalibrationBlink;
         private System.Windows.Threading.DispatcherTimer blinkTimer;
         private int blinkCounter; // 用于控制闪烁节奏
+        private bool isCleaningUp; // 防止重复清理的标志
 
         public DS4Device Device { get => device; set => device = value; }
         public string SelectedProfile { get => selectedProfile; set => selectedProfile = value; }
@@ -448,13 +449,17 @@ namespace DS4WinWPF.DS4Forms.ViewModels
 
             useCustomColor = Global.LightbarSettingsInfo[devIndex].ds4winSettings.useCustomLed;
 
-            // 关键修复：在 UI 线程上创建 DispatcherTimer
-            Application.Current.Dispatcher.Invoke(() =>
+            // 在 UI 线程上创建 DispatcherTimer - 使用 Invoke 确保定时器在正确线程创建
+            // 这是必要的，因为构造函数可能在后台线程被调用（如热插拔时）
+            if (Application.Current != null && Application.Current.Dispatcher != null)
             {
-                blinkTimer = new System.Windows.Threading.DispatcherTimer();
-                blinkTimer.Interval = TimeSpan.FromMilliseconds(250); // 与 gyroCalEllipse 一致
-                blinkTimer.Tick += BlinkTimer_Tick;
-            });
+                Application.Current.Dispatcher.Invoke(() =>
+                {
+                    blinkTimer = new System.Windows.Threading.DispatcherTimer();
+                    blinkTimer.Interval = TimeSpan.FromMilliseconds(250); // 与 gyroCalEllipse 一致
+                    blinkTimer.Tick += BlinkTimer_Tick;
+                });
+            }
 
             // 订阅设备的 SixAxis 校准事件
             if (device?.SixAxis != null)
@@ -479,6 +484,9 @@ namespace DS4WinWPF.DS4Forms.ViewModels
         /// </summary>
         private void BlinkTimer_Tick(object sender, EventArgs e)
         {
+            // 如果正在清理中或定时器已被置空，忽略此次 Tick
+            if (isCleaningUp || blinkTimer == null) return;
+            
             blinkCounter++;
             GyroCalibrationBlink = (blinkCounter % 2 == 1);
         }
@@ -489,19 +497,25 @@ namespace DS4WinWPF.DS4Forms.ViewModels
         /// </summary>
         private void OnGyroCalibrationStarted(object sender, EventArgs e)
         {
+            if (isCleaningUp) return;
+
             IsGyroCalibrating = true;
             blinkCounter = 0; // 重置计数器，确保从显示状态开始
             
-            // 在 UI 线程上启动闪烁定时器
-            System.Windows.Application.Current.Dispatcher.BeginInvoke(new Action(() =>
+            // 在 UI 线程上启动闪烁定时器 - 使用 BeginInvoke 避免阻塞
+            var dispatcher = Application.Current?.Dispatcher;
+            if (dispatcher != null && !dispatcher.HasShutdownStarted && !dispatcher.HasShutdownFinished)
             {
-                if (blinkTimer != null)
+                dispatcher.BeginInvoke(new Action(() =>
                 {
+                    // 再次检查清理状态
+                    if (isCleaningUp || blinkTimer == null) return;
+                    
                     blinkTimer.Stop();
                     GyroCalibrationBlink = true; // 先显示
                     blinkTimer.Start();
-                }
-            }));
+                }));
+            }
         }
 
         /// <summary>
@@ -510,15 +524,22 @@ namespace DS4WinWPF.DS4Forms.ViewModels
         /// </summary>
         private void OnGyroCalibrationStopped(object sender, EventArgs e)
         {
+            if (isCleaningUp) return;
+
             IsGyroCalibrating = false;
-            System.Windows.Application.Current.Dispatcher.BeginInvoke(new Action(() =>
+            
+            var dispatcher = Application.Current?.Dispatcher;
+            if (dispatcher != null && !dispatcher.HasShutdownStarted && !dispatcher.HasShutdownFinished)
             {
-                if (blinkTimer != null)
+                dispatcher.BeginInvoke(new Action(() =>
                 {
+                    // 再次检查清理状态
+                    if (isCleaningUp || blinkTimer == null) return;
+                    
                     blinkTimer.Stop();
                     GyroCalibrationBlink = false; // 隐藏
-                }
-            }));
+                }));
+            }
         }
 
         /// <summary>
@@ -535,6 +556,11 @@ namespace DS4WinWPF.DS4Forms.ViewModels
         /// </summary>
         public void CleanupGyroEvents()
         {
+            // 防止重复清理
+            if (isCleaningUp) return;
+            isCleaningUp = true;
+
+            // 先取消事件订阅，避免新的事件触发
             if (device?.SixAxis != null)
             {
                 device.SixAxis.CalibrationStarted -= OnGyroCalibrationStarted;
@@ -542,15 +568,28 @@ namespace DS4WinWPF.DS4Forms.ViewModels
             }
             device.Removal -= OnDeviceRemoval;
 
+            // 安全地停止并清理定时器
             if (blinkTimer != null)
             {
-                // 安全地在 UI 线程上停止并清理定时器
-                Application.Current.Dispatcher.Invoke(() =>
+                var dispatcher = Application.Current?.Dispatcher;
+                if (dispatcher != null && !dispatcher.HasShutdownStarted && !dispatcher.HasShutdownFinished)
                 {
-                    blinkTimer.Stop();
-                    blinkTimer.Tick -= BlinkTimer_Tick;
+                    // 使用 BeginInvoke 异步停止定时器，避免死锁
+                    dispatcher.BeginInvoke(new Action(() =>
+                    {
+                        if (blinkTimer != null)
+                        {
+                            blinkTimer.Stop();
+                            blinkTimer.Tick -= BlinkTimer_Tick;
+                            blinkTimer = null;
+                        }
+                    }));
+                }
+                else
+                {
+                    // 应用程序正在关闭，直接置空
                     blinkTimer = null;
-                });
+                }
             }
         }
 
