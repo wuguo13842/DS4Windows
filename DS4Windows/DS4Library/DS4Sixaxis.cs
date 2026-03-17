@@ -184,6 +184,10 @@ namespace DS4Windows
 
     public class DS4SixAxis
     {
+        // 新增：校准状态改变事件
+        public event EventHandler CalibrationStarted;
+        public event EventHandler CalibrationStopped;
+
         //public event EventHandler<SixAxisEventArgs> SixAccelMoved = null;
         public event SixAxisHandler<SixAxisEventArgs> SixAccelMoved = null;
         private SixAxis sPrev = null, now = null;
@@ -517,6 +521,10 @@ namespace DS4Windows
                 {
                     gyroAverageTimer.Stop();
                     AverageGyro(ref gyro_offset_x, ref gyro_offset_y, ref gyro_offset_z, ref gyro_accel_magnitude);
+                    
+                    // 校准完成，触发停止事件
+                    CalibrationStopped?.Invoke(this, EventArgs.Empty);
+                    
 #if DEBUG
                     Console.WriteLine("AverageGyro {0} {1} {2} {3}", gyro_offset_x, gyro_offset_y, gyro_offset_z, gyro_accel_magnitude);
 #endif
@@ -547,6 +555,9 @@ namespace DS4Windows
         {
             for (int i = 0; i < gyro_average_window.Length; i++) gyro_average_window[i] = new GyroAverageWindow();
             gyroAverageTimer.Start();
+            
+            // 触发开始事件
+            CalibrationStarted?.Invoke(this, EventArgs.Empty);
         }
 
         public void StopContinuousCalibration()
@@ -554,6 +565,9 @@ namespace DS4Windows
             gyroAverageTimer.Stop();
             gyroAverageTimer.Reset();
             for (int i = 0; i < gyro_average_window.Length; i++) gyro_average_window[i].Reset();
+            
+            // 触发停止事件
+            CalibrationStopped?.Invoke(this, EventArgs.Empty);
         }
 
         public void ResetContinuousCalibration()

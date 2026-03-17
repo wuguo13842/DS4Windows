@@ -67,6 +67,10 @@ namespace DS4WinWPF.DS4Forms
         private sbyte rsDriftX;
         private sbyte rsDriftY;
 
+        // 新增：用于控制陀螺仪校准闪烁的定时器
+        private System.Windows.Threading.DispatcherTimer blinkTimer;
+        private bool isCalibrating;
+
         public double LsDeadX
         {
             get => lsDeadX;
@@ -219,6 +223,11 @@ namespace DS4WinWPF.DS4Forms
             readingTimer = new NonFormTimer();
             readingTimer.Interval = 1000 / 60.0;
 
+            // 初始化闪烁定时器
+            blinkTimer = new System.Windows.Threading.DispatcherTimer();
+            blinkTimer.Interval = TimeSpan.FromMilliseconds(250); // 与原闪烁频率一致
+            blinkTimer.Tick += BlinkTimer_Tick;
+
             LsDeadXChanged += ChangeLsDeadControls;
             LsDeadYChanged += ChangeLsDeadControls;
             LsDeadXChanged += ChangeLsDriftControls;
@@ -238,6 +247,20 @@ namespace DS4WinWPF.DS4Forms
             SixAxisDeadZChanged += ChangeSixAxisDeadControls;
 
             DeviceNumChanged += ControllerReadingsControl_DeviceNumChanged;
+
+            // 订阅 Unloaded 事件以进行清理
+            this.Unloaded += ControllerReadingsControl_Unloaded;
+        }
+
+        /// <summary>
+        /// 闪烁定时器的 Tick 事件处理
+        /// 切换椭圆的可见性实现闪烁效果
+        /// </summary>
+        private void BlinkTimer_Tick(object sender, EventArgs e)
+        {
+            gyroCalEllipse.Visibility = gyroCalEllipse.Visibility == Visibility.Visible 
+                ? Visibility.Hidden 
+                : Visibility.Visible;
         }
 
         private void ControllerReadingsControl_DeviceNumChanged(object sender, EventArgs e)
@@ -287,9 +310,57 @@ namespace DS4WinWPF.DS4Forms
 
         public void UseDevice(int index, int profileDevIdx)
         {
+            // 先取消旧设备的事件订阅，防止内存泄漏
+            if (deviceNum >= 0 && deviceNum < Program.rootHub.DS4Controllers.Length)
+            {
+                var oldDev = Program.rootHub.DS4Controllers[deviceNum];
+                if (oldDev?.SixAxis != null)
+                {
+                    oldDev.SixAxis.CalibrationStarted -= SixAxis_CalibrationStarted;
+                    oldDev.SixAxis.CalibrationStopped -= SixAxis_CalibrationStopped;
+                }
+            }
+
             deviceNum = index;
             profileDeviceNum = profileDevIdx;
             DeviceNumChanged?.Invoke(this, EventArgs.Empty);
+
+            // 订阅新设备的事件
+            var newDev = Program.rootHub.DS4Controllers[deviceNum];
+            if (newDev?.SixAxis != null)
+            {
+                newDev.SixAxis.CalibrationStarted += SixAxis_CalibrationStarted;
+                newDev.SixAxis.CalibrationStopped += SixAxis_CalibrationStopped;
+            }
+        }
+
+        /// <summary>
+        /// 陀螺仪校准开始事件处理
+        /// </summary>
+        private void SixAxis_CalibrationStarted(object sender, EventArgs e)
+        {
+            isCalibrating = true;
+            // 在 UI 线程上启动闪烁定时器
+            Dispatcher.BeginInvoke(new Action(() =>
+            {
+                // 确保定时器停止后再重新启动，避免多个定时器实例
+                blinkTimer.Stop();
+                gyroCalEllipse.Visibility = Visibility.Visible; // 先显示
+                blinkTimer.Start();
+            }));
+        }
+
+        /// <summary>
+        /// 陀螺仪校准停止事件处理
+        /// </summary>
+        private void SixAxis_CalibrationStopped(object sender, EventArgs e)
+        {
+            isCalibrating = false;
+            Dispatcher.BeginInvoke(new Action(() =>
+            {
+                blinkTimer.Stop();
+                gyroCalEllipse.Visibility = Visibility.Hidden; // 隐藏
+            }));
         }
 
         public void EnableControl(bool state)
@@ -300,6 +371,13 @@ namespace DS4WinWPF.DS4Forms
                 useTimer = true;
                 readingTimer.Elapsed += ControllerReadingTimer_Elapsed;
                 readingTimer.Start();
+
+                // 如果当前设备已经在校准中，需要同步状态
+                var dev = Program.rootHub.DS4Controllers[deviceNum];
+                if (dev?.SixAxis?.CntCalibrating > 0)
+                {
+                    SixAxis_CalibrationStarted(null, EventArgs.Empty);
+                }
             }
             else
             {
@@ -307,6 +385,45 @@ namespace DS4WinWPF.DS4Forms
                 useTimer = false;
                 readingTimer.Elapsed -= ControllerReadingTimer_Elapsed;
                 readingTimer.Stop();
+
+                // 停止闪烁并隐藏椭圆
+                blinkTimer.Stop();
+                gyroCalEllipse.Visibility = Visibility.Hidden;
+            }
+        }
+
+        /// <summary>
+        /// 控件卸载时的清理工作（通过事件处理）
+        /// </summary>
+        private void ControllerReadingsControl_Unloaded(object sender, RoutedEventArgs e)
+        {
+            // 停止所有定时器
+            blinkTimer?.Stop();
+            readingTimer?.Stop();
+
+            // 取消事件订阅
+            if (deviceNum >= 0 && deviceNum < Program.rootHub.DS4Controllers.Length)
+            {
+                var dev = Program.rootHub.DS4Controllers[deviceNum];
+                if (dev?.SixAxis != null)
+                {
+                    dev.SixAxis.CalibrationStarted -= SixAxis_CalibrationStarted;
+                    dev.SixAxis.CalibrationStopped -= SixAxis_CalibrationStopped;
+                }
+            }
+
+            // 清理定时器资源
+            if (readingTimer != null)
+            {
+                readingTimer.Elapsed -= ControllerReadingTimer_Elapsed;
+                readingTimer.Dispose();
+                readingTimer = null;
+            }
+
+            if (blinkTimer != null)
+            {
+                blinkTimer.Tick -= BlinkTimer_Tick;
+                blinkTimer = null;
             }
         }
 
@@ -321,7 +438,8 @@ namespace DS4WinWPF.DS4Forms
                 //DS4StateExposed tmpexposeState = Program.rootHub.ExposedState[deviceNum];
                 DS4State tmpbaseState = Program.rootHub.getDS4State(deviceNum);
                 DS4State tmpinterState = Program.rootHub.getDS4StateTemp(deviceNum);
-                long cntCalibrating = ds.SixAxis.CntCalibrating;
+                // 不再需要从 ds 获取 cntCalibrating，因为改用事件驱动
+                // long cntCalibrating = ds.SixAxis.CntCalibrating;
 
                 // Wait for controller to be in a wait period
                 ds.ReadWaitEv.Wait();
@@ -433,7 +551,10 @@ namespace DS4WinWPF.DS4Forms
                     prevWarnMode = warnMode;
 
                     batteryLvlLb.Content = $"{Translations.Strings.Battery}: {baseState.Battery}%";
-                    gyroCalEllipse.Visibility = cntCalibrating > 0 && ((cntCalibrating / 250) % 2 == 1) ? Visibility.Visible : Visibility.Hidden;
+                    
+                    // 移除原代码：gyroCalEllipse.Visibility = cntCalibrating > 0 && ((cntCalibrating / 250) % 2 == 1) ? Visibility.Visible : Visibility.Hidden;
+                    // 闪烁已由事件驱动处理
+
                     UpdateCoordLabels(baseState, interState, exposeState);
                 }), System.Windows.Threading.DispatcherPriority.Background);
             }
