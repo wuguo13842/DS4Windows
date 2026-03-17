@@ -1078,6 +1078,15 @@ Suspend support not enabled.", true);
 
         private void MainDS4Window_Closed(object sender, EventArgs e)
         {
+			// 先清理所有控制器模型的陀螺仪资源
+			if (conLvViewModel != null)
+			{
+				foreach (var model in conLvViewModel.ControllerCol)
+				{
+					model.CleanupGyroEvents();
+				}
+			}
+
             hotkeysTimer.Stop();
             autoProfilesTimer.Stop();
             //autoProfileHolder.Save();
