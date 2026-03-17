@@ -1,4 +1,5 @@
-﻿/*
+﻿// MainWindow.xaml.cs
+/*
 DS4Windows
 Copyright (C) 2023  Travis Nickles
 
@@ -105,9 +106,9 @@ namespace DS4WinWPF.DS4Forms
             //logListView.ItemsSource = logvm.LogItems;
             logListView.DataContext = logvm;
             lastMsgLb.DataContext = lastLogMsg;
-			
+            
             // ProcessPriorityComboBox.ItemsSource = ProcessPriorityClasses;
-			SetupLocalizedPriorityComboBox();
+            SetupLocalizedPriorityComboBox();
 
             profileListHolder.Refresh();
             profilesListBox.ItemsSource = profileListHolder.ProfileListCol;
@@ -192,25 +193,25 @@ namespace DS4WinWPF.DS4Forms
             timerThread.Join();
         }
 
-		private void SetupLocalizedPriorityComboBox()
-		{
-			var priorityOptions = new List<KeyValuePair<string, ProcessPriorityClass>>
-			{
-				new KeyValuePair<string, ProcessPriorityClass>(GetLocalizedString("PriorityNormal"), ProcessPriorityClass.Normal),
-				new KeyValuePair<string, ProcessPriorityClass>(GetLocalizedString("PriorityAboveNormal"), ProcessPriorityClass.AboveNormal),
-				new KeyValuePair<string, ProcessPriorityClass>(GetLocalizedString("PriorityHigh"), ProcessPriorityClass.High),
-				new KeyValuePair<string, ProcessPriorityClass>(GetLocalizedString("PriorityRealTime"), ProcessPriorityClass.RealTime)
-			};
-			
-			ProcessPriorityComboBox.DisplayMemberPath = "Key";
-			ProcessPriorityComboBox.SelectedValuePath = "Value";
-			ProcessPriorityComboBox.ItemsSource = priorityOptions;
-		}
+        private void SetupLocalizedPriorityComboBox()
+        {
+            var priorityOptions = new List<KeyValuePair<string, ProcessPriorityClass>>
+            {
+                new KeyValuePair<string, ProcessPriorityClass>(GetLocalizedString("PriorityNormal"), ProcessPriorityClass.Normal),
+                new KeyValuePair<string, ProcessPriorityClass>(GetLocalizedString("PriorityAboveNormal"), ProcessPriorityClass.AboveNormal),
+                new KeyValuePair<string, ProcessPriorityClass>(GetLocalizedString("PriorityHigh"), ProcessPriorityClass.High),
+                new KeyValuePair<string, ProcessPriorityClass>(GetLocalizedString("PriorityRealTime"), ProcessPriorityClass.RealTime)
+            };
+            
+            ProcessPriorityComboBox.DisplayMemberPath = "Key";
+            ProcessPriorityComboBox.SelectedValuePath = "Value";
+            ProcessPriorityComboBox.ItemsSource = priorityOptions;
+        }
 
-		private string GetLocalizedString(string key)
-		{
-			return LocExtension.GetLocalizedValue<string>(key);
-		}
+        private string GetLocalizedString(string key)
+        {
+            return LocExtension.GetLocalizedValue<string>(key);
+        }
 
         public void LateChecks(ArgumentParser parser)
         {
@@ -404,7 +405,7 @@ namespace DS4WinWPF.DS4Forms
         {
             Dispatcher.BeginInvoke((Action)(() =>
             {
-				bool ignoreSettings = sender is bool && (bool)sender;
+                bool ignoreSettings = sender is bool && (bool)sender;
                 if (!IsActive && (Global.Notifications == 2 || (Global.Notifications == 1 && e.Warning)) || ignoreSettings)
                 {
                     if (notifyIcon.IsCreated)
@@ -1017,6 +1018,30 @@ Suspend support not enabled.", true);
             //(button.ContextMenu.Items[1] as MenuItem).IsChecked = !conLvViewModel.ControllerCol[idx].UseCustomColor;
             button.ContextMenu = item.LightContext;
             button.ContextMenu.IsOpen = true;
+        }
+
+        /// <summary>
+        /// 陀螺仪校准按钮点击事件
+        /// </summary>
+        private void CalibrateGyroBtn_Click(object sender, RoutedEventArgs e)
+        {
+            Button btn = sender as Button;
+            if (btn == null) return;
+
+            int devIndex = Convert.ToInt32(btn.Tag);
+            if (devIndex < 0 || devIndex >= Program.rootHub.DS4Controllers.Length) return;
+
+            DS4Device device = Program.rootHub.DS4Controllers[devIndex];
+            if (device != null)
+            {
+                // 调用陀螺仪校准重置（与 ProfileEditor 中的 GyroCalibration_Click 一致）
+                device.SixAxis.ResetContinuousCalibration();
+                if (device.JointDeviceSlotNumber != DS4Device.DEFAULT_JOINT_SLOT_NUMBER)
+                {
+                    DS4Device tempDev = Program.rootHub.DS4Controllers[device.JointDeviceSlotNumber];
+                    tempDev?.SixAxis.ResetContinuousCalibration();
+                }
+            }
         }
 
         private void MainDS4Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)
@@ -1854,35 +1879,35 @@ Suspend support not enabled.", true);
             }
         }
 
-		private void ProcessPriorityComboBox_OnSelectionChanged(object sender, SelectionChangedEventArgs e)
-		{
-			using var process = Process.GetCurrentProcess();
-			var s = (ComboBox)sender;
-			var selectedPair = (KeyValuePair<string, ProcessPriorityClass>?)s.SelectedItem;
-			
-			if (!selectedPair.HasValue) return;
-			
-			var selectedPriority = selectedPair.Value.Value;
-			
-			if (!Global.IsAdministrator() && selectedPriority == ProcessPriorityClass.RealTime)
-			{
-				MessageBox.Show(Strings.RealTimeNoAdmin);
-				// 找到 High 选项并选中
-				var items = s.ItemsSource as List<KeyValuePair<string, ProcessPriorityClass>>;
-				if (items != null)
-				{
-					var highItem = items.FirstOrDefault(x => x.Value == ProcessPriorityClass.High);
-					if (!highItem.Equals(default(KeyValuePair<string, ProcessPriorityClass>)))
-					{
-						s.SelectedItem = highItem;
-					}
-				}
-				return;
-			}
-			
-			process.PriorityClass = selectedPriority;
-			settingsWrapVM.ProcessPriorityIndex = s.SelectedIndex;
-		}
+        private void ProcessPriorityComboBox_OnSelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            using var process = Process.GetCurrentProcess();
+            var s = (ComboBox)sender;
+            var selectedPair = (KeyValuePair<string, ProcessPriorityClass>?)s.SelectedItem;
+            
+            if (!selectedPair.HasValue) return;
+            
+            var selectedPriority = selectedPair.Value.Value;
+            
+            if (!Global.IsAdministrator() && selectedPriority == ProcessPriorityClass.RealTime)
+            {
+                MessageBox.Show(Strings.RealTimeNoAdmin);
+                // 找到 High 选项并选中
+                var items = s.ItemsSource as List<KeyValuePair<string, ProcessPriorityClass>>;
+                if (items != null)
+                {
+                    var highItem = items.FirstOrDefault(x => x.Value == ProcessPriorityClass.High);
+                    if (!highItem.Equals(default(KeyValuePair<string, ProcessPriorityClass>)))
+                    {
+                        s.SelectedItem = highItem;
+                    }
+                }
+                return;
+            }
+            
+            process.PriorityClass = selectedPriority;
+            settingsWrapVM.ProcessPriorityIndex = s.SelectedIndex;
+        }
     }
 
     public class ImageLocationPaths

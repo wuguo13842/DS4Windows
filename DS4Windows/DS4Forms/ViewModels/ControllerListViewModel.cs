@@ -20,6 +20,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.ComponentModel;
 using System.Diagnostics;
 using System.Linq;
 using System.Threading;
@@ -28,6 +29,8 @@ using System.Windows.Controls;
 using System.Windows.Data;
 using System.Windows.Media;
 using DS4Windows;
+using DS4WinWPF.DS4Control;
+using System.Windows;
 
 namespace DS4WinWPF.DS4Forms.ViewModels
 {
@@ -192,6 +195,9 @@ namespace DS4WinWPF.DS4Forms.ViewModels
 
             if (found != null)
             {
+                // 清理陀螺仪校准相关资源
+                found.CleanupGyroEvents();
+
                 _colListLocker.EnterWriteLock();
                 controllerCol.Remove(found);
                 controllerDict.Remove(found.DevIndex);
@@ -205,7 +211,7 @@ namespace DS4WinWPF.DS4Forms.ViewModels
         }
     }
 
-    public class CompositeDeviceModel
+    public class CompositeDeviceModel : INotifyPropertyChanged
     {
         private DS4Device device;
         private string selectedProfile;
@@ -213,6 +219,12 @@ namespace DS4WinWPF.DS4Forms.ViewModels
         private ProfileEntity selectedEntity;
         private int selectedIndex = -1;
         private int devIndex;
+
+        // 陀螺仪校准状态相关字段
+        private bool isGyroCalibrating;
+        private bool gyroCalibrationBlink;
+        private System.Windows.Threading.DispatcherTimer blinkTimer;
+        private int blinkCounter; // 用于控制闪烁节奏
 
         public DS4Device Device { get => device; set => device = value; }
         public string SelectedProfile { get => selectedProfile; set => selectedProfile = value; }
@@ -375,6 +387,41 @@ namespace DS4WinWPF.DS4Forms.ViewModels
             get => device.PrimaryDevice;
         }
 
+        // 陀螺仪校准状态属性：是否正在校准
+        public bool IsGyroCalibrating
+        {
+            get => isGyroCalibrating;
+            private set
+            {
+                if (isGyroCalibrating != value)
+                {
+                    isGyroCalibrating = value;
+                    OnPropertyChanged(nameof(IsGyroCalibrating));
+                }
+            }
+        }
+
+        // 陀螺仪校准闪烁状态属性：用于UI绑定，控制图标可见性
+        public bool GyroCalibrationBlink
+        {
+            get => gyroCalibrationBlink;
+            private set
+            {
+                if (gyroCalibrationBlink != value)
+                {
+                    gyroCalibrationBlink = value;
+                    OnPropertyChanged(nameof(GyroCalibrationBlink));
+                }
+            }
+        }
+
+        public event PropertyChangedEventHandler PropertyChanged;
+
+        protected virtual void OnPropertyChanged(string propertyName)
+        {
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+        }
+
         public delegate void CustomColorHandler(CompositeDeviceModel sender);
         public event CustomColorHandler RequestColorPicker;
 
@@ -400,6 +447,111 @@ namespace DS4WinWPF.DS4Forms.ViewModels
             }
 
             useCustomColor = Global.LightbarSettingsInfo[devIndex].ds4winSettings.useCustomLed;
+
+            // 关键修复：在 UI 线程上创建 DispatcherTimer
+            Application.Current.Dispatcher.Invoke(() =>
+            {
+                blinkTimer = new System.Windows.Threading.DispatcherTimer();
+                blinkTimer.Interval = TimeSpan.FromMilliseconds(250); // 与 gyroCalEllipse 一致
+                blinkTimer.Tick += BlinkTimer_Tick;
+            });
+
+            // 订阅设备的 SixAxis 校准事件
+            if (device?.SixAxis != null)
+            {
+                device.SixAxis.CalibrationStarted += OnGyroCalibrationStarted;
+                device.SixAxis.CalibrationStopped += OnGyroCalibrationStopped;
+
+                // 检查当前是否正在校准（例如设备连接时自动开始的校准）
+                if (device.SixAxis.CntCalibrating > 0)
+                {
+                    // 手动触发开始事件，以启动闪烁
+                    OnGyroCalibrationStarted(null, EventArgs.Empty);
+                }
+            }
+
+            // 订阅设备移除事件以清理资源
+            device.Removal += OnDeviceRemoval;
+        }
+
+        /// <summary>
+        /// 定时器 Tick 事件处理 - 每250ms切换一次可见性，实现闪烁
+        /// </summary>
+        private void BlinkTimer_Tick(object sender, EventArgs e)
+        {
+            blinkCounter++;
+            GyroCalibrationBlink = (blinkCounter % 2 == 1);
+        }
+
+        /// <summary>
+        /// 陀螺仪校准开始事件处理 - 与ControllerReadingsControl中的SixAxis_CalibrationStarted逻辑一致
+        /// 开始闪烁图标
+        /// </summary>
+        private void OnGyroCalibrationStarted(object sender, EventArgs e)
+        {
+            IsGyroCalibrating = true;
+            blinkCounter = 0; // 重置计数器，确保从显示状态开始
+            
+            // 在 UI 线程上启动闪烁定时器
+            System.Windows.Application.Current.Dispatcher.BeginInvoke(new Action(() =>
+            {
+                if (blinkTimer != null)
+                {
+                    blinkTimer.Stop();
+                    GyroCalibrationBlink = true; // 先显示
+                    blinkTimer.Start();
+                }
+            }));
+        }
+
+        /// <summary>
+        /// 陀螺仪校准停止事件处理 - 与ControllerReadingsControl中的SixAxis_CalibrationStopped逻辑一致
+        /// 停止闪烁并隐藏图标
+        /// </summary>
+        private void OnGyroCalibrationStopped(object sender, EventArgs e)
+        {
+            IsGyroCalibrating = false;
+            System.Windows.Application.Current.Dispatcher.BeginInvoke(new Action(() =>
+            {
+                if (blinkTimer != null)
+                {
+                    blinkTimer.Stop();
+                    GyroCalibrationBlink = false; // 隐藏
+                }
+            }));
+        }
+
+        /// <summary>
+        /// 设备移除事件处理 - 清理陀螺仪相关资源
+        /// </summary>
+        private void OnDeviceRemoval(object sender, EventArgs e)
+        {
+            CleanupGyroEvents();
+        }
+
+        /// <summary>
+        /// 清理陀螺仪校准相关事件和定时器
+        /// 在设备移除时调用，防止内存泄漏
+        /// </summary>
+        public void CleanupGyroEvents()
+        {
+            if (device?.SixAxis != null)
+            {
+                device.SixAxis.CalibrationStarted -= OnGyroCalibrationStarted;
+                device.SixAxis.CalibrationStopped -= OnGyroCalibrationStopped;
+            }
+            device.Removal -= OnDeviceRemoval;
+
+            if (blinkTimer != null)
+            {
+                // 安全地在 UI 线程上停止并清理定时器
+                Application.Current.Dispatcher.Invoke(() =>
+                {
+                    blinkTimer.Stop();
+                    blinkTimer.Tick -= BlinkTimer_Tick;
+                    blinkTimer = null;
+                });
+            }
         }
 
         public void ChangeSelectedProfile()
