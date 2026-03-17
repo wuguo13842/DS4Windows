@@ -192,6 +192,8 @@
 	<ItemGroup>
 
 		<Resource Include="Resources\DS4 Config_white.png" />
+
+		<Resource Include="Resources\gyro.ico" />
 		<Resource Include="Resources\newprofile_white.png" />
 		<Resource Include="Resources\copy_white.png" />
 		<Resource Include="Resources\delete_white.png" />
@@ -402,6 +404,10 @@
 
 	<ItemGroup>
 		<Folder Remove="extras\" />
+	</ItemGroup>
+
+	<ItemGroup>
+	  <None Remove="Resources\gyro.ico" />
 	</ItemGroup>
 	
   <!-- 编译完成后执行 PowerShell 脚本移动语言文件夹 -->
