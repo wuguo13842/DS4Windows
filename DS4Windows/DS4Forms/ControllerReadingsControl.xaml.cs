@@ -67,10 +67,12 @@ namespace DS4WinWPF.DS4Forms
         private sbyte rsDriftX;
         private sbyte rsDriftY;
 
-        // 用于控制陀螺仪校准闪烁的定时器
+        // 闪烁相关字段
         private System.Windows.Threading.DispatcherTimer blinkTimer;
+        private System.Windows.Threading.DispatcherTimer blinkTimeoutTimer; // 6秒超时定时器
         private bool isCalibrating;
         private bool isUnloaded; // 标记控件是否已卸载，防止后续操作
+        private readonly object blinkLock = new object(); // 保护闪烁状态
 
         public double LsDeadX
         {
@@ -224,10 +226,14 @@ namespace DS4WinWPF.DS4Forms
             readingTimer = new NonFormTimer();
             readingTimer.Interval = 1000 / 60.0;
 
-            // 初始化闪烁定时器
+            // 初始化闪烁定时器和超时定时器
             blinkTimer = new System.Windows.Threading.DispatcherTimer();
             blinkTimer.Interval = TimeSpan.FromMilliseconds(250); // 与原闪烁频率一致
             blinkTimer.Tick += BlinkTimer_Tick;
+
+            blinkTimeoutTimer = new System.Windows.Threading.DispatcherTimer();
+            blinkTimeoutTimer.Interval = TimeSpan.FromSeconds(6); // 6秒超时
+            blinkTimeoutTimer.Tick += BlinkTimeoutTimer_Tick;
 
             LsDeadXChanged += ChangeLsDeadControls;
             LsDeadYChanged += ChangeLsDeadControls;
@@ -259,12 +265,53 @@ namespace DS4WinWPF.DS4Forms
         /// </summary>
         private void BlinkTimer_Tick(object sender, EventArgs e)
         {
-            // 如果控件已卸载，不再处理
             if (isUnloaded) return;
 
-            gyroCalEllipse.Visibility = gyroCalEllipse.Visibility == Visibility.Visible 
-                ? Visibility.Hidden 
-                : Visibility.Visible;
+            lock (blinkLock)
+            {
+                if (isCalibrating)
+                {
+                    gyroCalEllipse.Visibility = gyroCalEllipse.Visibility == Visibility.Visible 
+                        ? Visibility.Hidden 
+                        : Visibility.Visible;
+                }
+                else
+                {
+                    blinkTimer.Stop();
+                }
+            }
+        }
+
+        /// <summary>
+        /// 超时定时器的 Tick 事件处理
+        /// 6秒内未收到校准停止事件，强制停止闪烁
+        /// </summary>
+        private void BlinkTimeoutTimer_Tick(object sender, EventArgs e)
+        {
+            if (isUnloaded) return;
+
+            lock (blinkLock)
+            {
+                if (isCalibrating)
+                {
+                    // 6秒超时，强制停止闪烁
+                    isCalibrating = false;
+                    Dispatcher.BeginInvoke(new Action(() =>
+                    {
+                        lock (blinkLock)
+                        {
+                            if (isUnloaded) return;
+                            blinkTimer.Stop();
+                            blinkTimeoutTimer.Stop();
+                            gyroCalEllipse.Visibility = Visibility.Hidden;
+                        }
+                    }));
+                }
+                else
+                {
+                    blinkTimeoutTimer.Stop();
+                }
+            }
         }
 
         private void ControllerReadingsControl_DeviceNumChanged(object sender, EventArgs e)
@@ -359,17 +406,29 @@ namespace DS4WinWPF.DS4Forms
         {
             if (isUnloaded) return;
 
-            isCalibrating = true;
-            // 在 UI 线程上启动闪烁定时器
-            if (Dispatcher != null && !Dispatcher.HasShutdownStarted && !Dispatcher.HasShutdownFinished)
+            lock (blinkLock)
             {
-                Dispatcher.BeginInvoke(new Action(() =>
+                isCalibrating = true;
+                
+                // 在 UI 线程上启动闪烁定时器和超时定时器
+                if (Dispatcher != null && !Dispatcher.HasShutdownStarted && !Dispatcher.HasShutdownFinished)
                 {
-                    if (isUnloaded || blinkTimer == null) return;
-                    blinkTimer.Stop();
-                    gyroCalEllipse.Visibility = Visibility.Visible; // 先显示
-                    blinkTimer.Start();
-                }));
+                    Dispatcher.BeginInvoke(new Action(() =>
+                    {
+                        lock (blinkLock)
+                        {
+                            if (isUnloaded || blinkTimer == null || blinkTimeoutTimer == null) return;
+                            
+                            blinkTimer.Stop();
+                            gyroCalEllipse.Visibility = Visibility.Visible; // 先显示
+                            blinkTimer.Start();
+                            
+                            // 重置并启动超时定时器
+                            blinkTimeoutTimer.Stop();
+                            blinkTimeoutTimer.Start();
+                        }
+                    }));
+                }
             }
         }
 
@@ -380,15 +439,24 @@ namespace DS4WinWPF.DS4Forms
         {
             if (isUnloaded) return;
 
-            isCalibrating = false;
-            if (Dispatcher != null && !Dispatcher.HasShutdownStarted && !Dispatcher.HasShutdownFinished)
+            lock (blinkLock)
             {
-                Dispatcher.BeginInvoke(new Action(() =>
+                isCalibrating = false;
+                
+                if (Dispatcher != null && !Dispatcher.HasShutdownStarted && !Dispatcher.HasShutdownFinished)
                 {
-                    if (isUnloaded || blinkTimer == null) return;
-                    blinkTimer.Stop();
-                    gyroCalEllipse.Visibility = Visibility.Hidden; // 隐藏
-                }));
+                    Dispatcher.BeginInvoke(new Action(() =>
+                    {
+                        lock (blinkLock)
+                        {
+                            if (isUnloaded || blinkTimer == null || blinkTimeoutTimer == null) return;
+                            
+                            blinkTimer.Stop();
+                            blinkTimeoutTimer.Stop();
+                            gyroCalEllipse.Visibility = Visibility.Hidden; // 隐藏
+                        }
+                    }));
+                }
             }
         }
 
@@ -418,11 +486,18 @@ namespace DS4WinWPF.DS4Forms
                 readingTimer.Stop();
 
                 // 停止闪烁并隐藏椭圆
-                if (blinkTimer != null)
+                lock (blinkLock)
                 {
-                    blinkTimer.Stop();
+                    if (blinkTimer != null)
+                    {
+                        blinkTimer.Stop();
+                    }
+                    if (blinkTimeoutTimer != null)
+                    {
+                        blinkTimeoutTimer.Stop();
+                    }
+                    gyroCalEllipse.Visibility = Visibility.Hidden;
                 }
-                gyroCalEllipse.Visibility = Visibility.Hidden;
             }
         }
 
@@ -435,11 +510,20 @@ namespace DS4WinWPF.DS4Forms
             isUnloaded = true;
 
             // 停止所有定时器
-            if (blinkTimer != null)
+            lock (blinkLock)
             {
-                blinkTimer.Stop();
-                blinkTimer.Tick -= BlinkTimer_Tick;
-                blinkTimer = null;
+                if (blinkTimer != null)
+                {
+                    blinkTimer.Stop();
+                    blinkTimer.Tick -= BlinkTimer_Tick;
+                    blinkTimer = null;
+                }
+                if (blinkTimeoutTimer != null)
+                {
+                    blinkTimeoutTimer.Stop();
+                    blinkTimeoutTimer.Tick -= BlinkTimeoutTimer_Tick;
+                    blinkTimeoutTimer = null;
+                }
             }
 
             if (readingTimer != null)
