@@ -33,6 +33,7 @@ using DS4WinWPF.DS4Forms.ViewModels;
 using ThreadState = System.Threading.ThreadState;
 using DS4WinWPF.Translations;
 using DS4Windows.InputDevices;
+using DS4WinWPF;
 
 namespace DS4Windows
 {
@@ -4401,9 +4402,16 @@ namespace DS4Windows
 								{
 									var d = ctrl.DS4Controllers[device];
 
-									// 添加系统通知（仅手动校准时触发）
-									string message = string.Format(DS4WinWPF.Translations.Strings.GyroCalibrationStarted, device + 1);
-									DS4Windows.AppLogger.LogToTray(message, false, true);
+									try
+									{
+										string message = string.Format(DS4WinWPF.Translations.Strings.GyroCalibrationStarted, device + 1);
+										DS4Windows.AppLogger.LogToTray(message, false, true);
+									}
+									catch (Exception ex)
+									{
+										// 记录到 crash.log
+										App.LogToCrashFile(ex);
+									}
 
 									d.SixAxis.ResetContinuousCalibration();
 									if (d.JointDeviceSlotNumber != DS4Device.DEFAULT_JOINT_SLOT_NUMBER)

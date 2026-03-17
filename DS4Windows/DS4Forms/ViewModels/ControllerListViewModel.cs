@@ -31,6 +31,7 @@ using System.Windows.Data;
 using System.Windows.Media;
 using DS4Windows;
 using DS4WinWPF.DS4Control;
+using DS4WinWPF;
 
 namespace DS4WinWPF.DS4Forms.ViewModels
 {
@@ -492,11 +493,18 @@ namespace DS4WinWPF.DS4Forms.ViewModels
         /// </summary>
         private void BlinkTimer_Tick(object sender, EventArgs e)
         {
-            // 如果正在清理中或定时器已被置空，忽略此次 Tick
-            if (isCleaningUp || blinkTimer == null) return;
-            
-            blinkCounter++;
-            GyroCalibrationBlink = (blinkCounter % 2 == 1);
+			try
+			{
+				// 如果正在清理中或定时器已被置空，忽略此次 Tick
+				if (isCleaningUp || blinkTimer == null) return;
+				
+				blinkCounter++;
+				GyroCalibrationBlink = (blinkCounter % 2 == 1);
+			}
+			catch (Exception ex)
+			{
+				App.LogToCrashFile(ex); // 假设将 LogToCrashFile 设为公共静态方法
+			}
         }
 
         /// <summary>
@@ -506,26 +514,33 @@ namespace DS4WinWPF.DS4Forms.ViewModels
         {
             lock (blinkLock)
             {
-                if (isGyroCalibrating)
-                {
-                    // 6秒超时，强制停止闪烁
-                    Application.Current.Dispatcher.BeginInvoke(new Action(() =>
-                    {
-                        lock (blinkLock)
-                        {
-                            if (isCleaningUp || blinkTimer == null || blinkTimeoutTimer == null) return;
-                            
-                            blinkTimeoutTimer.Stop();
-                            blinkTimer.Stop();
-                            isGyroCalibrating = false;
-                            GyroCalibrationBlink = false;
-                        }
-                    }));
-                }
-                else
-                {
-                    blinkTimeoutTimer?.Stop();
-                }
+				try
+				{
+					if (isGyroCalibrating)
+					{
+						// 6秒超时，强制停止闪烁
+						Application.Current.Dispatcher.BeginInvoke(new Action(() =>
+						{
+							lock (blinkLock)
+							{
+								if (isCleaningUp || blinkTimer == null || blinkTimeoutTimer == null) return;
+								
+								blinkTimeoutTimer.Stop();
+								blinkTimer.Stop();
+								isGyroCalibrating = false;
+								GyroCalibrationBlink = false;
+							}
+						}));
+					}
+					else
+					{
+						blinkTimeoutTimer?.Stop();
+					}
+				}
+				catch (Exception ex)
+				{
+					App.LogToCrashFile(ex);
+				}
             }
         }
 
@@ -535,35 +550,42 @@ namespace DS4WinWPF.DS4Forms.ViewModels
         /// </summary>
         private void OnGyroCalibrationStarted(object sender, EventArgs e)
         {
-            if (isCleaningUp) return;
+			try
+			{
+				if (isCleaningUp) return;
 
-            lock (blinkLock)
-            {
-                IsGyroCalibrating = true;
-                blinkCounter = 0; // 重置计数器，确保从显示状态开始
-                
-                // 在 UI 线程上启动闪烁定时器和超时定时器
-                var dispatcher = Application.Current?.Dispatcher;
-                if (dispatcher != null && !dispatcher.HasShutdownStarted && !dispatcher.HasShutdownFinished)
-                {
-                    dispatcher.BeginInvoke(new Action(() =>
-                    {
-                        lock (blinkLock)
-                        {
-                            // 再次检查清理状态
-                            if (isCleaningUp || blinkTimer == null || blinkTimeoutTimer == null) return;
-                            
-                            blinkTimer.Stop();
-                            GyroCalibrationBlink = true; // 先显示
-                            blinkTimer.Start();
-                            
-                            // 重置并启动超时定时器
-                            blinkTimeoutTimer.Stop();
-                            blinkTimeoutTimer.Start();
-                        }
-                    }));
-                }
-            }
+				lock (blinkLock)
+				{
+					IsGyroCalibrating = true;
+					blinkCounter = 0; // 重置计数器，确保从显示状态开始
+					
+					// 在 UI 线程上启动闪烁定时器和超时定时器
+					var dispatcher = Application.Current?.Dispatcher;
+					if (dispatcher != null && !dispatcher.HasShutdownStarted && !dispatcher.HasShutdownFinished)
+					{
+						dispatcher.BeginInvoke(new Action(() =>
+						{
+							lock (blinkLock)
+							{
+								// 再次检查清理状态
+								if (isCleaningUp || blinkTimer == null || blinkTimeoutTimer == null) return;
+								
+								blinkTimer.Stop();
+								GyroCalibrationBlink = true; // 先显示
+								blinkTimer.Start();
+								
+								// 重置并启动超时定时器
+								blinkTimeoutTimer.Stop();
+								blinkTimeoutTimer.Start();
+							}
+						}));
+					}
+				}
+			}
+			catch (Exception ex)
+			{
+				App.LogToCrashFile(ex);
+			}
         }
 
         /// <summary>
@@ -572,29 +594,36 @@ namespace DS4WinWPF.DS4Forms.ViewModels
         /// </summary>
         private void OnGyroCalibrationStopped(object sender, EventArgs e)
         {
-            if (isCleaningUp) return;
+			try
+			{
+				if (isCleaningUp) return;
 
-            lock (blinkLock)
-            {
-                IsGyroCalibrating = false;
-                
-                var dispatcher = Application.Current?.Dispatcher;
-                if (dispatcher != null && !dispatcher.HasShutdownStarted && !dispatcher.HasShutdownFinished)
-                {
-                    dispatcher.BeginInvoke(new Action(() =>
-                    {
-                        lock (blinkLock)
-                        {
-                            // 再次检查清理状态
-                            if (isCleaningUp || blinkTimer == null || blinkTimeoutTimer == null) return;
-                            
-                            blinkTimer.Stop();
-                            blinkTimeoutTimer.Stop();
-                            GyroCalibrationBlink = false; // 隐藏
-                        }
-                    }));
-                }
-            }
+				lock (blinkLock)
+				{
+					IsGyroCalibrating = false;
+					
+					var dispatcher = Application.Current?.Dispatcher;
+					if (dispatcher != null && !dispatcher.HasShutdownStarted && !dispatcher.HasShutdownFinished)
+					{
+						dispatcher.BeginInvoke(new Action(() =>
+						{
+							lock (blinkLock)
+							{
+								// 再次检查清理状态
+								if (isCleaningUp || blinkTimer == null || blinkTimeoutTimer == null) return;
+								
+								blinkTimer.Stop();
+								blinkTimeoutTimer.Stop();
+								GyroCalibrationBlink = false; // 隐藏
+							}
+						}));
+					}
+				}
+			}
+			catch (Exception ex)
+			{
+				App.LogToCrashFile(ex);
+			}
         }
 
         /// <summary>
@@ -611,48 +640,55 @@ namespace DS4WinWPF.DS4Forms.ViewModels
         /// </summary>
         public void CleanupGyroEvents()
         {
-            // 防止重复清理
-            if (isCleaningUp) return;
-            isCleaningUp = true;
+			try
+			{
+				// 防止重复清理
+				if (isCleaningUp) return;
+				isCleaningUp = true;
 
-            // 先取消事件订阅，避免新的事件触发
-            if (device?.SixAxis != null)
-            {
-                device.SixAxis.CalibrationStarted -= OnGyroCalibrationStarted;
-                device.SixAxis.CalibrationStopped -= OnGyroCalibrationStopped;
-            }
-            device.Removal -= OnDeviceRemoval;
+				// 先取消事件订阅，避免新的事件触发
+				if (device?.SixAxis != null)
+				{
+					device.SixAxis.CalibrationStarted -= OnGyroCalibrationStarted;
+					device.SixAxis.CalibrationStopped -= OnGyroCalibrationStopped;
+				}
+				device.Removal -= OnDeviceRemoval;
 
-            // 安全地停止并清理定时器
-            if (blinkTimer != null || blinkTimeoutTimer != null)
-            {
-                var dispatcher = Application.Current?.Dispatcher;
-                if (dispatcher != null && !dispatcher.HasShutdownStarted && !dispatcher.HasShutdownFinished)
-                {
-                    // 使用 BeginInvoke 异步停止定时器，避免死锁
-                    dispatcher.BeginInvoke(new Action(() =>
-                    {
-                        if (blinkTimer != null)
-                        {
-                            blinkTimer.Stop();
-                            blinkTimer.Tick -= BlinkTimer_Tick;
-                            blinkTimer = null;
-                        }
-                        if (blinkTimeoutTimer != null)
-                        {
-                            blinkTimeoutTimer.Stop();
-                            blinkTimeoutTimer.Tick -= BlinkTimeoutTimer_Tick;
-                            blinkTimeoutTimer = null;
-                        }
-                    }));
-                }
-                else
-                {
-                    // 应用程序正在关闭，直接置空
-                    blinkTimer = null;
-                    blinkTimeoutTimer = null;
-                }
-            }
+				// 安全地停止并清理定时器
+				if (blinkTimer != null || blinkTimeoutTimer != null)
+				{
+					var dispatcher = Application.Current?.Dispatcher;
+					if (dispatcher != null && !dispatcher.HasShutdownStarted && !dispatcher.HasShutdownFinished)
+					{
+						// 使用 BeginInvoke 异步停止定时器，避免死锁
+						dispatcher.BeginInvoke(new Action(() =>
+						{
+							if (blinkTimer != null)
+							{
+								blinkTimer.Stop();
+								blinkTimer.Tick -= BlinkTimer_Tick;
+								blinkTimer = null;
+							}
+							if (blinkTimeoutTimer != null)
+							{
+								blinkTimeoutTimer.Stop();
+								blinkTimeoutTimer.Tick -= BlinkTimeoutTimer_Tick;
+								blinkTimeoutTimer = null;
+							}
+						}));
+					}
+					else
+					{
+						// 应用程序正在关闭，直接置空
+						blinkTimer = null;
+						blinkTimeoutTimer = null;
+					}
+				}
+			}
+			catch (Exception ex)
+			{
+				App.LogToCrashFile(ex);
+			}
         }
 
         public void ChangeSelectedProfile()

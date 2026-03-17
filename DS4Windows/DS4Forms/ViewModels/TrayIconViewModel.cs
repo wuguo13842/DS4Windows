@@ -25,6 +25,7 @@ using System.Windows;
 using System.Windows.Controls;
 using DS4Windows;
 using WPFLocalizeExtension.Extensions;
+using DS4WinWPF;
 
 namespace DS4WinWPF.DS4Forms.ViewModels
 {
@@ -58,15 +59,18 @@ namespace DS4WinWPF.DS4Forms.ViewModels
             get => tooltipText;
             set
             {
-                string temp = value;
-                if (value.Length > 63) temp = value.Substring(0, 63);
-                if (tooltipText == temp) return;
-                tooltipText = temp;
                 try
                 {
+                    string temp = value;
+                    if (value.Length > 63) temp = value.Substring(0, 63);
+                    if (tooltipText == temp) return;
+                    tooltipText = temp;
                     TooltipTextChanged?.Invoke(this, EventArgs.Empty);
                 }
-                catch (InvalidOperationException) { }
+                catch (Exception ex)
+                {
+                    App.LogToCrashFile(ex);
+                }
             }
         }
         public event EventHandler TooltipTextChanged;
@@ -76,9 +80,16 @@ namespace DS4WinWPF.DS4Forms.ViewModels
             get => iconSource;
             set
             {
-                if (iconSource == value) return;
-                iconSource = value;
-                IconSourceChanged?.Invoke(this, EventArgs.Empty);
+                try
+                {
+                    if (iconSource == value) return;
+                    iconSource = value;
+                    IconSourceChanged?.Invoke(this, EventArgs.Empty);
+                }
+                catch (Exception ex)
+                {
+                    App.LogToCrashFile(ex);
+                }
             }
         }
 
@@ -101,295 +112,464 @@ namespace DS4WinWPF.DS4Forms.ViewModels
 
         public TrayIconViewModel(ControlService service, ProfileList profileListHolder)
         {
-            this.profileListHolder = profileListHolder;
-            this.controlService = service;
-            contextMenu = new ContextMenu();
-            iconSource = Global.iconChoiceResources[Global.UseIconChoice];
-            gyroIcon = $"{Global.RESOURCES_PREFIX}/gyro.ico"; // 假设 gyro.ico 位于 Resources 文件夹
-            Global.BatteryChanged += UpdateTrayBattery;
-
-            // 初始化闪烁定时器和超时定时器（在 UI 线程上创建）
-            Application.Current.Dispatcher.Invoke(() =>
+            try
             {
-                blinkTimer = new System.Windows.Threading.DispatcherTimer();
-                blinkTimer.Interval = TimeSpan.FromMilliseconds(250); // 与陀螺仪闪烁频率一致
-                blinkTimer.Tick += BlinkTimer_Tick;
+                this.profileListHolder = profileListHolder;
+                this.controlService = service;
+                contextMenu = new ContextMenu();
+                iconSource = Global.iconChoiceResources[Global.UseIconChoice];
+                gyroIcon = $"{Global.RESOURCES_PREFIX}/gyro.ico"; // 假设 gyro.ico 位于 Resources 文件夹
+                Global.BatteryChanged += UpdateTrayBattery;
 
-                blinkTimeoutTimer = new System.Windows.Threading.DispatcherTimer();
-                blinkTimeoutTimer.Interval = TimeSpan.FromSeconds(6); // 超时6秒
-                blinkTimeoutTimer.Tick += BlinkTimeoutTimer_Tick;
-            });
+                // 初始化闪烁定时器和超时定时器（在 UI 线程上创建）
+                Application.Current.Dispatcher.Invoke(() =>
+                {
+                    try
+                    {
+                        blinkTimer = new System.Windows.Threading.DispatcherTimer();
+                        blinkTimer.Interval = TimeSpan.FromMilliseconds(250); // 与陀螺仪闪烁频率一致
+                        blinkTimer.Tick += BlinkTimer_Tick;
 
-            // 初始化菜单项
-            changeServiceItem = new MenuItem()
+                        blinkTimeoutTimer = new System.Windows.Threading.DispatcherTimer();
+                        blinkTimeoutTimer.Interval = TimeSpan.FromSeconds(6); // 超时6秒
+                        blinkTimeoutTimer.Tick += BlinkTimeoutTimer_Tick;
+                    }
+                    catch (Exception ex)
+                    {
+                        App.LogToCrashFile(ex);
+                    }
+                });
+
+                // 初始化菜单项
+                changeServiceItem = new MenuItem()
+                {
+                    Header = GetLocalizedString("ServiceStart"),
+                    IsEnabled = false
+                };
+                changeServiceItem.Click += ChangeControlServiceItem_Click;
+                openItem = new MenuItem() {  Header = GetLocalizedString("MenuOpen"),
+                    FontWeight = FontWeights.Bold };
+                openItem.Click += OpenMenuItem_Click;
+                minimizeItem = new MenuItem() { Header = GetLocalizedString("MenuMinimize") };
+                minimizeItem.Click += MinimizeMenuItem_Click;
+                openProgramItem = new MenuItem() { Header = GetLocalizedString("MenuOpenProgramFolder") };
+                openProgramItem.Click += OpenProgramFolderItem_Click;
+                closeItem = new MenuItem()  { Header = GetLocalizedString("MenuExit") };
+                closeItem.Click += ExitMenuItem_Click;
+
+                PopulateControllerList();
+                PopulateToolText();
+                PopulateContextMenu();
+                SetupEvents();
+                profileListHolder.ProfileListCol.CollectionChanged += ProfileListCol_CollectionChanged;
+
+                service.ServiceStarted += BuildControllerList;
+                service.ServiceStarted += HookEvents;
+                service.ServiceStarted += StartPopulateText;
+                service.PreServiceStop += ClearToolText;
+                service.PreServiceStop += UnhookEvents;
+                service.PreServiceStop += ClearControllerList;
+                service.RunningChanged += Service_RunningChanged;
+                service.HotplugController += Service_HotplugController;
+            }
+            catch (Exception ex)
             {
-                Header = GetLocalizedString("ServiceStart"),
-                IsEnabled = false
-            };
-            changeServiceItem.Click += ChangeControlServiceItem_Click;
-            openItem = new MenuItem() {  Header = GetLocalizedString("MenuOpen"),
-                FontWeight = FontWeights.Bold };
-            openItem.Click += OpenMenuItem_Click;
-            minimizeItem = new MenuItem() { Header = GetLocalizedString("MenuMinimize") };
-            minimizeItem.Click += MinimizeMenuItem_Click;
-            openProgramItem = new MenuItem() { Header = GetLocalizedString("MenuOpenProgramFolder") };
-            openProgramItem.Click += OpenProgramFolderItem_Click;
-            closeItem = new MenuItem()  { Header = GetLocalizedString("MenuExit") };
-            closeItem.Click += ExitMenuItem_Click;
-
-            PopulateControllerList();
-            PopulateToolText();
-            PopulateContextMenu();
-            SetupEvents();
-            profileListHolder.ProfileListCol.CollectionChanged += ProfileListCol_CollectionChanged;
-
-            service.ServiceStarted += BuildControllerList;
-            service.ServiceStarted += HookEvents;
-            service.ServiceStarted += StartPopulateText;
-            service.PreServiceStop += ClearToolText;
-            service.PreServiceStop += UnhookEvents;
-            service.PreServiceStop += ClearControllerList;
-            service.RunningChanged += Service_RunningChanged;
-            service.HotplugController += Service_HotplugController;
+                App.LogToCrashFile(ex);
+            }
         }
 
         private string GetLocalizedString(string key)
         {
-            return LocExtension.GetLocalizedValue<string>(key);
+            try
+            {
+                return LocExtension.GetLocalizedValue<string>(key);
+            }
+            catch (Exception ex)
+            {
+                App.LogToCrashFile(ex);
+                return key;
+            }
         }
 
         private void Service_RunningChanged(object sender, EventArgs e)
         {
-            string headerKey = controlService.running ? "ServiceStop" : "ServiceStart";
-            App.Current.Dispatcher.BeginInvoke((Action)(() =>
+            try
             {
-                changeServiceItem.Header = GetLocalizedString(headerKey);
-                changeServiceItem.IsEnabled = true;
-            }));
+                string headerKey = controlService.running ? "ServiceStop" : "ServiceStart";
+                App.Current.Dispatcher.BeginInvoke((Action)(() =>
+                {
+                    try
+                    {
+                        changeServiceItem.Header = GetLocalizedString(headerKey);
+                        changeServiceItem.IsEnabled = true;
+                    }
+                    catch (Exception ex)
+                    {
+                        App.LogToCrashFile(ex);
+                    }
+                }));
+            }
+            catch (Exception ex)
+            {
+                App.LogToCrashFile(ex);
+            }
         }
 
         private void ClearControllerList(object sender, EventArgs e)
         {
-            _colLocker.EnterWriteLock();
-            controllerList.Clear();
-            _colLocker.ExitWriteLock();
+            try
+            {
+                _colLocker.EnterWriteLock();
+                controllerList.Clear();
+                _colLocker.ExitWriteLock();
+            }
+            catch (Exception ex)
+            {
+                App.LogToCrashFile(ex);
+            }
         }
 
         private void UnhookEvents(object sender, EventArgs e)
         {
-            _colLocker.EnterReadLock();
-            foreach (ControllerHolder holder in controllerList)
+            try
             {
-                DS4Device currentDev = holder.Device;
-                RemoveDeviceEvents(currentDev);
+                _colLocker.EnterReadLock();
+                foreach (ControllerHolder holder in controllerList)
+                {
+                    DS4Device currentDev = holder.Device;
+                    RemoveDeviceEvents(currentDev);
+                }
+                _colLocker.ExitReadLock();
             }
-            _colLocker.ExitReadLock();
+            catch (Exception ex)
+            {
+                App.LogToCrashFile(ex);
+            }
         }
 
         private void Service_HotplugController(ControlService sender, DS4Device device, int index)
         {
-            SetupDeviceEvents(device);
-            _colLocker.EnterWriteLock();
-            controllerList.Add(new ControllerHolder(device, index));
-            _colLocker.ExitWriteLock();
+            try
+            {
+                SetupDeviceEvents(device);
+                _colLocker.EnterWriteLock();
+                controllerList.Add(new ControllerHolder(device, index));
+                _colLocker.ExitWriteLock();
+            }
+            catch (Exception ex)
+            {
+                App.LogToCrashFile(ex);
+            }
         }
 
         private void ProfileListCol_CollectionChanged(object sender,
             System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
         {
-            PopulateContextMenu();
+            try
+            {
+                PopulateContextMenu();
+            }
+            catch (Exception ex)
+            {
+                App.LogToCrashFile(ex);
+            }
         }
 
         private void BuildControllerList(object sender, EventArgs e)
         {
-            PopulateControllerList();
+            try
+            {
+                PopulateControllerList();
+            }
+            catch (Exception ex)
+            {
+                App.LogToCrashFile(ex);
+            }
         }
 
         public void PopulateContextMenu()
         {
-            contextMenu.Items.Clear();
-            ItemCollection items = contextMenu.Items;
-            MenuItem item;
-            int idx = 0;
-
-            using (ReadLocker locker = new ReadLocker(_colLocker))
+            try
             {
-                foreach (ControllerHolder holder in controllerList)
+                contextMenu.Items.Clear();
+                ItemCollection items = contextMenu.Items;
+                MenuItem item;
+                int idx = 0;
+
+                using (ReadLocker locker = new ReadLocker(_colLocker))
                 {
-                    DS4Device currentDev = holder.Device;
-                    item = new MenuItem() { Header = $"Controller {idx + 1}" };
-                    item.Tag = idx;
-                    ItemCollection subitems = item.Items;
-                    string currentProfile = Global.ProfilePath[idx];
-                    foreach (ProfileEntity entry in profileListHolder.ProfileListCol)
+                    foreach (ControllerHolder holder in controllerList)
                     {
-                        string name = entry.Name;
-                        name = Regex.Replace(name, "_{1}", "__");
-                        MenuItem temp = new MenuItem() { Header = name };
-                        temp.Tag = idx;
-                        temp.Click += ProfileItem_Click;
-                        if (entry.Name == currentProfile)
+                        DS4Device currentDev = holder.Device;
+                        item = new MenuItem() { Header = $"Controller {idx + 1}" };
+                        item.Tag = idx;
+                        ItemCollection subitems = item.Items;
+                        string currentProfile = Global.ProfilePath[idx];
+                        foreach (ProfileEntity entry in profileListHolder.ProfileListCol)
                         {
-                            temp.IsChecked = true;
+                            string name = entry.Name;
+                            name = Regex.Replace(name, "_{1}", "__");
+                            MenuItem temp = new MenuItem() { Header = name };
+                            temp.Tag = idx;
+                            temp.Click += ProfileItem_Click;
+                            if (entry.Name == currentProfile)
+                            {
+                                temp.IsChecked = true;
+                            }
+                            subitems.Add(temp);
                         }
-                        subitems.Add(temp);
+                        items.Add(item);
+                        idx++;
                     }
-                    items.Add(item);
-                    idx++;
-                }
 
-                item = new MenuItem() {  Header = GetLocalizedString("MenuDisconnect") };
-                idx = 0;
-                foreach (ControllerHolder holder in controllerList)
-                {
-                    DS4Device tempDev = holder.Device;
-                    if (tempDev.Synced && !tempDev.Charging)
+                    item = new MenuItem() {  Header = GetLocalizedString("MenuDisconnect") };
+                    idx = 0;
+                    foreach (ControllerHolder holder in controllerList)
                     {
-                        MenuItem subitem = new MenuItem() { Header = $"Disconnect Controller {idx + 1}" };
-                        subitem.Click += DisconnectMenuItem_Click;
-                        subitem.Tag = idx;
-                        item.Items.Add(subitem);
+                        DS4Device tempDev = holder.Device;
+                        if (tempDev.Synced && !tempDev.Charging)
+                        {
+                            MenuItem subitem = new MenuItem() { Header = $"Disconnect Controller {idx + 1}" };
+                            subitem.Click += DisconnectMenuItem_Click;
+                            subitem.Tag = idx;
+                            item.Items.Add(subitem);
+                        }
+                        idx++;
                     }
-                    idx++;
+                    if (idx == 0)
+                    {
+                        item.IsEnabled = false;
+                    }
                 }
-                if (idx == 0)
-                {
-                    item.IsEnabled = false;
-                }
-            }
 
-            items.Add(item);
-            items.Add(new Separator());
-            PopulateStaticItems();
+                items.Add(item);
+                items.Add(new Separator());
+                PopulateStaticItems();
+            }
+            catch (Exception ex)
+            {
+                App.LogToCrashFile(ex);
+            }
         }
 
         private void ChangeControlServiceItem_Click(object sender, System.Windows.RoutedEventArgs e)
         {
-            changeServiceItem.IsEnabled = false;
-            RequestServiceChange?.Invoke(this, EventArgs.Empty);
+            try
+            {
+                changeServiceItem.IsEnabled = false;
+                RequestServiceChange?.Invoke(this, EventArgs.Empty);
+            }
+            catch (Exception ex)
+            {
+                App.LogToCrashFile(ex);
+            }
         }
 
         private void OpenProgramFolderItem_Click(object sender, System.Windows.RoutedEventArgs e)
         {
-            ProcessStartInfo startInfo = new ProcessStartInfo(Global.exedirpath);
-            startInfo.UseShellExecute = true;
-            using (Process temp = Process.Start(startInfo)) { }
+            try
+            {
+                ProcessStartInfo startInfo = new ProcessStartInfo(Global.exedirpath);
+                startInfo.UseShellExecute = true;
+                using (Process temp = Process.Start(startInfo)) { }
+            }
+            catch (Exception ex)
+            {
+                App.LogToCrashFile(ex);
+            }
         }
 
         private void OpenMenuItem_Click(object sender, System.Windows.RoutedEventArgs e)
         {
-            RequestOpen?.Invoke(this, EventArgs.Empty);
+            try
+            {
+                RequestOpen?.Invoke(this, EventArgs.Empty);
+            }
+            catch (Exception ex)
+            {
+                App.LogToCrashFile(ex);
+            }
         }
 
         private void MinimizeMenuItem_Click(object sender, System.Windows.RoutedEventArgs e)
         {
-            RequestMinimize?.Invoke(this, EventArgs.Empty);
+            try
+            {
+                RequestMinimize?.Invoke(this, EventArgs.Empty);
+            }
+            catch (Exception ex)
+            {
+                App.LogToCrashFile(ex);
+            }
         }
 
         private void ProfileItem_Click(object sender, System.Windows.RoutedEventArgs e)
         {
-            MenuItem item = sender as MenuItem;
-            int idx = Convert.ToInt32(item.Tag);
-            ControllerHolder holder = controllerList[idx];
-            string tempProfileName = Regex.Replace(item.Header.ToString(), "_{2}", "_");
-            ProfileSelected?.Invoke(this, holder, tempProfileName);
+            try
+            {
+                MenuItem item = sender as MenuItem;
+                int idx = Convert.ToInt32(item.Tag);
+                ControllerHolder holder = controllerList[idx];
+                string tempProfileName = Regex.Replace(item.Header.ToString(), "_{2}", "_");
+                ProfileSelected?.Invoke(this, holder, tempProfileName);
+            }
+            catch (Exception ex)
+            {
+                App.LogToCrashFile(ex);
+            }
         }
 
         private void DisconnectMenuItem_Click(object sender, System.Windows.RoutedEventArgs e)
         {
-            MenuItem item = sender as MenuItem;
-            int idx = Convert.ToInt32(item.Tag);
-            ControllerHolder holder = controllerList[idx];
-            DS4Device tempDev = holder?.Device;
-            if (tempDev != null && tempDev.Synced && !tempDev.Charging)
+            try
             {
-                if (tempDev.ConnectionType == ConnectionType.BT)
+                MenuItem item = sender as MenuItem;
+                int idx = Convert.ToInt32(item.Tag);
+                ControllerHolder holder = controllerList[idx];
+                DS4Device tempDev = holder?.Device;
+                if (tempDev != null && tempDev.Synced && !tempDev.Charging)
                 {
-                    tempDev.DisconnectBT();
+                    if (tempDev.ConnectionType == ConnectionType.BT)
+                    {
+                        tempDev.DisconnectBT();
+                    }
+                    else if (tempDev.ConnectionType == ConnectionType.SONYWA)
+                    {
+                        tempDev.DisconnectDongle();
+                    }
                 }
-                else if (tempDev.ConnectionType == ConnectionType.SONYWA)
-                {
-                    tempDev.DisconnectDongle();
-                }
+            }
+            catch (Exception ex)
+            {
+                App.LogToCrashFile(ex);
             }
         }
 
         private void PopulateControllerList()
         {
-            int idx = 0;
-            _colLocker.EnterWriteLock();
-            foreach (DS4Device currentDev in controlService.slotManager.ControllerColl)
+            try
             {
-                controllerList.Add(new ControllerHolder(currentDev, idx));
-                idx++;
+                int idx = 0;
+                _colLocker.EnterWriteLock();
+                foreach (DS4Device currentDev in controlService.slotManager.ControllerColl)
+                {
+                    controllerList.Add(new ControllerHolder(currentDev, idx));
+                    idx++;
+                }
+                _colLocker.ExitWriteLock();
             }
-            _colLocker.ExitWriteLock();
+            catch (Exception ex)
+            {
+                App.LogToCrashFile(ex);
+            }
         }
 
         private void StartPopulateText(object sender, EventArgs e)
         {
-            Application.Current.Dispatcher.BeginInvoke(() =>
+            try
             {
-                PopulateToolText();
-            });
+                Application.Current.Dispatcher.BeginInvoke(() =>
+                {
+                    try
+                    {
+                        PopulateToolText();
+                    }
+                    catch (Exception ex)
+                    {
+                        App.LogToCrashFile(ex);
+                    }
+                });
+            }
+            catch (Exception ex)
+            {
+                App.LogToCrashFile(ex);
+            }
         }
 
         private void PopulateToolText()
         {
-            List<string> items = new List<string>();
-            items.Add(trayTitle);
-            int idx = 1;
-            _colLocker.EnterReadLock();
-            foreach (ControllerHolder holder in controllerList)
+            try
             {
-                DS4Device currentDev = holder.Device;
-                items.Add($"{idx}: {currentDev.ConnectionType} {currentDev.Battery}%{(currentDev.Charging ? "+" : "")}");
-                idx++;
+                List<string> items = new List<string>();
+                items.Add(trayTitle);
+                int idx = 1;
+                _colLocker.EnterReadLock();
+                foreach (ControllerHolder holder in controllerList)
+                {
+                    DS4Device currentDev = holder.Device;
+                    items.Add($"{idx}: {currentDev.ConnectionType} {currentDev.Battery}%{(currentDev.Charging ? "+" : "")}");
+                    idx++;
+                }
+                _colLocker.ExitReadLock();
+                TooltipText = string.Join("\n", items);
             }
-            _colLocker.ExitReadLock();
-            TooltipText = string.Join("\n", items);
+            catch (Exception ex)
+            {
+                App.LogToCrashFile(ex);
+            }
         }
 
         private void SetupEvents()
         {
-            _colLocker.EnterReadLock();
-            foreach (ControllerHolder holder in controllerList)
+            try
             {
-                DS4Device currentDev = holder.Device;
-                SetupDeviceEvents(currentDev);
+                _colLocker.EnterReadLock();
+                foreach (ControllerHolder holder in controllerList)
+                {
+                    DS4Device currentDev = holder.Device;
+                    SetupDeviceEvents(currentDev);
+                }
+                _colLocker.ExitReadLock();
             }
-            _colLocker.ExitReadLock();
+            catch (Exception ex)
+            {
+                App.LogToCrashFile(ex);
+            }
         }
 
         private void SetupDeviceEvents(DS4Device device)
         {
-            device.BatteryChanged += UpdateForBattery;
-            device.ChargingChanged += UpdateForBattery;
-            device.Removal += CurrentDev_Removal;
-
-            if (device.SixAxis != null)
+            try
             {
-                device.SixAxis.CalibrationStarted += Device_CalibrationStarted;
-                device.SixAxis.CalibrationStopped += Device_CalibrationStopped;
+                device.BatteryChanged += UpdateForBattery;
+                device.ChargingChanged += UpdateForBattery;
+                device.Removal += CurrentDev_Removal;
 
-                // 检查设备是否已经在校准中（例如刚连接时自动校准）
-                if (device.SixAxis.CntCalibrating > 0)
+                if (device.SixAxis != null)
                 {
-                    Device_CalibrationStarted(device, EventArgs.Empty);
+                    device.SixAxis.CalibrationStarted += Device_CalibrationStarted;
+                    device.SixAxis.CalibrationStopped += Device_CalibrationStopped;
+
+                    // 检查设备是否已经在校准中（例如刚连接时自动校准）
+                    if (device.SixAxis.CntCalibrating > 0)
+                    {
+                        Device_CalibrationStarted(device, EventArgs.Empty);
+                    }
                 }
+            }
+            catch (Exception ex)
+            {
+                App.LogToCrashFile(ex);
             }
         }
 
         private void RemoveDeviceEvents(DS4Device device)
         {
-            device.BatteryChanged -= UpdateForBattery;
-            device.ChargingChanged -= UpdateForBattery;
-            device.Removal -= CurrentDev_Removal;
-
-            if (device.SixAxis != null)
+            try
             {
-                device.SixAxis.CalibrationStarted -= Device_CalibrationStarted;
-                device.SixAxis.CalibrationStopped -= Device_CalibrationStopped;
+                device.BatteryChanged -= UpdateForBattery;
+                device.ChargingChanged -= UpdateForBattery;
+                device.Removal -= CurrentDev_Removal;
+
+                if (device.SixAxis != null)
+                {
+                    device.SixAxis.CalibrationStarted -= Device_CalibrationStarted;
+                    device.SixAxis.CalibrationStopped -= Device_CalibrationStopped;
+                }
+            }
+            catch (Exception ex)
+            {
+                App.LogToCrashFile(ex);
             }
         }
 
@@ -398,32 +578,46 @@ namespace DS4WinWPF.DS4Forms.ViewModels
         /// </summary>
         private void Device_CalibrationStarted(object sender, EventArgs e)
         {
-            DS4Device dev = sender as DS4Device;
-            lock (calibrationLock)
+            try
             {
-                if (dev != null && !_calibratingDevices.Add(dev))
-                    return;
-
-                calibrationCount++;
-                if (calibrationCount == 1 && !isBlinking)
+                DS4Device dev = sender as DS4Device;
+                lock (calibrationLock)
                 {
-                    Application.Current.Dispatcher.BeginInvoke(new Action(() =>
+                    if (dev != null && !_calibratingDevices.Add(dev))
+                        return;
+
+                    calibrationCount++;
+                    if (calibrationCount == 1 && !isBlinking)
                     {
-                        lock (blinkLock)
+                        Application.Current.Dispatcher.BeginInvoke(new Action(() =>
                         {
-                            if (blinkTimer != null && blinkTimeoutTimer != null)
+                            try
                             {
-                                isBlinking = true;
-                                batteryIcon = IconSource; // 保存当前图标
-                                IconSource = gyroIcon;    // 设置为陀螺图标
-                                blinkTimer.Stop();
-                                blinkTimer.Start();
-                                blinkTimeoutTimer.Stop();
-                                blinkTimeoutTimer.Start(); // 启动6秒超时
+                                lock (blinkLock)
+                                {
+                                    if (blinkTimer != null && blinkTimeoutTimer != null)
+                                    {
+                                        isBlinking = true;
+                                        batteryIcon = IconSource; // 保存当前图标
+                                        IconSource = gyroIcon;    // 设置为陀螺图标
+                                        blinkTimer.Stop();
+                                        blinkTimer.Start();
+                                        blinkTimeoutTimer.Stop();
+                                        blinkTimeoutTimer.Start(); // 启动6秒超时
+                                    }
+                                }
                             }
-                        }
-                    }));
+                            catch (Exception ex)
+                            {
+                                App.LogToCrashFile(ex);
+                            }
+                        }));
+                    }
                 }
+            }
+            catch (Exception ex)
+            {
+                App.LogToCrashFile(ex);
             }
         }
 
@@ -432,43 +626,64 @@ namespace DS4WinWPF.DS4Forms.ViewModels
         /// </summary>
         private void Device_CalibrationStopped(object sender, EventArgs e)
         {
-            DS4Device dev = sender as DS4Device;
-            lock (calibrationLock)
+            try
             {
-                if (dev != null)
+                DS4Device dev = sender as DS4Device;
+                lock (calibrationLock)
                 {
-                    _calibratingDevices.Remove(dev);
-                }
+                    if (dev != null)
+                    {
+                        _calibratingDevices.Remove(dev);
+                    }
 
-                if (calibrationCount > 0) calibrationCount--;
-                if (calibrationCount == 0 && isBlinking)
-                {
-                    Application.Current.Dispatcher.BeginInvoke(new Action(() =>
+                    if (calibrationCount > 0) calibrationCount--;
+                    if (calibrationCount == 0 && isBlinking)
                     {
-                        lock (blinkLock)
+                        Application.Current.Dispatcher.BeginInvoke(new Action(() =>
                         {
-                            if (blinkTimer != null && blinkTimeoutTimer != null)
+                            try
                             {
-                                blinkTimer.Stop();
-                                blinkTimeoutTimer.Stop();
-                                isBlinking = false;
-                                IconSource = batteryIcon ?? Global.iconChoiceResources[Global.UseIconChoice];
+                                lock (blinkLock)
+                                {
+                                    if (blinkTimer != null && blinkTimeoutTimer != null)
+                                    {
+                                        blinkTimer.Stop();
+                                        blinkTimeoutTimer.Stop();
+                                        isBlinking = false;
+                                        IconSource = batteryIcon ?? Global.iconChoiceResources[Global.UseIconChoice];
+                                    }
+                                }
                             }
-                        }
-                    }));
-                }
-                else if (isBlinking)
-                {
-                    // 仍有设备在校准，重置超时定时器
-                    Application.Current.Dispatcher.BeginInvoke(new Action(() =>
+                            catch (Exception ex)
+                            {
+                                App.LogToCrashFile(ex);
+                            }
+                        }));
+                    }
+                    else if (isBlinking)
                     {
-                        lock (blinkLock)
+                        // 仍有设备在校准，重置超时定时器
+                        Application.Current.Dispatcher.BeginInvoke(new Action(() =>
                         {
-                            blinkTimeoutTimer?.Stop();
-                            blinkTimeoutTimer?.Start();
-                        }
-                    }));
+                            try
+                            {
+                                lock (blinkLock)
+                                {
+                                    blinkTimeoutTimer?.Stop();
+                                    blinkTimeoutTimer?.Start();
+                                }
+                            }
+                            catch (Exception ex)
+                            {
+                                App.LogToCrashFile(ex);
+                            }
+                        }));
+                    }
                 }
+            }
+            catch (Exception ex)
+            {
+                App.LogToCrashFile(ex);
             }
         }
 
@@ -477,20 +692,27 @@ namespace DS4WinWPF.DS4Forms.ViewModels
         /// </summary>
         private void BlinkTimer_Tick(object sender, EventArgs e)
         {
-            if (isBlinking)
+            try
             {
-                if (IconSource == gyroIcon)
+                if (isBlinking)
                 {
-                    IconSource = null; // 透明
+                    if (IconSource == gyroIcon)
+                    {
+                        IconSource = null; // 透明
+                    }
+                    else
+                    {
+                        IconSource = gyroIcon;
+                    }
                 }
                 else
                 {
-                    IconSource = gyroIcon;
+                    blinkTimer.Stop();
                 }
             }
-            else
+            catch (Exception ex)
             {
-                blinkTimer.Stop();
+                App.LogToCrashFile(ex);
             }
         }
 
@@ -499,129 +721,213 @@ namespace DS4WinWPF.DS4Forms.ViewModels
         /// </summary>
         private void BlinkTimeoutTimer_Tick(object sender, EventArgs e)
         {
-            lock (blinkLock)
+            try
             {
-                if (isBlinking)
+                lock (blinkLock)
                 {
-                    Application.Current.Dispatcher.BeginInvoke(new Action(() =>
+                    if (isBlinking)
+                    {
+                        Application.Current.Dispatcher.BeginInvoke(new Action(() =>
+                        {
+                            try
+                            {
+                                blinkTimeoutTimer.Stop();
+                                blinkTimer.Stop();
+                                isBlinking = false;
+                                IconSource = batteryIcon ?? Global.iconChoiceResources[Global.UseIconChoice];
+                            }
+                            catch (Exception ex)
+                            {
+                                App.LogToCrashFile(ex);
+                            }
+                        }));
+                    }
+                    else
                     {
                         blinkTimeoutTimer.Stop();
-                        blinkTimer.Stop();
-                        isBlinking = false;
-                        IconSource = batteryIcon ?? Global.iconChoiceResources[Global.UseIconChoice];
-                    }));
+                    }
                 }
-                else
-                {
-                    blinkTimeoutTimer.Stop();
-                }
+            }
+            catch (Exception ex)
+            {
+                App.LogToCrashFile(ex);
             }
         }
 
         private void CurrentDev_Removal(object sender, EventArgs e)
         {
-            DS4Device currentDev = sender as DS4Device;
-            ControllerHolder item = null;
-            int idx = 0;
-
-            lock (calibrationLock)
+            try
             {
-                if (currentDev != null && _calibratingDevices.Contains(currentDev))
+                DS4Device currentDev = sender as DS4Device;
+                ControllerHolder item = null;
+                int idx = 0;
+
+                lock (calibrationLock)
                 {
-                    _calibratingDevices.Remove(currentDev);
-                    if (calibrationCount > 0) calibrationCount--;
-                    if (calibrationCount == 0 && isBlinking)
+                    if (currentDev != null && _calibratingDevices.Contains(currentDev))
                     {
-                        Application.Current.Dispatcher.BeginInvoke(new Action(() =>
+                        _calibratingDevices.Remove(currentDev);
+                        if (calibrationCount > 0) calibrationCount--;
+                        if (calibrationCount == 0 && isBlinking)
                         {
-                            lock (blinkLock)
+                            Application.Current.Dispatcher.BeginInvoke(new Action(() =>
                             {
-                                if (blinkTimer != null && blinkTimeoutTimer != null)
+                                try
                                 {
-                                    blinkTimer.Stop();
-                                    blinkTimeoutTimer.Stop();
-                                    isBlinking = false;
-                                    IconSource = batteryIcon ?? Global.iconChoiceResources[Global.UseIconChoice];
+                                    lock (blinkLock)
+                                    {
+                                        if (blinkTimer != null && blinkTimeoutTimer != null)
+                                        {
+                                            blinkTimer.Stop();
+                                            blinkTimeoutTimer.Stop();
+                                            isBlinking = false;
+                                            IconSource = batteryIcon ?? Global.iconChoiceResources[Global.UseIconChoice];
+                                        }
+                                    }
                                 }
-                            }
-                        }));
-                    }
-                    else if (isBlinking)
-                    {
-                        // 仍有设备，重置超时
-                        Application.Current.Dispatcher.BeginInvoke(new Action(() =>
+                                catch (Exception ex)
+                                {
+                                    App.LogToCrashFile(ex);
+                                }
+                            }));
+                        }
+                        else if (isBlinking)
                         {
-                            lock (blinkLock)
+                            // 仍有设备，重置超时
+                            Application.Current.Dispatcher.BeginInvoke(new Action(() =>
                             {
-                                blinkTimeoutTimer?.Stop();
-                                blinkTimeoutTimer?.Start();
-                            }
-                        }));
+                                try
+                                {
+                                    lock (blinkLock)
+                                    {
+                                        blinkTimeoutTimer?.Stop();
+                                        blinkTimeoutTimer?.Start();
+                                    }
+                                }
+                                catch (Exception ex)
+                                {
+                                    App.LogToCrashFile(ex);
+                                }
+                            }));
+                        }
                     }
                 }
-            }
 
-            using (WriteLocker locker = new WriteLocker(_colLocker))
-            {
-                foreach (ControllerHolder holder in controllerList)
+                using (WriteLocker locker = new WriteLocker(_colLocker))
                 {
-                    if (currentDev == holder.Device)
+                    foreach (ControllerHolder holder in controllerList)
                     {
-                        item = holder;
-                        break;
+                        if (currentDev == holder.Device)
+                        {
+                            item = holder;
+                            break;
+                        }
+                        idx++;
                     }
-                    idx++;
+
+                    if (item != null)
+                    {
+                        controllerList.RemoveAt(idx);
+                        RemoveDeviceEvents(currentDev);
+                    }
                 }
 
-                if (item != null)
-                {
-                    controllerList.RemoveAt(idx);
-                    RemoveDeviceEvents(currentDev);
-                }
+                PopulateToolText();
             }
-
-            PopulateToolText();
+            catch (Exception ex)
+            {
+                App.LogToCrashFile(ex);
+            }
         }
 
         private void HookEvents(object sender, EventArgs e)
         {
-            SetupEvents();
+            try
+            {
+                SetupEvents();
+            }
+            catch (Exception ex)
+            {
+                App.LogToCrashFile(ex);
+            }
         }
 
         private void UpdateForBattery(object sender, EventArgs e)
         {
-            Application.Current.Dispatcher.BeginInvoke(() =>
+            try
             {
-                PopulateToolText();
-            });
+                Application.Current.Dispatcher.BeginInvoke(() =>
+                {
+                    try
+                    {
+                        PopulateToolText();
+                    }
+                    catch (Exception ex)
+                    {
+                        App.LogToCrashFile(ex);
+                    }
+                });
+            }
+            catch (Exception ex)
+            {
+                App.LogToCrashFile(ex);
+            }
         }
 
         private void ClearToolText(object sender, EventArgs e)
         {
-            Application.Current.Dispatcher.BeginInvoke(() =>
+            try
             {
-                TooltipText = "DS4Windows";
-            });
+                Application.Current.Dispatcher.BeginInvoke(() =>
+                {
+                    try
+                    {
+                        TooltipText = "DS4Windows";
+                    }
+                    catch (Exception ex)
+                    {
+                        App.LogToCrashFile(ex);
+                    }
+                });
+            }
+            catch (Exception ex)
+            {
+                App.LogToCrashFile(ex);
+            }
         }
 
         private void PopulateStaticItems()
         {
-            ItemCollection items = contextMenu.Items;
-            items.Add(changeServiceItem);
-            items.Add(openItem);
-            items.Add(minimizeItem);
-            items.Add(openProgramItem);
-            items.Add(new Separator());
-            items.Add(closeItem);
+            try
+            {
+                ItemCollection items = contextMenu.Items;
+                items.Add(changeServiceItem);
+                items.Add(openItem);
+                items.Add(minimizeItem);
+                items.Add(openProgramItem);
+                items.Add(new Separator());
+                items.Add(closeItem);
+            }
+            catch (Exception ex)
+            {
+                App.LogToCrashFile(ex);
+            }
         }
 
         public void ClearContextMenu()
         {
-            contextMenu.Items.Clear();
-            PopulateStaticItems();
-            // 停止所有定时器
-            blinkTimer?.Stop();
-            blinkTimeoutTimer?.Stop();
+            try
+            {
+                contextMenu.Items.Clear();
+                PopulateStaticItems();
+                // 停止所有定时器
+                blinkTimer?.Stop();
+                blinkTimeoutTimer?.Stop();
+            }
+            catch (Exception ex)
+            {
+                App.LogToCrashFile(ex);
+            }
         }
 
         /// <summary>
@@ -629,33 +935,47 @@ namespace DS4WinWPF.DS4Forms.ViewModels
         /// </summary>
         private void UpdateTrayBattery(object sender, byte percentage)
         {
-            string newIcon = percentage switch
+            try
             {
-                < 10 => $"{Global.RESOURCES_PREFIX}/0.ico",
-                >= 10 and < 20 => $"{Global.RESOURCES_PREFIX}/10.ico",
-                >= 20 and < 30 => $"{Global.RESOURCES_PREFIX}/20.ico",
-                >= 30 and < 40 => $"{Global.RESOURCES_PREFIX}/30.ico",
-                >= 40 and < 50 => $"{Global.RESOURCES_PREFIX}/40.ico",
-                >= 50 and < 60 => $"{Global.RESOURCES_PREFIX}/50.ico",
-                >= 60 and < 70 => $"{Global.RESOURCES_PREFIX}/60.ico",
-                >= 70 and < 80 => $"{Global.RESOURCES_PREFIX}/70.ico",
-                >= 80 and < 90 => $"{Global.RESOURCES_PREFIX}/80.ico",
-                >= 90 and < 100 => $"{Global.RESOURCES_PREFIX}/90.ico",
-                100 => $"{Global.RESOURCES_PREFIX}/100.ico",
-                _ => $"{Global.RESOURCES_PREFIX}/DS4W.ico"
-            };
+                string newIcon = percentage switch
+                {
+                    < 10 => $"{Global.RESOURCES_PREFIX}/0.ico",
+                    >= 10 and < 20 => $"{Global.RESOURCES_PREFIX}/10.ico",
+                    >= 20 and < 30 => $"{Global.RESOURCES_PREFIX}/20.ico",
+                    >= 30 and < 40 => $"{Global.RESOURCES_PREFIX}/30.ico",
+                    >= 40 and < 50 => $"{Global.RESOURCES_PREFIX}/40.ico",
+                    >= 50 and < 60 => $"{Global.RESOURCES_PREFIX}/50.ico",
+                    >= 60 and < 70 => $"{Global.RESOURCES_PREFIX}/60.ico",
+                    >= 70 and < 80 => $"{Global.RESOURCES_PREFIX}/70.ico",
+                    >= 80 and < 90 => $"{Global.RESOURCES_PREFIX}/80.ico",
+                    >= 90 and < 100 => $"{Global.RESOURCES_PREFIX}/90.ico",
+                    100 => $"{Global.RESOURCES_PREFIX}/100.ico",
+                    _ => $"{Global.RESOURCES_PREFIX}/DS4W.ico"
+                };
 
-            batteryIcon = newIcon;
+                batteryIcon = newIcon;
 
-            if (!isBlinking)
+                if (!isBlinking)
+                {
+                    IconSource = newIcon;
+                }
+            }
+            catch (Exception ex)
             {
-                IconSource = newIcon;
+                App.LogToCrashFile(ex);
             }
         }
 
         private void ExitMenuItem_Click(object sender, System.Windows.RoutedEventArgs e)
         {
-            RequestShutdown?.Invoke(this, EventArgs.Empty);
+            try
+            {
+                RequestShutdown?.Invoke(this, EventArgs.Empty);
+            }
+            catch (Exception ex)
+            {
+                App.LogToCrashFile(ex);
+            }
         }
     }
 
@@ -668,8 +988,15 @@ namespace DS4WinWPF.DS4Forms.ViewModels
 
         public ControllerHolder(DS4Device device, int index)
         {
-            this.device = device;
-            this.index = index;
+            try
+            {
+                this.device = device;
+                this.index = index;
+            }
+            catch (Exception ex)
+            {
+                App.LogToCrashFile(ex);
+            }
         }
     }
 }

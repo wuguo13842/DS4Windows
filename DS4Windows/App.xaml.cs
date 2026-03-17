@@ -33,6 +33,7 @@ using System.Windows.Interop;
 using System.Windows.Media;
 using WPFLocalizeExtension.Engine;
 using System.Reflection;
+using DS4Windows;
 
 namespace DS4WinWPF
 {
@@ -268,6 +269,7 @@ namespace DS4WinWPF
             {
                 Logger logger = logHolder.Logger;
                 Exception exp = e.ExceptionObject as Exception;
+				LogToCrashFile(exp);
                 logger.Error($"Thread App Crashed with message {exp.Message}");
                 logger.Error(exp.ToString());
                 //LogManager.Flush();
@@ -298,6 +300,7 @@ namespace DS4WinWPF
 
         private void App_DispatcherUnhandledException(object sender, System.Windows.Threading.DispatcherUnhandledExceptionEventArgs e)
         {
+			LogToCrashFile(e.Exception);
             //Debug.WriteLine("App Crashed");
             //Debug.WriteLine(e.Exception.StackTrace);
             Logger logger = logHolder.Logger;
@@ -784,6 +787,18 @@ namespace DS4WinWPF
                 LogManager.Shutdown();
             }
         }
+		
+		public static void LogToCrashFile(Exception ex)
+		{
+			try
+			{
+				string logPath = Path.Combine(DS4Windows.Global.appdatapath, "logs", "crash.log");
+				Directory.CreateDirectory(Path.GetDirectoryName(logPath));
+				string message = $"{DateTime.Now}: {ex.GetType()}: {ex.Message}\n{ex.StackTrace}\n\n";
+				File.AppendAllText(logPath, message);
+			}
+			catch { /* 忽略写入错误 */ }
+		}
 		
 		private Assembly CurrentDomain_AssemblyResolve(object sender, ResolveEventArgs args)
 		{
