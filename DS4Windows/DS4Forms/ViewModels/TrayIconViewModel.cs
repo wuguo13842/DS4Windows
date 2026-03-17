@@ -42,6 +42,15 @@ namespace DS4WinWPF.DS4Forms.ViewModels
         private MenuItem closeItem;
         private int? prevBattery = null;
 
+        // 闪烁相关字段
+        private System.Windows.Threading.DispatcherTimer blinkTimer;
+        private int calibrationCount = 0;          // 当前正在校准的设备数
+        private bool isBlinking = false;            // 是否正在闪烁
+        private string batteryIcon;                  // 当前应显示的电池图标（非闪烁时使用）
+        private string gyroIcon;                     // 陀螺校准图标路径
+        private readonly object calibrationLock = new object(); // 保护 calibrationCount 和 _calibratingDevices
+        private HashSet<DS4Device> _calibratingDevices = new HashSet<DS4Device>(); // 记录正在校准的设备
+
         public string TooltipText
         {
             get => tooltipText;
@@ -61,7 +70,9 @@ namespace DS4WinWPF.DS4Forms.ViewModels
         }
         public event EventHandler TooltipTextChanged;
 
-        public string IconSource { get => iconSource;
+        public string IconSource
+        {
+            get => iconSource;
             set
             {
                 if (iconSource == value) return;
@@ -94,7 +105,16 @@ namespace DS4WinWPF.DS4Forms.ViewModels
             this.controlService = service;
             contextMenu = new ContextMenu();
             iconSource = Global.iconChoiceResources[Global.UseIconChoice];
+            gyroIcon = $"{Global.RESOURCES_PREFIX}/gyro.ico"; // 假设 gyro.ico 位于 Resources 文件夹
             Global.BatteryChanged += UpdateTrayBattery;
+
+            // 初始化闪烁定时器（在 UI 线程上创建）
+            Application.Current.Dispatcher.Invoke(() =>
+            {
+                blinkTimer = new System.Windows.Threading.DispatcherTimer();
+                blinkTimer.Interval = TimeSpan.FromMilliseconds(250); // 与陀螺仪闪烁频率一致
+                blinkTimer.Tick += BlinkTimer_Tick;
+            });
 
             // 初始化菜单项
             changeServiceItem = new MenuItem()
@@ -132,7 +152,7 @@ namespace DS4WinWPF.DS4Forms.ViewModels
             tester.PreRemoveControllers += ClearToolText;
             tester.HotplugControllers += HookBatteryUpdate;
             tester.HotplugControllers += StartPopulateText;
-			*/
+            */
         }
 
         private string GetLocalizedString(string key)
@@ -369,6 +389,20 @@ namespace DS4WinWPF.DS4Forms.ViewModels
             device.BatteryChanged += UpdateForBattery;
             device.ChargingChanged += UpdateForBattery;
             device.Removal += CurrentDev_Removal;
+
+            // 订阅陀螺仪校准事件
+            if (device.SixAxis != null)
+            {
+                device.SixAxis.CalibrationStarted += Device_CalibrationStarted;
+                device.SixAxis.CalibrationStopped += Device_CalibrationStopped;
+
+                // 关键修复：检查设备是否已经在校准中（例如刚连接时自动校准）
+                if (device.SixAxis.CntCalibrating > 0)
+                {
+                    // 手动触发开始事件，确保计数增加并启动闪烁
+                    Device_CalibrationStarted(device, EventArgs.Empty);
+                }
+            }
         }
 
         private void RemoveDeviceEvents(DS4Device device)
@@ -376,6 +410,99 @@ namespace DS4WinWPF.DS4Forms.ViewModels
             device.BatteryChanged -= UpdateForBattery;
             device.ChargingChanged -= UpdateForBattery;
             device.Removal -= CurrentDev_Removal;
+
+            if (device.SixAxis != null)
+            {
+                device.SixAxis.CalibrationStarted -= Device_CalibrationStarted;
+                device.SixAxis.CalibrationStopped -= Device_CalibrationStopped;
+            }
+        }
+
+        /// <summary>
+        /// 陀螺仪校准开始事件处理 - 增加校准计数，必要时启动闪烁
+        /// </summary>
+        private void Device_CalibrationStarted(object sender, EventArgs e)
+        {
+            DS4Device dev = sender as DS4Device;
+            lock (calibrationLock)
+            {
+                // 如果设备已经在集合中，说明重复事件，忽略
+                if (dev != null && !_calibratingDevices.Add(dev))
+                    return;
+
+                calibrationCount++;
+                if (calibrationCount == 1 && !isBlinking)
+                {
+                    // 从0变为1，开始闪烁
+                    Application.Current.Dispatcher.BeginInvoke(new Action(() =>
+                    {
+                        if (blinkTimer != null)
+                        {
+                            isBlinking = true;
+                            // 保存当前电池图标
+                            batteryIcon = IconSource;
+                            // 先设置为 gyro 图标并启动定时器
+                            IconSource = gyroIcon;
+                            blinkTimer.Stop();
+                            blinkTimer.Start();
+                        }
+                    }));
+                }
+            }
+        }
+
+        /// <summary>
+        /// 陀螺仪校准停止事件处理 - 减少校准计数，必要时停止闪烁
+        /// </summary>
+        private void Device_CalibrationStopped(object sender, EventArgs e)
+        {
+            DS4Device dev = sender as DS4Device;
+            lock (calibrationLock)
+            {
+                if (dev != null)
+                {
+                    _calibratingDevices.Remove(dev);
+                }
+
+                if (calibrationCount > 0) calibrationCount--;
+                if (calibrationCount == 0 && isBlinking)
+                {
+                    // 所有校准结束，停止闪烁
+                    Application.Current.Dispatcher.BeginInvoke(new Action(() =>
+                    {
+                        if (blinkTimer != null)
+                        {
+                            blinkTimer.Stop();
+                            isBlinking = false;
+                            // 恢复为电池图标
+                            IconSource = batteryIcon ?? Global.iconChoiceResources[Global.UseIconChoice];
+                        }
+                    }));
+                }
+            }
+        }
+
+        /// <summary>
+        /// 闪烁定时器 Tick 处理 - 交替显示 gyro 图标和透明（null）
+        /// </summary>
+        private void BlinkTimer_Tick(object sender, EventArgs e)
+        {
+            if (isBlinking)
+            {
+                // 交替显示：当前图标为 gyroIcon 时设为 null，否则设为 gyroIcon
+                if (IconSource == gyroIcon)
+                {
+                    IconSource = null; // 设为 null 隐藏图标（透明）
+                }
+                else
+                {
+                    IconSource = gyroIcon;
+                }
+            }
+            else
+            {
+                blinkTimer.Stop();
+            }
         }
 
         private void CurrentDev_Removal(object sender, EventArgs e)
@@ -383,6 +510,29 @@ namespace DS4WinWPF.DS4Forms.ViewModels
             DS4Device currentDev = sender as DS4Device;
             ControllerHolder item = null;
             int idx = 0;
+
+            // 处理设备移除时的校准状态
+            lock (calibrationLock)
+            {
+                if (currentDev != null && _calibratingDevices.Contains(currentDev))
+                {
+                    _calibratingDevices.Remove(currentDev);
+                    if (calibrationCount > 0) calibrationCount--;
+                    // 如果计数变为0，停止闪烁（在 UI 线程上）
+                    if (calibrationCount == 0 && isBlinking)
+                    {
+                        Application.Current.Dispatcher.BeginInvoke(new Action(() =>
+                        {
+                            if (blinkTimer != null)
+                            {
+                                blinkTimer.Stop();
+                                isBlinking = false;
+                                IconSource = batteryIcon ?? Global.iconChoiceResources[Global.UseIconChoice];
+                            }
+                        }));
+                    }
+                }
+            }
 
             using (WriteLocker locker = new WriteLocker(_colLocker))
             {
@@ -447,9 +597,13 @@ namespace DS4WinWPF.DS4Forms.ViewModels
             PopulateStaticItems();
         }
 
+        /// <summary>
+        /// 更新托盘图标为电池电量对应图标（同时保存当前电池图标用于闪烁恢复）
+        /// </summary>
         private void UpdateTrayBattery(object sender, byte percentage)
         {
-            IconSource = percentage switch
+            // 根据电量计算图标路径
+            string newIcon = percentage switch
             {
                 < 10 => $"{Global.RESOURCES_PREFIX}/0.ico",
                 >= 10 and < 20 => $"{Global.RESOURCES_PREFIX}/10.ico",
@@ -464,6 +618,14 @@ namespace DS4WinWPF.DS4Forms.ViewModels
                 100 => $"{Global.RESOURCES_PREFIX}/100.ico",
                 _ => $"{Global.RESOURCES_PREFIX}/DS4W.ico"
             };
+
+            batteryIcon = newIcon; // 保存当前电池图标
+
+            // 如果不在闪烁中，立即更新图标
+            if (!isBlinking)
+            {
+                IconSource = newIcon;
+            }
         }
 
         private void ExitMenuItem_Click(object sender, System.Windows.RoutedEventArgs e)
