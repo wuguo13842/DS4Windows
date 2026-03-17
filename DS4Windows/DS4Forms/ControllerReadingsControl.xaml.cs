@@ -458,18 +458,18 @@ namespace DS4WinWPF.DS4Forms
                 DeviceNumChanged?.Invoke(this, EventArgs.Empty);
 
                 // 订阅新设备的事件
-                var newDev = Program.rootHub.DS4Controllers[deviceNum];
-                if (newDev?.SixAxis != null)
-                {
-                    newDev.SixAxis.CalibrationStarted += SixAxis_CalibrationStarted;
-                    newDev.SixAxis.CalibrationStopped += SixAxis_CalibrationStopped;
+				var newDev = Program.rootHub.DS4Controllers[deviceNum];
+				if (newDev?.SixAxis != null)
+				{
+					// 改为使用 lambda 捕获 newDev
+					newDev.SixAxis.CalibrationStarted += (s, e) => SixAxis_CalibrationStarted(newDev, e);
+					newDev.SixAxis.CalibrationStopped += (s, e) => SixAxis_CalibrationStopped(newDev, e);
 
-                    // 如果当前设备已经在校准中，触发开始事件
-                    if (newDev.SixAxis.CntCalibrating > 0)
-                    {
-                        SixAxis_CalibrationStarted(null, EventArgs.Empty);
-                    }
-                }
+					if (newDev.SixAxis.CntCalibrating > 0)
+					{
+						SixAxis_CalibrationStarted(newDev, EventArgs.Empty);
+					}
+				}
             }
             catch (Exception ex)
             {

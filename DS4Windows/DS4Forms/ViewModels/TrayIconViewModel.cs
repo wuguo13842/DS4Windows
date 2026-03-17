@@ -527,31 +527,32 @@ namespace DS4WinWPF.DS4Forms.ViewModels
             }
         }
 
-        private void SetupDeviceEvents(DS4Device device)
+ private void SetupDeviceEvents(DS4Device device)
+{
+    try
+    {
+        device.BatteryChanged += UpdateForBattery;
+        device.ChargingChanged += UpdateForBattery;
+        device.Removal += CurrentDev_Removal;
+
+        if (device?.SixAxis != null)
         {
-            try
-            {
-                device.BatteryChanged += UpdateForBattery;
-                device.ChargingChanged += UpdateForBattery;
-                device.Removal += CurrentDev_Removal;
+            // 改为使用 lambda 捕获 device
+            device.SixAxis.CalibrationStarted += (s, e) => Device_CalibrationStarted(device, e);
+            device.SixAxis.CalibrationStopped += (s, e) => Device_CalibrationStopped(device, e);
 
-                if (device.SixAxis != null)
-                {
-                    device.SixAxis.CalibrationStarted += Device_CalibrationStarted;
-                    device.SixAxis.CalibrationStopped += Device_CalibrationStopped;
-
-                    // 检查设备是否已经在校准中（例如刚连接时自动校准）
-                    if (device.SixAxis.CntCalibrating > 0)
-                    {
-                        Device_CalibrationStarted(device, EventArgs.Empty);
-                    }
-                }
-            }
-            catch (Exception ex)
+            // 手动触发时直接传入 device
+            if (device.SixAxis.CntCalibrating > 0)
             {
-                App.LogToCrashFile(ex);
+                Device_CalibrationStarted(device, EventArgs.Empty);
             }
         }
+    }
+    catch (Exception ex)
+    {
+        App.LogToCrashFile(ex);
+    }
+}
 
         private void RemoveDeviceEvents(DS4Device device)
         {
@@ -576,183 +577,199 @@ namespace DS4WinWPF.DS4Forms.ViewModels
         /// <summary>
         /// 陀螺仪校准开始事件处理
         /// </summary>
-        private void Device_CalibrationStarted(object sender, EventArgs e)
-        {
-            try
-            {
-                DS4Device dev = sender as DS4Device;
-                lock (calibrationLock)
-                {
-                    if (dev != null && !_calibratingDevices.Add(dev))
-                        return;
+		private void Device_CalibrationStarted(object sender, EventArgs e)
+		{
+			try
+			{
+				DS4Device dev = sender as DS4Device;
+				if (dev == null)
+				{
+					DS4Windows.AppLogger.LogToGui("校准开始: sender为空，忽略", true);
+					return;
+				}
 
-                    calibrationCount++;
-                    if (calibrationCount == 1 && !isBlinking)
-                    {
-                        Application.Current.Dispatcher.BeginInvoke(new Action(() =>
-                        {
-                            try
-                            {
-                                lock (blinkLock)
-                                {
-                                    if (blinkTimer != null && blinkTimeoutTimer != null)
-                                    {
-                                        isBlinking = true;
-                                        batteryIcon = IconSource; // 保存当前图标
-                                        IconSource = gyroIcon;    // 设置为陀螺图标
-                                        blinkTimer.Stop();
-                                        blinkTimer.Start();
-                                        blinkTimeoutTimer.Stop();
-                                        blinkTimeoutTimer.Start(); // 启动6秒超时
-                                    }
-                                }
-                            }
-                            catch (Exception ex)
-                            {
-                                App.LogToCrashFile(ex);
-                            }
-                        }));
-                    }
-                }
-            }
-            catch (Exception ex)
-            {
-                App.LogToCrashFile(ex);
-            }
-        }
+				lock (calibrationLock)
+				{
+					if (_calibratingDevices.Add(dev))
+					{
+						DS4Windows.AppLogger.LogToGui($"校准开始: 设备={dev.MacAddress}, 当前校准设备数={_calibratingDevices.Count}", false);
+						if (_calibratingDevices.Count == 1 && !isBlinking)
+						{
+							StartBlinking();
+						}
+						else if (isBlinking)
+						{
+							// 已经有设备在校准，重置超时
+							ResetTimeout();
+						}
+					}
+					else
+					{
+						DS4Windows.AppLogger.LogToGui($"校准开始: 设备={dev.MacAddress} 已在校准集合中，忽略", true);
+					}
+				}
+			}
+			catch (Exception ex)
+			{
+				App.LogToCrashFile(ex);
+			}
+		}
 
         /// <summary>
         /// 陀螺仪校准停止事件处理
         /// </summary>
-        private void Device_CalibrationStopped(object sender, EventArgs e)
-        {
-            try
-            {
-                DS4Device dev = sender as DS4Device;
-                lock (calibrationLock)
-                {
-                    if (dev != null)
-                    {
-                        _calibratingDevices.Remove(dev);
-                    }
+		private void Device_CalibrationStopped(object sender, EventArgs e)
+		{
+			try
+			{
+				DS4Device dev = sender as DS4Device;
+				if (dev == null)
+				{
+					DS4Windows.AppLogger.LogToGui("校准停止: sender为空，忽略", true);
+					return;
+				}
 
-                    if (calibrationCount > 0) calibrationCount--;
-                    if (calibrationCount == 0 && isBlinking)
-                    {
-                        Application.Current.Dispatcher.BeginInvoke(new Action(() =>
-                        {
-                            try
-                            {
-                                lock (blinkLock)
-                                {
-                                    if (blinkTimer != null && blinkTimeoutTimer != null)
-                                    {
-                                        blinkTimer.Stop();
-                                        blinkTimeoutTimer.Stop();
-                                        isBlinking = false;
-                                        IconSource = batteryIcon ?? Global.iconChoiceResources[Global.UseIconChoice];
-                                    }
-                                }
-                            }
-                            catch (Exception ex)
-                            {
-                                App.LogToCrashFile(ex);
-                            }
-                        }));
-                    }
-                    else if (isBlinking)
-                    {
-                        // 仍有设备在校准，重置超时定时器
-                        Application.Current.Dispatcher.BeginInvoke(new Action(() =>
-                        {
-                            try
-                            {
-                                lock (blinkLock)
-                                {
-                                    blinkTimeoutTimer?.Stop();
-                                    blinkTimeoutTimer?.Start();
-                                }
-                            }
-                            catch (Exception ex)
-                            {
-                                App.LogToCrashFile(ex);
-                            }
-                        }));
-                    }
-                }
-            }
-            catch (Exception ex)
-            {
-                App.LogToCrashFile(ex);
-            }
-        }
+				lock (calibrationLock)
+				{
+					if (_calibratingDevices.Remove(dev))
+					{
+						DS4Windows.AppLogger.LogToGui($"校准停止: 设备={dev.MacAddress}, 剩余校准设备数={_calibratingDevices.Count}", false);
+						if (_calibratingDevices.Count == 0 && isBlinking)
+						{
+							StopBlinking();
+						}
+						else if (_calibratingDevices.Count > 0 && isBlinking)
+						{
+							// 还有设备在校准，重置超时
+							ResetTimeout();
+						}
+					}
+					else
+					{
+						DS4Windows.AppLogger.LogToGui($"校准停止: 设备={dev.MacAddress} 不在校准集合中，无法移除", true);
+					}
+				}
+			}
+			catch (Exception ex)
+			{
+				App.LogToCrashFile(ex);
+			}
+		}
+
+		private void StartBlinking()
+		{
+			Application.Current.Dispatcher.BeginInvoke(new Action(() =>
+			{
+				lock (blinkLock)
+				{
+					if (blinkTimer != null && blinkTimeoutTimer != null)
+					{
+						isBlinking = true;
+						batteryIcon = IconSource;
+						IconSource = gyroIcon;
+						blinkTimer.Stop();
+						blinkTimer.Start();
+						blinkTimeoutTimer.Stop();
+						blinkTimeoutTimer.Start();
+					}
+				}
+			}));
+		}
+
+		private void StopBlinking()
+		{
+			Application.Current.Dispatcher.BeginInvoke(new Action(() =>
+			{
+				lock (blinkLock)
+				{
+					if (blinkTimer != null && blinkTimeoutTimer != null)
+					{
+						blinkTimer.Stop();
+						blinkTimeoutTimer.Stop();
+						isBlinking = false;
+						IconSource = batteryIcon ?? Global.iconChoiceResources[Global.UseIconChoice];
+					}
+				}
+			}));
+		}
+
+		private void ResetTimeout()
+		{
+			Application.Current.Dispatcher.BeginInvoke(new Action(() =>
+			{
+				lock (blinkLock)
+				{
+					if (blinkTimeoutTimer != null)
+					{
+						blinkTimeoutTimer.Stop();
+						blinkTimeoutTimer.Start();
+						DS4Windows.AppLogger.LogToGui("重置超时定时器", false);
+					}
+				}
+			}));
+		}
 
         /// <summary>
         /// 闪烁定时器 Tick 处理 - 交替显示 gyro 图标和透明
         /// </summary>
-        private void BlinkTimer_Tick(object sender, EventArgs e)
-        {
-            try
-            {
-                if (isBlinking)
-                {
-                    if (IconSource == gyroIcon)
-                    {
-                        IconSource = null; // 透明
-                    }
-                    else
-                    {
-                        IconSource = gyroIcon;
-                    }
-                }
-                else
-                {
-                    blinkTimer.Stop();
-                }
-            }
-            catch (Exception ex)
-            {
-                App.LogToCrashFile(ex);
-            }
-        }
+		private void BlinkTimer_Tick(object sender, EventArgs e)
+		{
+			try
+			{
+				if (!isBlinking)
+				{
+					blinkTimer.Stop();
+					return;
+				}
+
+				// 交替显示：当前为陀螺图标则设为 null（透明），否则设为陀螺图标
+				IconSource = (IconSource == gyroIcon) ? null : gyroIcon;
+			}
+			catch (Exception ex)
+			{
+				App.LogToCrashFile(ex);
+			}
+		}
 
         /// <summary>
         /// 超时定时器 Tick 处理 - 6秒内未收到校准事件，强制停止闪烁
         /// </summary>
-        private void BlinkTimeoutTimer_Tick(object sender, EventArgs e)
-        {
-            try
-            {
-                lock (blinkLock)
-                {
-                    if (isBlinking)
-                    {
-                        Application.Current.Dispatcher.BeginInvoke(new Action(() =>
-                        {
-                            try
-                            {
-                                blinkTimeoutTimer.Stop();
-                                blinkTimer.Stop();
-                                isBlinking = false;
-                                IconSource = batteryIcon ?? Global.iconChoiceResources[Global.UseIconChoice];
-                            }
-                            catch (Exception ex)
-                            {
-                                App.LogToCrashFile(ex);
-                            }
-                        }));
-                    }
-                    else
-                    {
-                        blinkTimeoutTimer.Stop();
-                    }
-                }
-            }
-            catch (Exception ex)
-            {
-                App.LogToCrashFile(ex);
-            }
-        }
+		private void BlinkTimeoutTimer_Tick(object sender, EventArgs e)
+		{
+			try
+			{
+				lock (blinkLock)
+				{
+					if (isBlinking)
+					{
+						DS4Windows.AppLogger.LogToGui("超时触发，强制停止闪烁", true);
+						Application.Current.Dispatcher.BeginInvoke(new Action(() =>
+						{
+							try
+							{
+								blinkTimeoutTimer.Stop();
+								blinkTimer.Stop();
+								isBlinking = false;
+								// 恢复为电池图标，如果电池图标为 null 则使用默认图标
+								IconSource = batteryIcon ?? Global.iconChoiceResources[Global.UseIconChoice];
+							}
+							catch (Exception ex)
+							{
+								App.LogToCrashFile(ex);
+							}
+						}));
+					}
+					else
+					{
+						blinkTimeoutTimer.Stop();
+					}
+				}
+			}
+			catch (Exception ex)
+			{
+				App.LogToCrashFile(ex);
+			}
+		}
 
         private void CurrentDev_Removal(object sender, EventArgs e)
         {

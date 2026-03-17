@@ -471,18 +471,17 @@ namespace DS4WinWPF.DS4Forms.ViewModels
             }
 
             // 订阅设备的 SixAxis 校准事件
-            if (device?.SixAxis != null)
-            {
-                device.SixAxis.CalibrationStarted += OnGyroCalibrationStarted;
-                device.SixAxis.CalibrationStopped += OnGyroCalibrationStopped;
+			if (device?.SixAxis != null)
+			{
+				// 改为使用 lambda 捕获 device
+				device.SixAxis.CalibrationStarted += (s, e) => OnGyroCalibrationStarted(device, e);
+				device.SixAxis.CalibrationStopped += (s, e) => OnGyroCalibrationStopped(device, e);
 
-                // 检查当前是否正在校准（例如设备连接时自动开始的校准）
-                if (device.SixAxis.CntCalibrating > 0)
-                {
-                    // 手动触发开始事件，以启动闪烁
-                    OnGyroCalibrationStarted(device, EventArgs.Empty);
-                }
-            }
+				if (device.SixAxis.CntCalibrating > 0)
+				{
+					OnGyroCalibrationStarted(device, EventArgs.Empty);
+				}
+			}
 
             // 订阅设备移除事件以清理资源
             device.Removal += OnDeviceRemoval;
