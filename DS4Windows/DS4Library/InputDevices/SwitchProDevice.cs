@@ -1,4 +1,4 @@
-﻿/*
+﻿﻿/*
 DS4Windows
 Copyright (C) 2023  Travis Nickles
 
@@ -226,6 +226,9 @@ namespace DS4Windows.InputDevices
         public override event EventHandler BatteryChanged;
         public override event EventHandler ChargingChanged;
 
+        // 保存设备路径（备用，但本方案中未使用）
+        private string devicePath;
+
         public SwitchProDevice(HidDevice hidDevice,
             string disName, VidPidFeatureSet featureSet = VidPidFeatureSet.DefaultDS4) :
             base(hidDevice, disName, featureSet)
@@ -252,6 +255,9 @@ namespace DS4Windows.InputDevices
             };
 
             Removal += SwitchProDevice_Removal;
+
+            // 保存设备路径（备用）
+            devicePath = hidDevice?.DevicePath;
         }
 
         private void SwitchProDevice_Removal(object sender, EventArgs e)
@@ -303,7 +309,7 @@ namespace DS4Windows.InputDevices
 
             try
             {
-                SetOperational();
+                SetOperational(); // 仍然调用原有的 SetOperational，但内部已修改
             }
             catch (System.IO.IOException)
             {
@@ -708,11 +714,45 @@ namespace DS4Windows.InputDevices
             timeoutExecuted = true;
         }
 
+        /// <summary>
+        /// 检测设备是否已唤醒
+        /// 尝试读取一个输入报告，成功且ID为0x30表示已唤醒
+        /// </summary>
+		private bool IsDeviceAwake(int timeoutMs = 100)
+		{
+			try
+			{
+				if (hDevice == null) return false;
+
+				byte[] testReport = new byte[INPUT_REPORT_LEN];
+				
+				// 强制转换为 uint 以匹配 ReadFile 的参数类型
+				var status = hDevice.ReadFile(testReport, (uint)timeoutMs);
+				
+				// 如果成功读取到标准输入报告(0x30)，说明设备已唤醒
+				return status == HidDevice.ReadStatus.Success && testReport[0] == 0x30;
+			}
+			catch
+			{
+				return false;
+			}
+		}
+
         public void SetOperational()
         {
             if (conType == ConnectionType.USB)
             {
-                RunUSBSetup();
+                // 检测设备是否已唤醒
+                if (!IsDeviceAwake())
+                {
+                    // 休眠状态：执行完整的USB唤醒序列
+                    RunUSBSetup();
+                }
+                else
+                {
+                    // 已唤醒状态：跳过唤醒序列，避免崩溃
+                    AppLogger.LogToGui($"手柄 {MacAddress} 已唤醒，跳过USB唤醒序列", false);
+                }
                 //Thread.Sleep(500);
             }
 
@@ -797,28 +837,33 @@ namespace DS4Windows.InputDevices
             data[0] = 0x80; data[1] = 0x01;
             //result = hidDevice.WriteAsyncOutputReportViaInterrupt(data);
             result = hDevice.WriteOutputReportViaInterrupt(data, 0);
+			Thread.Sleep(10);
             //Array.Clear(tmpReport, 0 , 64);
             //res = hidDevice.ReadWithFileStream(tmpReport);
             //Console.WriteLine("TEST BYTE: {0}", tmpReport[2]);
 
             data[0] = 0x80; data[1] = 0x02; // USB Pairing
+			Thread.Sleep(10);
             //result = hidDevice.WriteOutputReportViaControl(data);
             //Thread.Sleep(2000);
             //Thread.Sleep(1000);
             result = hDevice.WriteOutputReportViaInterrupt(data, 0);
 
             data[0] = 0x80; data[1] = 0x03; // 3Mbit baud rate
+			Thread.Sleep(10);
             //result = hidDevice.WriteAsyncOutputReportViaInterrupt(data);
             result = hDevice.WriteOutputReportViaInterrupt(data, 0);
             //Thread.Sleep(2000);
 
             data[0] = 0x80; data[1] = 0x02; // Handshake at new baud rate
+			Thread.Sleep(10);
             result = hDevice.WriteOutputReportViaInterrupt(data, 0);
             //Thread.Sleep(1000);
             //result = hidDevice.WriteOutputReportViaInterrupt(command, 500);
             //Thread.Sleep(2000);
 
             data[0] = 0x80; data[1] = 0x4; // Prevent HID timeout
+			Thread.Sleep(10);
             result = hDevice.WriteOutputReportViaInterrupt(data, 0);
             //result = hidDevice.WriteOutputReportViaInterrupt(command, 500);
         }
@@ -863,47 +908,78 @@ namespace DS4Windows.InputDevices
             //res = hidDevice.ReadFile(tmpReport);
         }
 
-        public byte[] Subcommand(byte subcommand, byte[] tmpBuffer, uint bufLen,
-            bool checkResponse = false)
-        {
-            int retryLimit = 100;
-            byte[] tmpReport;
+		public byte[] Subcommand(byte subcommand, byte[] tmpBuffer, uint bufLen,
+			bool checkResponse = false)
+		{
+			int retryLimit = 100;
+			byte[] tmpReport = null;
 
-            do
-            {
-                bool result;
-                byte[] commandBuffer = new byte[SUBCOMMAND_BUFFER_LEN];
-                Array.Copy(commandBuffHeader, 0, commandBuffer, 2, SUBCOMMAND_HEADER_LEN);
-                Array.Copy(tmpBuffer, 0, commandBuffer, 11, bufLen);
+			do
+			{
+				// 确保 hDevice 有效
+				if (hDevice == null)
+				{
+					AppLogger.LogToGui($"Subcommand 0x{subcommand:X2} 失败: hDevice 为 null", false);
+					return null;
+				}
 
-                commandBuffer[0] = 0x01;
-                commandBuffer[1] = frameCount;
-                frameCount = (byte)(++frameCount & 0x0F);
-                commandBuffer[10] = subcommand;
+				bool result;
+				byte[] commandBuffer = new byte[SUBCOMMAND_BUFFER_LEN];
+				Array.Copy(commandBuffHeader, 0, commandBuffer, 2, SUBCOMMAND_HEADER_LEN);
+				Array.Copy(tmpBuffer, 0, commandBuffer, 11, bufLen);
 
-                result = hDevice.WriteOutputReportViaInterrupt(commandBuffer, 0);
+				commandBuffer[0] = 0x01;
+				commandBuffer[1] = frameCount;
+				frameCount = (byte)(++frameCount & 0x0F);
+				commandBuffer[10] = subcommand;
 
-                tmpReport = null;
-                if (result && checkResponse)
-                {
-                    tmpReport = new byte[INPUT_REPORT_LEN];
-                    HidDevice.ReadStatus res;
-                    res = hDevice.ReadFile(tmpReport, SUBCOMMAND_RESPONSE_TIMEOUT);
-                    int tries = 1;
-                    while (res == HidDevice.ReadStatus.Success &&
-                        tmpReport[0] != 0x21 && tmpReport[14] != subcommand && tries < 100)
-                    {
-                        //Console.WriteLine("TRY AGAIN: {0}", tmpReport[0]);
-                        res = hDevice.ReadFile(tmpReport, SUBCOMMAND_RESPONSE_TIMEOUT);
-                        tries++;
-                    }
+				result = hDevice.WriteOutputReportViaInterrupt(commandBuffer, 0);
 
-                    //Console.WriteLine("END GAME: {0} {1} {2}", subcommand, tmpReport[0], tries);
-                }
-            } while (ReloadStickCalib(subcommand, tmpBuffer, tmpReport, ref retryLimit));
+				if (result && checkResponse)
+				{
+					tmpReport = new byte[INPUT_REPORT_LEN];
+					HidDevice.ReadStatus res;
+					try
+					{
+						res = hDevice.ReadFile(tmpReport, SUBCOMMAND_RESPONSE_TIMEOUT);
+					}
+					catch (NullReferenceException)
+					{
+						AppLogger.LogToGui($"Subcommand 0x{subcommand:X2} ReadFile 时发生 NullReferenceException，设备可能已断开", true);
+						return null;
+					}
+					catch (ObjectDisposedException)
+					{
+						AppLogger.LogToGui($"Subcommand 0x{subcommand:X2} ReadFile 时发生 ObjectDisposedException，设备句柄已关闭", true);
+						return null;
+					}
 
-            return tmpReport;
-        }
+					int tries = 1;
+					while (res == HidDevice.ReadStatus.Success &&
+						tmpReport[0] != 0x21 && tmpReport[14] != subcommand && tries < 100)
+					{
+						//Console.WriteLine("TRY AGAIN: {0}", tmpReport[0]);
+						try
+						{
+							res = hDevice.ReadFile(tmpReport, SUBCOMMAND_RESPONSE_TIMEOUT);
+						}
+						catch (NullReferenceException)
+						{
+							return null;
+						}
+						catch (ObjectDisposedException)
+						{
+							return null;
+						}
+						tries++;
+					}
+
+					//Console.WriteLine("END GAME: {0} {1} {2}", subcommand, tmpReport[0], tries);
+				}
+			} while (ReloadStickCalib(subcommand, tmpBuffer, tmpReport, ref retryLimit));
+
+			return tmpReport;
+		}
 
         private bool ReloadStickCalib(byte subcommand, ReadOnlySpan<byte> tmpBuffer, ReadOnlySpan<byte> tmpReport, ref int retryLimit)
         {
