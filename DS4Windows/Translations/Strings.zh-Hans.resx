@@ -1193,8 +1193,11 @@
   <data name="ReadingsControl.InputDelayNA" xml:space="preserve">
     <value>输入延迟：N/A</value>
   </data>
+  <data name="ReadingsControl.SixAxis" xml:space="preserve">
+    <value>六轴</value>
+  </data>
   <data name="ReadingsControl.SixAxisXText" xml:space="preserve">
-    <value>六轴：为了可读性X轴已翻转</value>
+    <value>X轴已翻转，便于阅读</value>
   </data>
   <data name="Requested" xml:space="preserve">
     <value>已请求</value>

@@ -27,126 +27,162 @@
                 <Label x:Name="batteryLvlLb" Content="{lex:Loc ReadingsControl.BatteryZero}" Margin="8,0,0,0" />
             </StackPanel>
         </StackPanel>
-        <Grid DockPanel.Dock="Top" Width="450" Margin="0,8,0,0">
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="*"/>
-                <ColumnDefinition Width="*"/>
-                <ColumnDefinition Width="*"/>
-            </Grid.ColumnDefinitions>
-            <StackPanel Grid.Column="0">
-                <Label Content="{lex:Loc LeftStick}" HorizontalAlignment="Center" Padding="0"/>
-                <Label Content="" HorizontalAlignment="Center" Padding="0"/>
-                <Canvas x:Name="lsCanvas" Width="130" Height="130" ClipToBounds="True">
-                    <Rectangle Width="130" Height="130" Stroke="{DynamicResource ForegroundColor}">
-                    </Rectangle>
-                    <Ellipse x:Name="lsDeadEllipse" Width="{Binding Path=Width, ElementName=lsCanvas}"
-                             Height="{Binding Path=Height, ElementName=lsCanvas}" Fill="#4FCF1F1F">
-                    </Ellipse>
-                    <Ellipse x:Name="lsDriftEllipse" Width="{Binding Path=Width, ElementName=lsCanvas}"
-                            Height="{Binding Path=Height, ElementName=lsCanvas}" Fill="#FFCF1F1F">
-                    </Ellipse>
-                    <Rectangle x:Name="lsMapValRec" Width="6" Height="6" Canvas.Left="62" Canvas.Top="62" Fill="#FFABABAB">
-                    </Rectangle>
-                    <Rectangle x:Name="lsValRec" Width="6" Height="6" Canvas.Left="62" Canvas.Top="62" Fill="{DynamicResource ForegroundColor}">
-                    </Rectangle>
-                </Canvas>
-                <StackPanel Orientation="Horizontal">
-                    <StackPanel Orientation="Horizontal">
-                        <Label Content="LX (I): " />
-                        <Label x:Name="lxInValLb" Content="" Width="30" Padding="2,5"  />
-                    </StackPanel>
-                    <StackPanel Orientation="Horizontal">
-                        <Label Content="LX (O): " />
-                        <Label x:Name="lxOutValLb" Content="" Width="30" Padding="2,5" />
-                    </StackPanel>
-                </StackPanel>
-                <StackPanel Orientation="Horizontal">
-                    <StackPanel Orientation="Horizontal">
-                        <Label Content="LY (I): "/>
-                        <Label x:Name="lyInValLb" Content="" Width="30" Padding="2,5" />
-                    </StackPanel>
-                    <StackPanel Orientation="Horizontal">
-                        <Label Content="LY (O): " />
-                        <Label x:Name="lyOutValLb" Content="" Width="30" />
-                    </StackPanel>
-                </StackPanel>
-            </StackPanel>
-            <StackPanel Grid.Column="1">
-                <Label Content="{lex:Loc RightStick}" HorizontalAlignment="Center" Padding="0"/>
-                <Label Content="" HorizontalAlignment="Center" Padding="0"/>
-                <Canvas x:Name="rsCanvas" Width="130" Height="130" ClipToBounds="True">
-                    <Rectangle Width="{Binding Path=Width, ElementName=rsCanvas}"
-                               Height="{Binding Path=Height, ElementName=rsCanvas}" Stroke="{DynamicResource ForegroundColor}">
-                    </Rectangle>
-                    <Ellipse x:Name="rsDeadEllipse" Width="{Binding Path=Width, ElementName=rsCanvas}"
-                             Height="{Binding Path=Height, ElementName=rsCanvas}" Fill="#4FCF1F1F">
-                    </Ellipse>
-                    <Ellipse x:Name="rsDriftEllipse" Width="{Binding Path=Width, ElementName=rsCanvas}"
-                             Height="{Binding Path=Height, ElementName=rsCanvas}" Fill="#FFCF1F1F">
-                    </Ellipse>
-                    <Rectangle x:Name="rsMapValRec" Width="6" Height="6" Canvas.Left="62" Canvas.Top="62" Fill="#FFABABAB">
-                    </Rectangle>
-                    <Rectangle x:Name="rsValRec" Width="6" Height="6" Canvas.Left="62" Canvas.Top="62" Fill="{DynamicResource ForegroundColor}">
-                    </Rectangle>
-                </Canvas>
-                <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
-                    <StackPanel Orientation="Horizontal">
-                        <Label Content="RX (I): "/>
-                        <Label x:Name="rxInValLb" Content="" Width="30" />
-                    </StackPanel>
-                    <StackPanel Orientation="Horizontal">
-                        <Label Content="RX (O): "/>
-                        <Label x:Name="rxOutValLb" Content="" Width="30" />
-                    </StackPanel>
-                </StackPanel>
-                <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
-                    <StackPanel Orientation="Horizontal">
-                        <Label Content="RY (I): "/>
-                        <Label x:Name="ryInValLb" Content="" Width="30" />
-                    </StackPanel>
-                    <StackPanel Orientation="Horizontal">
-                        <Label Content="RY (O): "/>
-                        <Label x:Name="ryOutValLb" Content="" Width="30" />
-                    </StackPanel>
-                </StackPanel>
-            </StackPanel>
-            <StackPanel Grid.Column="2">
-                <TextBlock Text="{lex:Loc ReadingsControl.SixAxisXText}" TextWrapping="Wrap" HorizontalAlignment="Center" TextAlignment="Center"/>
-                <Canvas x:Name="sixaxisCanvas" Width="130" Height="130" ClipToBounds="True">
-                    <Rectangle Width="{Binding Path=Width, ElementName=sixaxisCanvas}"
-                               Height="{Binding Path=Height, ElementName=sixaxisCanvas}" Stroke="{DynamicResource ForegroundColor}">
-                    </Rectangle>
-                    <Ellipse x:Name="sixAxisDeadEllipse" Width="{Binding Path=Width, ElementName=sixaxisCanvas}"
-                             Height="{Binding Path=Height, ElementName=sixaxisCanvas}" Fill="#FFCF1F1F">
-                    </Ellipse>
-                    <Rectangle x:Name="sixAxisMapValRec" Width="6" Height="6" Canvas.Left="62" Canvas.Top="62" Fill="#FFABABAB">
-                    </Rectangle>
-                    <Rectangle x:Name="sixAxisValRec" Width="6" Height="6" Canvas.Left="62" Canvas.Top="62" Fill="{DynamicResource ForegroundColor}">
-                    </Rectangle>
-                    <Ellipse x:Name="gyroCalEllipse" Fill="#FF1FCF1F" Height="32" Canvas.Left="90" Canvas.Top="10" Width="32"/>
-                </Canvas>
-                <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
-                    <StackPanel Orientation="Horizontal">
-                        <Label Content="X (I): "/>
-                        <Label x:Name="sixAxisXInValLb" Content="" Width="40" />
-                    </StackPanel>
-                    <StackPanel Orientation="Horizontal">
-                        <Label Content="X (O): "/>
-                        <Label x:Name="sixAxisXOutValLb" Content="" Width="40" />
-                    </StackPanel>
-                </StackPanel>
-                <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
-                    <StackPanel Orientation="Horizontal">
-                        <Label Content="Z (I): "/>
-                        <Label x:Name="sixAxisZInValLb" Content="" Width="40" />
-                    </StackPanel>
-                    <StackPanel Orientation="Horizontal">
-                        <Label Content="Z (O): "/>
-                        <Label x:Name="sixAxisZOutValLb" Content="" Width="40" />
-                    </StackPanel>
-                </StackPanel>
-            </StackPanel>
-        </Grid>
+		<Grid DockPanel.Dock="Top" Width="450" Margin="0,8,0,0">
+			<Grid.ColumnDefinitions>
+				<ColumnDefinition Width="*"/>
+				<ColumnDefinition Width="*"/>
+				<ColumnDefinition Width="*"/>
+			</Grid.ColumnDefinitions>
+			
+			<!-- Left Stick -->
+			<StackPanel Grid.Column="0">
+				<Label Content="{lex:Loc LeftStick}" HorizontalAlignment="Center" Padding="0"/>
+				<Label Content="" HorizontalAlignment="Center" Padding="0"/>
+				<Canvas x:Name="lsCanvas" Width="130" Height="130" ClipToBounds="True">
+					<Rectangle Width="130" Height="130" Stroke="{DynamicResource ForegroundColor}"/>
+					<Ellipse x:Name="lsDeadEllipse" Width="{Binding Path=Width, ElementName=lsCanvas}"
+							 Height="{Binding Path=Height, ElementName=lsCanvas}" Fill="#4FCF1F1F"/>
+					<Ellipse x:Name="lsDriftEllipse" Width="{Binding Path=Width, ElementName=lsCanvas}"
+							 Height="{Binding Path=Height, ElementName=lsCanvas}" Fill="#FFCF1F1F"/>
+					<Rectangle x:Name="lsMapValRec" Width="6" Height="6" Canvas.Left="62" Canvas.Top="62" Fill="#FFABABAB"/>
+					<Rectangle x:Name="lsValRec" Width="6" Height="6" Canvas.Left="62" Canvas.Top="62" Fill="{DynamicResource ForegroundColor}"/>
+				</Canvas>
+				
+				<!-- LX Values - 使用Grid实现自动填充 -->
+				<Grid Width="130" HorizontalAlignment="Center" Margin="0,5,0,0">
+					<Grid.ColumnDefinitions>
+						<ColumnDefinition Width="Auto"/>
+						<ColumnDefinition Width="*"/>
+						<ColumnDefinition Width="Auto"/>
+						<ColumnDefinition Width="*"/>
+					</Grid.ColumnDefinitions>
+					
+					<Label Grid.Column="0" Content="X(I):" Width="31" HorizontalContentAlignment="Left"/>
+					<Label Grid.Column="1" x:Name="lxInValLb" Content="" 
+						   HorizontalAlignment="Stretch" HorizontalContentAlignment="Center" Padding="2,5"/>
+					<Label Grid.Column="2" Content="X(O):" Width="37" HorizontalContentAlignment="Left"/>
+					<Label Grid.Column="3" x:Name="lxOutValLb" Content="" 
+						   HorizontalAlignment="Stretch" HorizontalContentAlignment="Center" Padding="2,5"/>
+				</Grid>
+				
+				<!-- LY Values - 使用Grid实现自动填充 -->
+				<Grid Width="130" HorizontalAlignment="Center" Margin="0,5,0,0">
+					<Grid.ColumnDefinitions>
+						<ColumnDefinition Width="Auto"/>
+						<ColumnDefinition Width="*"/>
+						<ColumnDefinition Width="Auto"/>
+						<ColumnDefinition Width="*"/>
+					</Grid.ColumnDefinitions>
+					
+					<Label Grid.Column="0" Content="Y(I):" Width="31" HorizontalContentAlignment="Left"/>
+					<Label Grid.Column="1" x:Name="lyInValLb" Content="" 
+						   HorizontalAlignment="Stretch" HorizontalContentAlignment="Center" Padding="2,5"/>
+					<Label Grid.Column="2" Content="Y(O):" Width="37" HorizontalContentAlignment="Left"/>
+					<Label Grid.Column="3" x:Name="lyOutValLb" Content="" 
+						   HorizontalAlignment="Stretch" HorizontalContentAlignment="Center" Padding="2,5"/>
+				</Grid>
+			</StackPanel>
+			
+			<!-- Right Stick -->
+			<StackPanel Grid.Column="1">
+				<Label Content="{lex:Loc RightStick}" HorizontalAlignment="Center" Padding="0"/>
+				<Label Content="" HorizontalAlignment="Center" Padding="0"/>
+				<Canvas x:Name="rsCanvas" Width="130" Height="130" ClipToBounds="True">
+					<Rectangle Width="{Binding Path=Width, ElementName=rsCanvas}"
+							   Height="{Binding Path=Height, ElementName=rsCanvas}" Stroke="{DynamicResource ForegroundColor}"/>
+					<Ellipse x:Name="rsDeadEllipse" Width="{Binding Path=Width, ElementName=rsCanvas}"
+							 Height="{Binding Path=Height, ElementName=rsCanvas}" Fill="#4FCF1F1F"/>
+					<Ellipse x:Name="rsDriftEllipse" Width="{Binding Path=Width, ElementName=rsCanvas}"
+							 Height="{Binding Path=Height, ElementName=rsCanvas}" Fill="#FFCF1F1F"/>
+					<Rectangle x:Name="rsMapValRec" Width="6" Height="6" Canvas.Left="62" Canvas.Top="62" Fill="#FFABABAB"/>
+					<Rectangle x:Name="rsValRec" Width="6" Height="6" Canvas.Left="62" Canvas.Top="62" Fill="{DynamicResource ForegroundColor}"/>
+				</Canvas>
+				
+				<!-- RX Values - 使用Grid实现自动填充 -->
+				<Grid Width="130" HorizontalAlignment="Center" Margin="0,5,0,0">
+					<Grid.ColumnDefinitions>
+						<ColumnDefinition Width="Auto"/>
+						<ColumnDefinition Width="*"/>
+						<ColumnDefinition Width="Auto"/>
+						<ColumnDefinition Width="*"/>
+					</Grid.ColumnDefinitions>
+					
+					<Label Grid.Column="0" Content="X(I):" Width="31" HorizontalContentAlignment="Left"/>
+					<Label Grid.Column="1" x:Name="rxInValLb" Content="" 
+						   HorizontalAlignment="Stretch" HorizontalContentAlignment="Center" Padding="2,5"/>
+					<Label Grid.Column="2" Content="X(O):" Width="37" HorizontalContentAlignment="Left"/>
+					<Label Grid.Column="3" x:Name="rxOutValLb" Content="" 
+						   HorizontalAlignment="Stretch" HorizontalContentAlignment="Center" Padding="2,5"/>
+				</Grid>
+				
+				<!-- RY Values - 使用Grid实现自动填充 -->
+				<Grid Width="130" HorizontalAlignment="Center" Margin="0,5,0,0">
+					<Grid.ColumnDefinitions>
+						<ColumnDefinition Width="Auto"/>
+						<ColumnDefinition Width="*"/>
+						<ColumnDefinition Width="Auto"/>
+						<ColumnDefinition Width="*"/>
+					</Grid.ColumnDefinitions>
+					
+					<Label Grid.Column="0" Content="Y(I):" Width="31" HorizontalContentAlignment="Left"/>
+					<Label Grid.Column="1" x:Name="ryInValLb" Content="" 
+						   HorizontalAlignment="Stretch" HorizontalContentAlignment="Center" Padding="2,5"/>
+					<Label Grid.Column="2" Content="Y(O):" Width="37" HorizontalContentAlignment="Left"/>
+					<Label Grid.Column="3" x:Name="ryOutValLb" Content="" 
+						   HorizontalAlignment="Stretch" HorizontalContentAlignment="Center" Padding="2,5"/>
+				</Grid>
+			</StackPanel>
+			
+			<!-- SixAxis -->
+			<StackPanel Grid.Column="2">
+				<Label Content="{lex:Loc ReadingsControl.SixAxis}" HorizontalAlignment="Center" Padding="0"/>
+				<TextBlock Text="{lex:Loc ReadingsControl.SixAxisXText}" TextWrapping="Wrap" 
+						   HorizontalAlignment="Center" TextAlignment="Center"/>
+				<Canvas x:Name="sixaxisCanvas" Width="130" Height="130" ClipToBounds="True">
+					<Rectangle Width="{Binding Path=Width, ElementName=sixaxisCanvas}"
+							   Height="{Binding Path=Height, ElementName=sixaxisCanvas}" Stroke="{DynamicResource ForegroundColor}"/>
+					<Ellipse x:Name="sixAxisDeadEllipse" Width="{Binding Path=Width, ElementName=sixaxisCanvas}"
+							 Height="{Binding Path=Height, ElementName=sixaxisCanvas}" Fill="#FFCF1F1F"/>
+					<Rectangle x:Name="sixAxisMapValRec" Width="6" Height="6" Canvas.Left="62" Canvas.Top="62" Fill="#FFABABAB"/>
+					<Rectangle x:Name="sixAxisValRec" Width="6" Height="6" Canvas.Left="62" Canvas.Top="62" Fill="{DynamicResource ForegroundColor}"/>
+					<Ellipse x:Name="gyroCalEllipse" Fill="#FF1FCF1F" Height="32" Canvas.Left="90" Canvas.Top="10" Width="32"/>
+				</Canvas>
+				
+				<!-- X Values - 使用Grid实现自动填充 -->
+				<Grid Width="130" HorizontalAlignment="Center" Margin="0,5,0,0">
+					<Grid.ColumnDefinitions>
+						<ColumnDefinition Width="Auto"/>
+						<ColumnDefinition Width="*"/>
+						<ColumnDefinition Width="Auto"/>
+						<ColumnDefinition Width="*"/>
+					</Grid.ColumnDefinitions>
+					
+					<Label Grid.Column="0" Content="X(I):" Width="31" HorizontalContentAlignment="Left"/>
+					<Label Grid.Column="1" x:Name="sixAxisXInValLb" Content="" 
+						   HorizontalAlignment="Stretch" HorizontalContentAlignment="Center" Padding="2,5"/>
+					<Label Grid.Column="2" Content="X(O):" Width="37" HorizontalContentAlignment="Left"/>
+					<Label Grid.Column="3" x:Name="sixAxisXOutValLb" Content="" 
+						   HorizontalAlignment="Stretch" HorizontalContentAlignment="Center" Padding="2,5"/>
+				</Grid>
+				
+				<!-- Z Values - 使用Grid实现自动填充 -->
+				<Grid Width="130" HorizontalAlignment="Center" Margin="0,5,0,0">
+					<Grid.ColumnDefinitions>
+						<ColumnDefinition Width="Auto"/>
+						<ColumnDefinition Width="*"/>
+						<ColumnDefinition Width="Auto"/>
+						<ColumnDefinition Width="*"/>
+					</Grid.ColumnDefinitions>
+					
+					<Label Grid.Column="0" Content="Z(I):" Width="31" HorizontalContentAlignment="Left"/>
+					<Label Grid.Column="1" x:Name="sixAxisZInValLb" Content="" 
+						   HorizontalAlignment="Stretch" HorizontalContentAlignment="Center" Padding="2,5"/>
+					<Label Grid.Column="2" Content="Z(O):" Width="37" HorizontalContentAlignment="Left"/>
+					<Label Grid.Column="3" x:Name="sixAxisZOutValLb" Content="" 
+						   HorizontalAlignment="Stretch" HorizontalContentAlignment="Center" Padding="2,5"/>
+				</Grid>
+			</StackPanel>
+		</Grid>
         <Grid DockPanel.Dock="Top" Margin="8,40,8,8">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="1.3*"/>
@@ -155,7 +191,7 @@
             <StackPanel Orientation="Horizontal" MinHeight="100" Grid.Column="0" RenderTransformOrigin="0,0" HorizontalAlignment="Center">
                 <StackPanel>
                     <StackPanel Orientation="Horizontal" Margin="0,0,20,0">
-                        <Label x:Name="l2ValLb" Content="L2" Height="16" VerticalAlignment="Top" HorizontalAlignment="Left" RenderTransformOrigin="0.5,1" Padding="0" Margin="0,0,4,0" >
+                        <Label x:Name="l2ValLb" Content="L2" Height="16" VerticalAlignment="Top" HorizontalAlignment="Left" RenderTransformOrigin="0.5,1" Padding="0" Margin="4,0,4,0" >
                             <Label.RenderTransform>
                                 <TransformGroup>
                                     <TranslateTransform x:Name="l2ValLbTrans" Y="66" />
@@ -167,22 +203,40 @@
                         </Label>
                         <Slider x:Name="l2Slider" Orientation="Vertical" Minimum="0" Maximum="255" Value="0" Height="80" Focusable="False" />
                     </StackPanel>
-                    <StackPanel>
-                        <StackPanel Orientation="Horizontal">
-                            <Label Content="I: " Width="30" />
-                            <Label x:Name="l2InValLb" Content="" Width="30" />
-                        </StackPanel>
-                        <StackPanel Orientation="Horizontal">
-                            <Label Content="O: " Width="30" />
-                            <Label x:Name="l2OutValLb" Content="" Width="30" />
-                        </StackPanel>
-                    </StackPanel>
+					
+					<Grid>
+						<Grid.RowDefinitions>
+							<RowDefinition Height="Auto"/>
+							<RowDefinition Height="Auto"/>
+						</Grid.RowDefinitions>
+						<Grid.ColumnDefinitions>
+							<ColumnDefinition Width="12"/>
+							<ColumnDefinition Width="15"/>
+							<ColumnDefinition Width="Auto"/>
+						</Grid.ColumnDefinitions>
+						
+						<!-- 第一行 -->
+						<Label Grid.Row="0" Grid.Column="0" Content="I" 
+							   HorizontalContentAlignment="Center" Padding="0" Margin="0" VerticalAlignment="Center"/>
+						<Label Grid.Row="0" Grid.Column="1" Content=":" 
+							   HorizontalContentAlignment="Left" Padding="0" Margin="0" VerticalAlignment="Center"/>
+						<Label Grid.Row="0" Grid.Column="2" x:Name="l2InValLb" Content="" 
+							   HorizontalContentAlignment="Left" MinWidth="30" VerticalAlignment="Center"/>
+						
+						<!-- 第二行 -->
+						<Label Grid.Row="1" Grid.Column="0" Content="O" 
+							   HorizontalContentAlignment="Center" Padding="0" Margin="0" VerticalAlignment="Center"/>
+						<Label Grid.Row="1" Grid.Column="1" Content=":" 
+							   HorizontalContentAlignment="Left" Padding="0" Margin="0" VerticalAlignment="Center"/>
+						<Label Grid.Row="1" Grid.Column="2" x:Name="l2OutValLb" Content="" 
+							   HorizontalContentAlignment="Left" MinWidth="30" VerticalAlignment="Center"/>
+					</Grid>
                 </StackPanel>
 
                 <StackPanel>
                     <StackPanel Orientation="Horizontal">
                         <Slider x:Name="r2Slider" Orientation="Vertical" Minimum="0" Maximum="255" Value="0" Height="80" Focusable="False" />
-                        <Label x:Name="r2ValLb" Content="R2" Height="16" VerticalAlignment="Top" HorizontalAlignment="Left" RenderTransformOrigin="0.5,1" Padding="0" Margin="0,0,4,0" >
+                        <Label x:Name="r2ValLb" Content="R2" Height="16" VerticalAlignment="Top" HorizontalAlignment="Left" RenderTransformOrigin="0.5,1" Padding="0" Margin="4,0,4,0" >
                             <Label.RenderTransform>
                                 <TransformGroup>
                                     <TranslateTransform x:Name="r2ValLbTrans" Y="66"/>
@@ -194,16 +248,29 @@
                         </Label>
                     </StackPanel>
 
-                    <StackPanel>
-                        <StackPanel Orientation="Horizontal">
-                            <Label Content="I: " Width="30" />
-                            <Label x:Name="r2InValLb" Content="" Width="30" />
-                        </StackPanel>
-                        <StackPanel Orientation="Horizontal">
-                            <Label Content="O: " Width="30" />
-                            <Label x:Name="r2OutValLb" Content="" Width="30" />
-                        </StackPanel>
-                    </StackPanel>
+					<Grid>
+						<Grid.RowDefinitions>
+							<RowDefinition Height="Auto"/>
+							<RowDefinition Height="Auto"/>
+						</Grid.RowDefinitions>
+						<Grid.ColumnDefinitions>
+							<ColumnDefinition Width="12"/>
+							<ColumnDefinition Width="15"/>
+							<ColumnDefinition Width="Auto"/>
+						</Grid.ColumnDefinitions>
+						
+						<!-- 第一行 -->
+						<Label Grid.Row="0" Grid.Column="0" Content="I" HorizontalContentAlignment="Center" Padding="0" Margin="0" VerticalAlignment="Center"/>
+						<Label Grid.Row="0" Grid.Column="1" Content=":" HorizontalContentAlignment="Left" Padding="0" Margin="0" VerticalAlignment="Center"/>
+						<Label Grid.Row="0" Grid.Column="2" x:Name="r2InValLb" Content="" 
+							   HorizontalContentAlignment="Left" MinWidth="30"/>
+						
+						<!-- 第二行 -->
+						<Label Grid.Row="1" Grid.Column="0" Content="O" HorizontalContentAlignment="Center" Padding="0" Margin="0" VerticalAlignment="Center"/>
+						<Label Grid.Row="1" Grid.Column="1" Content=":" HorizontalContentAlignment="Left" Padding="0" Margin="0" VerticalAlignment="Center"/>
+						<Label Grid.Row="1" Grid.Column="2" x:Name="r2OutValLb" Content="" 
+							   HorizontalContentAlignment="Left" MinWidth="30"/>
+					</Grid>
                 </StackPanel>
 
                 <StackPanel>

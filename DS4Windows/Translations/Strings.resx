@@ -1228,8 +1228,11 @@ Disabled:
   <data name="ReadingsControl.InputDelayNA" xml:space="preserve">
     <value>Input Delay: N/A</value>
   </data>
+  <data name="ReadingsControl.SixAxis" xml:space="preserve">
+    <value>SixAxis</value>
+  </data>
   <data name="ReadingsControl.SixAxisXText" xml:space="preserve">
-    <value>SixAxis: X Axis is flipped so it is easier to read</value>
+    <value>X Axis inverted for clarity</value>
   </data>
   <data name="Requested" xml:space="preserve">
     <value>Requested</value>
