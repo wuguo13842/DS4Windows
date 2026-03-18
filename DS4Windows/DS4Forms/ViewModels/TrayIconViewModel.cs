@@ -531,7 +531,7 @@ namespace DS4WinWPF.DS4Forms.ViewModels
                 }
                 else
                 {
-                    DS4Windows.AppLogger.LogToGui($"校准停止: 设备={dev.MacAddress} 不在校准集合中，无法移除", true);
+                    DS4Windows.AppLogger.LogToGui($"校准停止: 设备={dev.MacAddress} 不在校准集合中，无法移除", false);
                 }
             }
         }
