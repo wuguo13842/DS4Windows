@@ -45,11 +45,10 @@ namespace DS4WinWPF.DS4Forms.ViewModels
         // 闪烁相关字段
         private System.Windows.Threading.DispatcherTimer blinkTimer;          // 闪烁定时器（250ms）
         private System.Windows.Threading.DispatcherTimer blinkTimeoutTimer;  // 超时定时器（6秒）
-        private int calibrationCount = 0;          // 当前正在校准的设备数
         private bool isBlinking = false;            // 是否正在闪烁
         private string batteryIcon;                  // 当前应显示的电池图标（非闪烁时使用）
         private string gyroIcon;                     // 陀螺校准图标路径
-        private readonly object calibrationLock = new object(); // 保护 calibrationCount 和 _calibratingDevices
+        private readonly object calibrationLock = new object(); // 保护 _calibratingDevices
         private readonly object blinkLock = new object();       // 保护闪烁状态
         private HashSet<DS4Device> _calibratingDevices = new HashSet<DS4Device>(); // 记录正在校准的设备
 
@@ -116,7 +115,7 @@ namespace DS4WinWPF.DS4Forms.ViewModels
                 blinkTimer.Tick += BlinkTimer_Tick;
 
                 blinkTimeoutTimer = new System.Windows.Threading.DispatcherTimer();
-                blinkTimeoutTimer.Interval = TimeSpan.FromSeconds(6); // 超时6秒
+                blinkTimeoutTimer.Interval = TimeSpan.FromSeconds(5.25); // 超时6秒
                 blinkTimeoutTimer.Tick += BlinkTimeoutTimer_Tick;
             });
 
@@ -367,18 +366,19 @@ namespace DS4WinWPF.DS4Forms.ViewModels
             device.ChargingChanged += UpdateForBattery;
             device.Removal += CurrentDev_Removal;
 
-			if (device?.SixAxis != null)
-			{
-				// 改为使用 lambda 捕获 device
-				device.SixAxis.CalibrationStarted += (s, e) => Device_CalibrationStarted(device, e);
-				device.SixAxis.CalibrationStopped += (s, e) => Device_CalibrationStopped(device, e);
+            if (device?.SixAxis != null)
+            {
+                // 使用 lambda 捕获 device 对象，确保事件处理时能直接使用正确的设备
+                device.SixAxis.CalibrationStarted += (s, e) => Device_CalibrationStarted(device, e);
+                device.SixAxis.CalibrationStopped += (s, e) => Device_CalibrationStopped(device, e);
 
-				// 手动触发时直接传入 device
-				if (device.SixAxis.CntCalibrating > 0)
-				{
-					Device_CalibrationStarted(device, EventArgs.Empty);
-				}
-			}
+                // 如果设备已经在校准中，手动触发开始事件（传入设备对象）
+                if (device.SixAxis.CntCalibrating > 0)
+                {
+                    Device_CalibrationStarted(device, EventArgs.Empty);
+                }
+            }
+
         }
 
         private void RemoveDeviceEvents(DS4Device device)
@@ -389,10 +389,79 @@ namespace DS4WinWPF.DS4Forms.ViewModels
 
             if (device.SixAxis != null)
             {
-				device.SixAxis.CalibrationStarted -= (s, e) => Device_CalibrationStarted(device, e);
+                device.SixAxis.CalibrationStarted -= (s, e) => Device_CalibrationStarted(device, e);
 				device.SixAxis.CalibrationStopped -= (s, e) => Device_CalibrationStopped(device, e);
             }
         }
+
+        // ==================== 闪烁控制核心方法 ====================
+
+        /// <summary>
+        /// 启动托盘闪烁
+        /// </summary>
+        private void StartBlinking()
+        {
+            Application.Current.Dispatcher.BeginInvoke(new Action(() =>
+            {
+                lock (blinkLock)
+                {
+                    if (blinkTimer != null && blinkTimeoutTimer != null)
+                    {
+                        isBlinking = true;
+                        // 不再保存 batteryIcon，闪烁结束时直接从设置读取
+                        IconSource = gyroIcon;                     // 设置为陀螺图标
+                        blinkTimer.Stop();
+                        blinkTimer.Start();                 // 启动闪烁定时器
+                        blinkTimeoutTimer.Stop();
+                        blinkTimeoutTimer.Start();          // 启动6秒超时
+                        DS4Windows.AppLogger.LogToGui("托盘闪烁启动", false);
+                    }
+                }
+            }));
+        }
+
+        /// <summary>
+        /// 停止托盘闪烁
+        /// </summary>
+        private void StopBlinking()
+        {
+            Application.Current.Dispatcher.BeginInvoke(new Action(() =>
+            {
+                lock (blinkLock)
+                {
+                    if (blinkTimer != null && blinkTimeoutTimer != null)
+                    {
+                        blinkTimer.Stop();
+                        blinkTimeoutTimer.Stop();
+                        isBlinking = false;
+                        // 恢复为当前设置的图标（从设置中读取），确保与用户设置一致
+                        IconSource = Global.iconChoiceResources[Global.UseIconChoice];
+                        DS4Windows.AppLogger.LogToGui("托盘闪烁停止", false);
+                    }
+                }
+            }));
+        }
+
+        /// <summary>
+        /// 重置超时定时器（当还有设备在校准时调用）
+        /// </summary>
+        private void ResetTimeout()
+        {
+            Application.Current.Dispatcher.BeginInvoke(new Action(() =>
+            {
+                lock (blinkLock)
+                {
+                    if (blinkTimeoutTimer != null)
+                    {
+                        blinkTimeoutTimer.Stop();
+                        blinkTimeoutTimer.Start();
+                        DS4Windows.AppLogger.LogToGui("重置超时定时器", false);
+                    }
+                }
+            }));
+        }
+
+        // ==================== 事件处理方法 ====================
 
         /// <summary>
         /// 陀螺仪校准开始事件处理
@@ -400,30 +469,33 @@ namespace DS4WinWPF.DS4Forms.ViewModels
         private void Device_CalibrationStarted(object sender, EventArgs e)
         {
             DS4Device dev = sender as DS4Device;
+            if (dev == null)
+            {
+                DS4Windows.AppLogger.LogToGui("校准开始: sender为空，忽略", true);
+                return;
+            }
+
             lock (calibrationLock)
             {
-                if (dev != null && !_calibratingDevices.Add(dev))
-                    return;
-
-                calibrationCount++;
-                if (calibrationCount == 1 && !isBlinking)
+                // 尝试将设备加入集合
+                if (_calibratingDevices.Add(dev))
                 {
-                    Application.Current.Dispatcher.BeginInvoke(new Action(() =>
+                    DS4Windows.AppLogger.LogToGui($"校准开始: 设备={dev.MacAddress}, 当前校准设备数={_calibratingDevices.Count}", false);
+                        
+                    if (_calibratingDevices.Count == 1 && !isBlinking)
                     {
-                        lock (blinkLock)
-                        {
-                            if (blinkTimer != null && blinkTimeoutTimer != null)
-                            {
-                                isBlinking = true;
-                                batteryIcon = IconSource; // 保存当前图标
-                                IconSource = gyroIcon;    // 设置为陀螺图标
-                                blinkTimer.Stop();
-                                blinkTimer.Start();
-                                blinkTimeoutTimer.Stop();
-                                blinkTimeoutTimer.Start(); // 启动6秒超时
-                            }
-                        }
-                    }));
+                        // 第一个设备开始校准，启动闪烁
+                        StartBlinking();
+                    }
+                    else if (isBlinking)
+                    {
+                        // 已经有设备在校准，重置超时
+                        ResetTimeout();
+                    }
+                }
+                else
+                {
+                    DS4Windows.AppLogger.LogToGui($"校准开始: 设备={dev.MacAddress} 已在校准集合中，忽略", true);
                 }
             }
         }
@@ -434,65 +506,51 @@ namespace DS4WinWPF.DS4Forms.ViewModels
         private void Device_CalibrationStopped(object sender, EventArgs e)
         {
             DS4Device dev = sender as DS4Device;
+            if (dev == null)
+            {
+                DS4Windows.AppLogger.LogToGui("校准停止: sender为空，忽略", true);
+                return;
+            }
+
             lock (calibrationLock)
             {
-                if (dev != null)
+                if (_calibratingDevices.Remove(dev))
                 {
-                    _calibratingDevices.Remove(dev);
-                }
-
-                if (calibrationCount > 0) calibrationCount--;
-                if (calibrationCount == 0 && isBlinking)
-                {
-                    Application.Current.Dispatcher.BeginInvoke(new Action(() =>
+                    DS4Windows.AppLogger.LogToGui($"校准停止: 设备={dev.MacAddress}, 剩余校准设备数={_calibratingDevices.Count}", false);
+                        
+                    if (_calibratingDevices.Count == 0 && isBlinking)
                     {
-                        lock (blinkLock)
-                        {
-                            if (blinkTimer != null && blinkTimeoutTimer != null)
-                            {
-                                blinkTimer.Stop();
-                                blinkTimeoutTimer.Stop();
-                                isBlinking = false;
-                                IconSource = batteryIcon ?? Global.iconChoiceResources[Global.UseIconChoice];
-                            }
-                        }
-                    }));
-                }
-                else if (isBlinking)
-                {
-                    // 仍有设备在校准，重置超时定时器
-                    Application.Current.Dispatcher.BeginInvoke(new Action(() =>
+                        // 所有设备都停止校准，停止闪烁
+                        StopBlinking();
+                    }
+                    else if (_calibratingDevices.Count > 0 && isBlinking)
                     {
-                        lock (blinkLock)
-                        {
-                            blinkTimeoutTimer?.Stop();
-                            blinkTimeoutTimer?.Start();
-                        }
-                    }));
+                        // 还有设备在校准，重置超时
+                        ResetTimeout();
+                    }
+                }
+                else
+                {
+                    DS4Windows.AppLogger.LogToGui($"校准停止: 设备={dev.MacAddress} 不在校准集合中，无法移除", true);
                 }
             }
         }
+
+        // ==================== 定时器 Tick 事件 ====================
 
         /// <summary>
         /// 闪烁定时器 Tick 处理 - 交替显示 gyro 图标和透明
         /// </summary>
         private void BlinkTimer_Tick(object sender, EventArgs e)
         {
-            if (isBlinking)
-            {
-                if (IconSource == gyroIcon)
-                {
-                    IconSource = null; // 透明
-                }
-                else
-                {
-                    IconSource = gyroIcon;
-                }
-            }
-            else
+            if (!isBlinking)
             {
                 blinkTimer.Stop();
+                return;
             }
+
+            // 交替显示：当前为陀螺图标则设为 null（透明），否则设为陀螺图标
+            IconSource = (IconSource == gyroIcon) ? null : gyroIcon;
         }
 
         /// <summary>
@@ -509,7 +567,8 @@ namespace DS4WinWPF.DS4Forms.ViewModels
                         blinkTimeoutTimer.Stop();
                         blinkTimer.Stop();
                         isBlinking = false;
-                        IconSource = batteryIcon ?? Global.iconChoiceResources[Global.UseIconChoice];
+                        // 强制停止时也从设置读取当前图标
+                        IconSource = Global.iconChoiceResources[Global.UseIconChoice];
                     }));
                 }
                 else
@@ -530,8 +589,7 @@ namespace DS4WinWPF.DS4Forms.ViewModels
                 if (currentDev != null && _calibratingDevices.Contains(currentDev))
                 {
                     _calibratingDevices.Remove(currentDev);
-                    if (calibrationCount > 0) calibrationCount--;
-                    if (calibrationCount == 0 && isBlinking)
+                    if (_calibratingDevices.Count == 0 && isBlinking)
                     {
                         Application.Current.Dispatcher.BeginInvoke(new Action(() =>
                         {
@@ -542,12 +600,12 @@ namespace DS4WinWPF.DS4Forms.ViewModels
                                     blinkTimer.Stop();
                                     blinkTimeoutTimer.Stop();
                                     isBlinking = false;
-                                    IconSource = batteryIcon ?? Global.iconChoiceResources[Global.UseIconChoice];
+                                	IconSource = Global.iconChoiceResources[Global.UseIconChoice];
                                 }
                             }
                         }));
                     }
-                    else if (isBlinking)
+                    else if (_calibratingDevices.Count > 0 && isBlinking)
                     {
                         // 仍有设备，重置超时
                         Application.Current.Dispatcher.BeginInvoke(new Action(() =>

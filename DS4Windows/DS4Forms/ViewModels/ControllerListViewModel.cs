@@ -464,7 +464,7 @@ namespace DS4WinWPF.DS4Forms.ViewModels
 
                     // 初始化超时定时器 - 6秒间隔，仅在闪烁时启动
                     blinkTimeoutTimer = new System.Windows.Threading.DispatcherTimer();
-                    blinkTimeoutTimer.Interval = TimeSpan.FromSeconds(6);
+                    blinkTimeoutTimer.Interval = TimeSpan.FromSeconds(5.25);
                     blinkTimeoutTimer.Tick += BlinkTimeoutTimer_Tick;
                 });
             }

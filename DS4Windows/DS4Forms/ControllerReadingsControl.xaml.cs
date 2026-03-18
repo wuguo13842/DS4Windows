@@ -232,7 +232,7 @@ namespace DS4WinWPF.DS4Forms
             blinkTimer.Tick += BlinkTimer_Tick;
 
             blinkTimeoutTimer = new System.Windows.Threading.DispatcherTimer();
-            blinkTimeoutTimer.Interval = TimeSpan.FromSeconds(6); // 6秒超时
+            blinkTimeoutTimer.Interval = TimeSpan.FromSeconds(5.25); // 6秒超时
             blinkTimeoutTimer.Tick += BlinkTimeoutTimer_Tick;
 
             LsDeadXChanged += ChangeLsDeadControls;
@@ -385,20 +385,19 @@ namespace DS4WinWPF.DS4Forms
             DeviceNumChanged?.Invoke(this, EventArgs.Empty);
 
             // 订阅新设备的事件
- 				var newDev = Program.rootHub.DS4Controllers[deviceNum];
-				if (newDev?.SixAxis != null)
-				{
-					// 改为使用 lambda 捕获 newDev
-					newDev.SixAxis.CalibrationStarted += (s, e) => SixAxis_CalibrationStarted(newDev, e);
-					newDev.SixAxis.CalibrationStopped += (s, e) => SixAxis_CalibrationStopped(newDev, e);
+			var newDev = Program.rootHub.DS4Controllers[deviceNum];
+			if (newDev?.SixAxis != null)
+			{
+				// 改为使用 lambda 捕获 newDev
+				newDev.SixAxis.CalibrationStarted += (s, e) => SixAxis_CalibrationStarted(newDev, e);
+				newDev.SixAxis.CalibrationStopped += (s, e) => SixAxis_CalibrationStopped(newDev, e);
 
-					if (newDev.SixAxis.CntCalibrating > 0)
-					{
-						SixAxis_CalibrationStarted(newDev, EventArgs.Empty);
-					}
+				if (newDev.SixAxis.CntCalibrating > 0)
+				{
+					SixAxis_CalibrationStarted(newDev, EventArgs.Empty);
 				}
-            }
-        }
+			}
+		}
 
         /// <summary>
         /// 陀螺仪校准开始事件处理
