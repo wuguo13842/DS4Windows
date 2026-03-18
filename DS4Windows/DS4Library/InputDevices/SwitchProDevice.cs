@@ -109,7 +109,6 @@ namespace DS4Windows.InputDevices
             currentOffset++;
 
             for (int i = 1; i < fixedRumbleTable.Length; i++)
-            //foreach(RumbleTableData entry in fixedRumbleTable)
             {
                 RumbleTableData entry = fixedRumbleTable[i];
                 if (currentAmp < entry.amp)
@@ -128,7 +127,6 @@ namespace DS4Windows.InputDevices
                 previousEntry = entry;
             }
 
-            //fixedRumbleTable = null;
             return tmpBuffer;
         })();
 
@@ -153,7 +151,6 @@ namespace DS4Windows.InputDevices
         public const short ACCEL_ORIG_HOR_OFFSET_Y = 0;
         public const short ACCEL_ORIG_HOR_OFFSET_Z = 4038;
 
-        //private const ushort SAMPLE_STICK_MAX = 3200;
         private const ushort SAMPLE_STICK_MAX = 3300;
         private const ushort SAMPLE_STICK_MIN = 500;
         private const ushort SAMPLE_STICK_MID = SAMPLE_STICK_MAX - SAMPLE_STICK_MIN;
@@ -193,9 +190,6 @@ namespace DS4Windows.InputDevices
         private ushort rightStickOffsetX = 0;
         private ushort rightStickOffsetY = 0;
 
-        //public ushort[] LeftStickCalib { get => leftStickCalib; }
-        //public ushort[] RightStickCalib { get => rightStickCalib; }
-
         private short[] accelNeutral = new short[3];
         private short[] accelSens = new short[3];
         private double[] accelSensMulti = new double[3];
@@ -230,6 +224,9 @@ namespace DS4Windows.InputDevices
             string disName, VidPidFeatureSet featureSet = VidPidFeatureSet.DefaultDS4) :
             base(hidDevice, disName, featureSet)
         {
+            // 记录设备创建
+            AppLogger.LogToGui($"[SwitchPro] 创建设备: {disName}, 路径: {hidDevice.DevicePath}", false);
+
             runCalib = false;
             synced = true;
 
@@ -256,30 +253,42 @@ namespace DS4Windows.InputDevices
 
         private void SwitchProDevice_Removal(object sender, EventArgs e)
         {
+            AppLogger.LogToGui($"[SwitchPro] 设备移除: {MacAddress}", false);
             connectionOpened = false;
         }
 
         public override void PostInit()
         {
-            deviceType = InputDeviceType.SwitchPro;
-            gyroMouseSensSettings = new GyroMouseSens();
-            conType = DetermineConnectionType(hDevice);
-            optionsStore = nativeOptionsStore = new SwitchProControllerOptions(deviceType);
-            SetupOptionsEvents();
-            Mac = hDevice.ReadSerial(SerialReportID);
-
-            if (conType == ConnectionType.BT)
+            try
             {
-                warnInterval = WARN_INTERVAL_BT;
-            }
-            else
-            {
-                warnInterval = WARN_INTERVAL_USB;
-            }
+                AppLogger.LogToGui($"[SwitchPro] PostInit 开始: {MacAddress}", false);
+                deviceType = InputDeviceType.SwitchPro;
+                gyroMouseSensSettings = new GyroMouseSens();
+                conType = DetermineConnectionType(hDevice);
+                optionsStore = nativeOptionsStore = new SwitchProControllerOptions(deviceType);
+                SetupOptionsEvents();
+                Mac = hDevice.ReadSerial(SerialReportID);
 
-            inputReportBuffer = new byte[INPUT_REPORT_LEN];
-            outputReportBuffer = new byte[OUTPUT_REPORT_LEN];
-            rumbleReportBuffer = new byte[RUMBLE_REPORT_LEN];
+                if (conType == ConnectionType.BT)
+                {
+                    warnInterval = WARN_INTERVAL_BT;
+                    AppLogger.LogToGui($"[SwitchPro] 连接类型: BT", false);
+                }
+                else
+                {
+                    warnInterval = WARN_INTERVAL_USB;
+                    AppLogger.LogToGui($"[SwitchPro] 连接类型: USB", false);
+                }
+
+                inputReportBuffer = new byte[INPUT_REPORT_LEN];
+                outputReportBuffer = new byte[OUTPUT_REPORT_LEN];
+                rumbleReportBuffer = new byte[RUMBLE_REPORT_LEN];
+                AppLogger.LogToGui($"[SwitchPro] PostInit 完成: {MacAddress}", false);
+            }
+            catch (Exception ex)
+            {
+                AppLogger.LogToGui($"[SwitchPro] PostInit 异常: {ex.Message}", true);
+            }
         }
 
         public static ConnectionType DetermineConnectionType(HidDevice hDevice)
@@ -293,32 +302,36 @@ namespace DS4Windows.InputDevices
             {
                 result = ConnectionType.USB;
             }
-
+            AppLogger.LogToGui($"[SwitchPro] 确定连接类型: {result}", false);
             return result;
         }
 
         public override void StartUpdate()
         {
+            AppLogger.LogToGui($"[SwitchPro] StartUpdate 开始: {MacAddress}", false);
             this.inputReportErrorCount = 0;
 
             try
             {
                 SetOperational();
             }
-            catch (System.IO.IOException)
+            catch (Exception ex)
             {
-                AppLogger.LogToGui($"Controller {MacAddress} failed to initialize. Closing device", true);
+                AppLogger.LogToGui($"[SwitchPro] SetOperational 异常: {ex.Message}", true);
+                isDisconnecting = true;
+                Removal?.Invoke(this, EventArgs.Empty);
+                return;
             }
 
             if (!connectionOpened)
             {
-                // Failed to open device. Tell app to consider device detached
+                AppLogger.LogToGui($"[SwitchPro] 设备未成功打开，触发移除", true);
                 isDisconnecting = true;
                 Removal?.Invoke(this, EventArgs.Empty);
             }
             else if (ds4Input == null)
             {
-                // Device is open. Create Reader Input thread
+                AppLogger.LogToGui($"[SwitchPro] 启动读取线程", false);
                 ds4Input = new Thread(ReadInput);
                 ds4Input.IsBackground = true;
                 ds4Input.Priority = ThreadPriority.AboveNormal;
@@ -333,31 +346,21 @@ namespace DS4Windows.InputDevices
 
         protected unsafe void ReadInput()
         {
+            AppLogger.LogToGui($"[SwitchPro] 读取线程启动: {MacAddress}", false);
             byte[] stick_raw = { 0, 0, 0 };
             byte[] stick_raw2 = { 0, 0, 0 };
             short[] accel_raw = { 0, 0, 0 };
             short[] gyro_raw = new short[9];
             short[] gyro_out = new short[9];
-            //short gyroYaw = 0, gyroYaw2 = 0, gyroYaw3 = 0;
-            //short gyroPitch = 0, gyroPitch2 = 0, gyroPitch3 = 0;
-            //short gyroRoll = 0, gyroRoll2 = 0, gyroRoll3 = 0;
             short tempShort = 0;
             int tempAxis = 0;
-
-            /*long currentTime = 0;
-            long previousTime = 0;
-            long deltaElapsed = 0;
-            double lastElapsed;
-            double tempTimeElapsed;
-            bool firstReport = true;
-            */
 
             unchecked
             {
                 Debouncer = SetupDebouncer();
                 firstActive = DateTime.UtcNow;
                 NativeMethods.HidD_SetNumInputBuffers(hDevice.SafeReadHandle.DangerousGetHandle(), 3);
-                Queue<long> latencyQueue = new Queue<long>(21); // Set capacity at max + 1 to avoid any resizing
+                Queue<long> latencyQueue = new Queue<long>(21);
                 int tempLatencyCount = 0;
                 long oldtime = 0;
                 string currerror = string.Empty;
@@ -367,14 +370,10 @@ namespace DS4Windows.InputDevices
                 ds4InactiveFrame = true;
                 idleInput = true;
                 bool syncWriteReport = conType != ConnectionType.BT;
-                //bool forceWrite = false;
                 
-                //int maxBatteryValue = 0;
                 int tempBattery = 0;
                 bool tempCharging = charging;
-                //uint tempStamp = 0;
                 double elapsedDeltaTime = 0.0;
-                //uint tempDelta = 0;
                 byte tempByte = 0;
                 long latencySum = 0;
 
@@ -383,461 +382,469 @@ namespace DS4Windows.InputDevices
                 double lastCheckElapsed;
                 double lastCheckTimeElapsed;
 
-                // Run continuous calibration on Gyro when starting input loop
                 sixAxis.ResetContinuousCalibration();
                 standbySw.Start();
 
                 while (!exitInputThread)
                 {
-                    oldCharging = charging;
-                    currerror = string.Empty;
-
-                    readWaitEv.Set();
-
-                    HidDevice.ReadStatus res = hDevice.ReadFile(inputReportBuffer);
-                    if (res == HidDevice.ReadStatus.Success)
+                    try
                     {
-                        if (inputReportBuffer[0] != 0x30)
-                        {
-                            //Console.WriteLine("Got unexpected input report id 0x{0:X2}. Try again",
-                            //    inputReportBuffer[0]);
+                        oldCharging = charging;
+                        currerror = string.Empty;
 
-                            readWaitEv.Reset();
-                            inputReportErrorCount++;
-                            if (inputReportErrorCount > 10)
+                        readWaitEv.Set();
+
+                        HidDevice.ReadStatus res = hDevice.ReadFile(inputReportBuffer);
+                        if (res == HidDevice.ReadStatus.Success)
+                        {
+                            if (inputReportBuffer[0] != 0x30)
                             {
-                                exitInputThread = true;
-                                isDisconnecting = true;
-                                Removal?.Invoke(this, EventArgs.Empty);
+                                AppLogger.LogToGui($"[SwitchPro] 意外的输入报告 ID: 0x{inputReportBuffer[0]:X2}", true);
+                                readWaitEv.Reset();
+                                inputReportErrorCount++;
+                                if (inputReportErrorCount > 10)
+                                {
+                                    AppLogger.LogToGui($"[SwitchPro] 连续错误过多，断开连接", true);
+                                    exitInputThread = true;
+                                    isDisconnecting = true;
+                                    Removal?.Invoke(this, EventArgs.Empty);
+                                }
+                                continue;
                             }
-
-                            continue;
-                        }
-                    }
-                    else
-                    {
-                        readWaitEv.Reset();
-                        exitInputThread = true;
-                        isDisconnecting = true;
-                        Removal?.Invoke(this, EventArgs.Empty);
-                        continue;
-                    }
-
-                    readWaitEv.Wait();
-                    readWaitEv.Reset();
-
-                    inputReportErrorCount = 0;
-                    curtime = Stopwatch.GetTimestamp();
-                    testelapsed = curtime - oldtime;
-                    lastTimeElapsedDouble = testelapsed * (1.0 / Stopwatch.Frequency) * 1000.0;
-                    lastTimeElapsed = (long)lastTimeElapsedDouble;
-                    elapsedDeltaTime = lastTimeElapsedDouble * .001;
-                    combLatency = elapsedDeltaTime;
-
-                    // Obtain stats for current poll time
-                    deltaCheckElapsed = curtime - previousCheckTime;
-                    lastCheckElapsed = deltaCheckElapsed * (1.0 / Stopwatch.Frequency) * 1000.0;
-                    lastCheckTimeElapsed = lastCheckElapsed * 0.001;
-                    previousCheckTime = curtime;
-
-                    // Check if most recent poll exceeded a certain duration. Avoids false poll state?
-                    if (lastCheckTimeElapsed <= 0.005)
-                    {
-                        continue;
-                    }
-
-                    oldtime = curtime;
-
-                    if (tempLatencyCount >= 20)
-                    {
-                        latencySum -= latencyQueue.Dequeue();
-                        tempLatencyCount--;
-                    }
-
-                    latencySum += this.lastTimeElapsed;
-                    latencyQueue.Enqueue(this.lastTimeElapsed);
-                    tempLatencyCount++;
-
-                    //Latency = latencyQueue.Average();
-                    Latency = latencySum / (double)tempLatencyCount;
-
-                    utcNow = DateTime.UtcNow; // timestamp with UTC in case system time zone changes
-                    cState.PacketCounter = pState.PacketCounter + 1;
-                    // DS4 Frame Counter range is [0-127]
-                    cState.FrameCounter = (byte)(cState.PacketCounter % 128);
-                    cState.ReportTimeStamp = utcNow;
-
-                    cState.elapsedTime = elapsedDeltaTime;
-                    cState.totalMicroSec = pState.totalMicroSec + (uint)(elapsedDeltaTime * 1000000);
-                    combLatency = 0.0;
-
-                    if ((this.featureSet & VidPidFeatureSet.NoBatteryReading) == 0)
-                    {
-                        tempByte = inputReportBuffer[2];
-                        // Strip out LSB from high nibble. Used as Charging flag and will be checked later
-                        tempBattery = ((tempByte & 0xE0) >> 4) * 100 / 8;
-                        tempBattery = Math.Min(tempBattery, 100);
-                        if (tempBattery != battery)
-                        {
-                            battery = tempBattery;
-                            BatteryChanged?.Invoke(this, EventArgs.Empty);
-                        }
-
-                        cState.Battery = (byte)tempBattery;
-
-                        tempCharging = (tempByte & 0x10) != 0;
-                        if (tempCharging != charging)
-                        {
-                            charging = tempCharging;
-                            ChargingChanged?.Invoke(this, EventArgs.Empty);
-                        }
-                    }
-                    else
-                    {
-                        battery = 99;
-                        cState.Battery = 99;
-                    }
-
-                    tempByte = inputReportBuffer[3];
-                    cState.Circle = (tempByte & 0x08) != 0;
-                    cState.Cross = (tempByte & 0x04) != 0;
-                    cState.Triangle = (tempByte & 0x02) != 0;
-                    cState.Square = (tempByte & 0x01) != 0;
-                    cState.R1 = (tempByte & 0x40) != 0;
-                    cState.R2Btn = (tempByte & 0x80) != 0;
-                    cState.R2 = (byte)(cState.R2Btn ? 255 : 0);
-                    cState.R2Raw = cState.R2;
-
-                    tempByte = inputReportBuffer[4];
-                    cState.Share = (tempByte & 0x01) != 0;
-                    cState.Options = (tempByte & 0x02) != 0;
-                    cState.PS = (tempByte & 0x10) != 0;
-                    cState.Capture = (tempByte & 0x20) != 0;
-                    cState.L3 = (tempByte & 0x08) != 0;
-                    cState.R3 = (tempByte & 0x04) != 0;
-
-                    tempByte = inputReportBuffer[5];
-                    cState.DpadUp = (tempByte & 0x02) != 0;
-                    cState.DpadDown = (tempByte & 0x01) != 0;
-                    cState.DpadLeft = (tempByte & 0x08) != 0;
-                    cState.DpadRight = (tempByte & 0x04) != 0;
-                    cState.L1 = (tempByte & 0x40) != 0;
-                    cState.L2Btn = (tempByte & 0x80) != 0;
-                    cState.L2 = (byte)(cState.L2Btn ? 255 : 0);
-                    cState.L2Raw = cState.L2;
-
-                    stick_raw[0] = inputReportBuffer[6];
-                    stick_raw[1] = inputReportBuffer[7];
-                    stick_raw[2] = inputReportBuffer[8];
-
-                    tempAxis = (stick_raw[0] | ((stick_raw[1] & 0x0F) << 8)) - leftStickOffsetX;
-                    tempAxis = tempAxis > leftStickXData.max ? leftStickXData.max : (tempAxis < leftStickXData.min ? leftStickXData.min : tempAxis);
-                    cState.LX = (byte)((tempAxis - leftStickXData.min) / (double)(leftStickXData.max - leftStickXData.min) * 255);
-
-                    tempAxis = ((stick_raw[1] >> 4) | (stick_raw[2] << 4)) - leftStickOffsetY;
-                    tempAxis = tempAxis > leftStickYData.max ? leftStickYData.max : (tempAxis < leftStickYData.min ? leftStickYData.min : tempAxis);
-                    cState.LY = (byte)((((tempAxis - leftStickYData.min) / (double)(leftStickYData.max - leftStickYData.min) - 0.5) * -1.0 + 0.5) * 255);
-
-                    stick_raw2[0] = inputReportBuffer[9];
-                    stick_raw2[1] = inputReportBuffer[10];
-                    stick_raw2[2] = inputReportBuffer[11];
-
-                    tempAxis = (stick_raw2[0] | ((stick_raw2[1] & 0x0F) << 8)) - rightStickOffsetX;
-                    tempAxis = tempAxis > rightStickXData.max ? rightStickXData.max : (tempAxis < rightStickXData.min ? rightStickXData.min : tempAxis);
-                    cState.RX = (byte)((tempAxis - rightStickXData.min) / (double)(rightStickXData.max - rightStickXData.min) * 255);
-
-                    tempAxis = ((stick_raw2[1] >> 4) | (stick_raw2[2] << 4)) - rightStickOffsetY;
-                    tempAxis = tempAxis > rightStickYData.max ? rightStickYData.max : (tempAxis < rightStickYData.min ? rightStickYData.min : tempAxis);
-                    //cState.RY = (byte)((tempAxis - STICK_MIN) / (STICK_MAX - STICK_MIN) * 255);
-                    cState.RY = (byte)((((tempAxis - rightStickYData.min) / (double)(rightStickYData.max - rightStickYData.min) - 0.5) * -1.0 + 0.5) * 255);
-
-                    for (int i = 0; i < 3; i++)
-                    {
-                        int data_offset = i * 12;
-                        int gyro_offset = i * 3;
-                        accel_raw[IMU_XAXIS_IDX] = (short)((ushort)(inputReportBuffer[16 + data_offset] << 8) | inputReportBuffer[15 + data_offset]);
-                        accel_raw[IMU_YAXIS_IDX] = (short)((ushort)(inputReportBuffer[14 + data_offset] << 8) | inputReportBuffer[13 + data_offset]);
-                        accel_raw[IMU_ZAXIS_IDX] = (short)((ushort)(inputReportBuffer[18 + data_offset] << 8) | inputReportBuffer[17 + data_offset]);
-
-                        tempShort = gyro_raw[IMU_YAW_IDX + gyro_offset] = (short)((ushort)(inputReportBuffer[24 + data_offset] << 8) | inputReportBuffer[23 + data_offset]);
-                        //gyro_out[IMU_YAW_IDX + gyro_offset] = (short)(tempShort - device.gyroBias[IMU_YAW_IDX]);
-                        gyro_out[IMU_YAW_IDX + gyro_offset] = (short)(tempShort);
-
-                        tempShort = gyro_raw[IMU_PITCH_IDX + gyro_offset] = (short)((ushort)(inputReportBuffer[22 + data_offset] << 8) | inputReportBuffer[21 + data_offset]);
-                        //gyro_out[IMU_PITCH_IDX + gyro_offset] = (short)(tempShort - device.gyroBias[IMU_PITCH_IDX]);
-                        gyro_out[IMU_PITCH_IDX + gyro_offset] = (short)(tempShort);
-
-                        tempShort = gyro_raw[IMU_ROLL_IDX + gyro_offset] = (short)((ushort)(inputReportBuffer[20 + data_offset] << 8) | inputReportBuffer[19 + data_offset]);
-                        //gyro_out[IMU_ROLL_IDX + gyro_offset] = (short)(tempShort - device.gyroBias[IMU_ROLL_IDX]);
-                        gyro_out[IMU_ROLL_IDX + gyro_offset] = (short)(tempShort);
-
-                        //Console.WriteLine($"IDX: ({i}) Accel: X({accel_raw[IMU_XAXIS_IDX]}) Y({accel_raw[IMU_YAXIS_IDX]}) Z({accel_raw[IMU_ZAXIS_IDX]})");
-                        //Console.WriteLine($"IDX: ({i}) Gyro: Yaw({gyro_raw[IMU_YAW_IDX + gyro_offset]}) Pitch({gyro_raw[IMU_PITCH_IDX + gyro_offset]}) Roll({gyro_raw[IMU_ROLL_IDX + gyro_offset]})");
-                        //Console.WriteLine($"IDX: ({i}) Gyro OUT: Yaw({gyro_out[IMU_YAW_IDX + gyro_offset]}) Pitch({gyro_out[IMU_PITCH_IDX + gyro_offset]}) Roll({gyro_out[IMU_ROLL_IDX + gyro_offset]})");
-                        //Console.WriteLine();
-                    }
-
-                    // For Accel, just use most recent sampled values
-                    int accelX = accel_raw[IMU_XAXIS_IDX];
-                    int accelY = accel_raw[IMU_YAXIS_IDX];
-                    int accelZ = accel_raw[IMU_ZAXIS_IDX];
-
-                    // Just use most recent sample for now
-                    int gyroYaw = (short)(-1 * (gyro_out[6 + IMU_YAW_IDX] - gyroBias[IMU_YAW_IDX] + gyroCalibOffsets[IMU_YAW_IDX]));
-                    int gyroPitch = (short)(gyro_out[6 + IMU_PITCH_IDX] - gyroBias[IMU_PITCH_IDX] - gyroCalibOffsets[IMU_PITCH_IDX]);
-                    int gyroRoll = (short)(gyro_out[6 + IMU_ROLL_IDX] - gyroBias[IMU_ROLL_IDX] - gyroCalibOffsets[IMU_ROLL_IDX]);
-                    //cState.Motion.populate(gyroYaw, gyroPitch, gyroRoll, accelX, accelY, accelZ, cState.elapsedTime, pState.Motion);
-                    
-                    // Need to populate the SixAxis object manually to work around conversions
-                    //Console.WriteLine("GyroYaw: {0}", gyroYaw);
-                    SixAxis tempMotion = cState.Motion;
-                    sixAxis.PrepareNonDS4SixAxis(ref gyroYaw, ref gyroPitch, ref gyroRoll,
-                        ref accelX, ref accelY, ref accelZ);
-
-                    tempMotion.gyroYawFull = gyroYaw; tempMotion.gyroPitchFull = -gyroPitch; tempMotion.gyroRollFull = gyroRoll;
-                    tempMotion.accelXFull = accelX * 2; tempMotion.accelYFull = -accelZ * 2; tempMotion.accelZFull = -accelY * 2;
-
-                    tempMotion.elapsed = elapsedDeltaTime;
-                    tempMotion.previousAxis = pState.Motion;
-                    tempMotion.gyroYaw = gyroYaw / 256; tempMotion.gyroPitch = -gyroPitch / 256; tempMotion.gyroRoll = gyroRoll / 256;
-                    tempMotion.accelX = accelX / 31; tempMotion.accelY = -accelZ / 31; tempMotion.accelZ = -accelY / 31;
-                    //tempMotion.outputAccelX = tempMotion.accelX; tempMotion.outputAccelY = tempMotion.accelY; tempMotion.outputAccelZ = tempMotion.accelZ;
-                    tempMotion.outputAccelX = 0; tempMotion.outputAccelY = 0; tempMotion.outputAccelZ = 0;
-                    tempMotion.outputGyroControls = false;
-                    //Console.WriteLine(gyroRoll);
-                    tempMotion.accelXG = (accelX * 2) / DS4Windows.SixAxis.F_ACC_RES_PER_G;
-                    tempMotion.accelYG = (-accelZ * 2) / DS4Windows.SixAxis.F_ACC_RES_PER_G;
-                    tempMotion.accelZG = (-accelY * 2) / DS4Windows.SixAxis.F_ACC_RES_PER_G;
-
-                    tempMotion.angVelYaw = gyroYaw * GYRO_IN_DEG_SEC_FACTOR;
-                    tempMotion.angVelPitch = -gyroPitch * GYRO_IN_DEG_SEC_FACTOR;
-                    tempMotion.angVelRoll = gyroRoll * GYRO_IN_DEG_SEC_FACTOR;
-
-                    SixAxisEventArgs args = new SixAxisEventArgs(cState.ReportTimeStamp, cState.Motion);
-                    sixAxis.FireSixAxisEvent(args);
-
-                    if (conType == ConnectionType.USB)
-                    {
-                        if (idleTimeout == 0)
-                        {
-                            lastActive = utcNow;
                         }
                         else
                         {
-                            idleInput = isDS4Idle();
-                            if (!idleInput)
+                            AppLogger.LogToGui($"[SwitchPro] 读取失败: {res}", true);
+                            readWaitEv.Reset();
+                            exitInputThread = true;
+                            isDisconnecting = true;
+                            Removal?.Invoke(this, EventArgs.Empty);
+                            continue;
+                        }
+
+                        readWaitEv.Wait();
+                        readWaitEv.Reset();
+
+                        inputReportErrorCount = 0;
+                        curtime = Stopwatch.GetTimestamp();
+                        testelapsed = curtime - oldtime;
+                        lastTimeElapsedDouble = testelapsed * (1.0 / Stopwatch.Frequency) * 1000.0;
+                        lastTimeElapsed = (long)lastTimeElapsedDouble;
+                        elapsedDeltaTime = lastTimeElapsedDouble * .001;
+                        combLatency = elapsedDeltaTime;
+
+                        deltaCheckElapsed = curtime - previousCheckTime;
+                        lastCheckElapsed = deltaCheckElapsed * (1.0 / Stopwatch.Frequency) * 1000.0;
+                        lastCheckTimeElapsed = lastCheckElapsed * 0.001;
+                        previousCheckTime = curtime;
+
+                        if (lastCheckTimeElapsed <= 0.005)
+                        {
+                            continue;
+                        }
+
+                        oldtime = curtime;
+
+                        if (tempLatencyCount >= 20)
+                        {
+                            latencySum -= latencyQueue.Dequeue();
+                            tempLatencyCount--;
+                        }
+
+                        latencySum += this.lastTimeElapsed;
+                        latencyQueue.Enqueue(this.lastTimeElapsed);
+                        tempLatencyCount++;
+
+                        Latency = latencySum / (double)tempLatencyCount;
+
+                        utcNow = DateTime.UtcNow;
+                        cState.PacketCounter = pState.PacketCounter + 1;
+                        cState.FrameCounter = (byte)(cState.PacketCounter % 128);
+                        cState.ReportTimeStamp = utcNow;
+                        cState.elapsedTime = elapsedDeltaTime;
+                        cState.totalMicroSec = pState.totalMicroSec + (uint)(elapsedDeltaTime * 1000000);
+                        combLatency = 0.0;
+
+                        if ((this.featureSet & VidPidFeatureSet.NoBatteryReading) == 0)
+                        {
+                            tempByte = inputReportBuffer[2];
+                            tempBattery = ((tempByte & 0xE0) >> 4) * 100 / 8;
+                            tempBattery = Math.Min(tempBattery, 100);
+                            if (tempBattery != battery)
+                            {
+                                battery = tempBattery;
+                                BatteryChanged?.Invoke(this, EventArgs.Empty);
+                            }
+                            cState.Battery = (byte)tempBattery;
+
+                            tempCharging = (tempByte & 0x10) != 0;
+                            if (tempCharging != charging)
+                            {
+                                charging = tempCharging;
+                                ChargingChanged?.Invoke(this, EventArgs.Empty);
+                            }
+                        }
+                        else
+                        {
+                            battery = 99;
+                            cState.Battery = 99;
+                        }
+
+                        tempByte = inputReportBuffer[3];
+                        cState.Circle = (tempByte & 0x08) != 0;
+                        cState.Cross = (tempByte & 0x04) != 0;
+                        cState.Triangle = (tempByte & 0x02) != 0;
+                        cState.Square = (tempByte & 0x01) != 0;
+                        cState.R1 = (tempByte & 0x40) != 0;
+                        cState.R2Btn = (tempByte & 0x80) != 0;
+                        cState.R2 = (byte)(cState.R2Btn ? 255 : 0);
+                        cState.R2Raw = cState.R2;
+
+                        tempByte = inputReportBuffer[4];
+                        cState.Share = (tempByte & 0x01) != 0;
+                        cState.Options = (tempByte & 0x02) != 0;
+                        cState.PS = (tempByte & 0x10) != 0;
+                        cState.Capture = (tempByte & 0x20) != 0;
+                        cState.L3 = (tempByte & 0x08) != 0;
+                        cState.R3 = (tempByte & 0x04) != 0;
+
+                        tempByte = inputReportBuffer[5];
+                        cState.DpadUp = (tempByte & 0x02) != 0;
+                        cState.DpadDown = (tempByte & 0x01) != 0;
+                        cState.DpadLeft = (tempByte & 0x08) != 0;
+                        cState.DpadRight = (tempByte & 0x04) != 0;
+                        cState.L1 = (tempByte & 0x40) != 0;
+                        cState.L2Btn = (tempByte & 0x80) != 0;
+                        cState.L2 = (byte)(cState.L2Btn ? 255 : 0);
+                        cState.L2Raw = cState.L2;
+
+                        stick_raw[0] = inputReportBuffer[6];
+                        stick_raw[1] = inputReportBuffer[7];
+                        stick_raw[2] = inputReportBuffer[8];
+
+                        tempAxis = (stick_raw[0] | ((stick_raw[1] & 0x0F) << 8)) - leftStickOffsetX;
+                        tempAxis = tempAxis > leftStickXData.max ? leftStickXData.max : (tempAxis < leftStickXData.min ? leftStickXData.min : tempAxis);
+                        cState.LX = (byte)((tempAxis - leftStickXData.min) / (double)(leftStickXData.max - leftStickXData.min) * 255);
+
+                        tempAxis = ((stick_raw[1] >> 4) | (stick_raw[2] << 4)) - leftStickOffsetY;
+                        tempAxis = tempAxis > leftStickYData.max ? leftStickYData.max : (tempAxis < leftStickYData.min ? leftStickYData.min : tempAxis);
+                        cState.LY = (byte)((((tempAxis - leftStickYData.min) / (double)(leftStickYData.max - leftStickYData.min) - 0.5) * -1.0 + 0.5) * 255);
+
+                        stick_raw2[0] = inputReportBuffer[9];
+                        stick_raw2[1] = inputReportBuffer[10];
+                        stick_raw2[2] = inputReportBuffer[11];
+
+                        tempAxis = (stick_raw2[0] | ((stick_raw2[1] & 0x0F) << 8)) - rightStickOffsetX;
+                        tempAxis = tempAxis > rightStickXData.max ? rightStickXData.max : (tempAxis < rightStickXData.min ? rightStickXData.min : tempAxis);
+                        cState.RX = (byte)((tempAxis - rightStickXData.min) / (double)(rightStickXData.max - rightStickXData.min) * 255);
+
+                        tempAxis = ((stick_raw2[1] >> 4) | (stick_raw2[2] << 4)) - rightStickOffsetY;
+                        tempAxis = tempAxis > rightStickYData.max ? rightStickYData.max : (tempAxis < rightStickYData.min ? rightStickYData.min : tempAxis);
+                        cState.RY = (byte)((((tempAxis - rightStickYData.min) / (double)(rightStickYData.max - rightStickYData.min) - 0.5) * -1.0 + 0.5) * 255);
+
+                        for (int i = 0; i < 3; i++)
+                        {
+                            int data_offset = i * 12;
+                            int gyro_offset = i * 3;
+                            accel_raw[IMU_XAXIS_IDX] = (short)((ushort)(inputReportBuffer[16 + data_offset] << 8) | inputReportBuffer[15 + data_offset]);
+                            accel_raw[IMU_YAXIS_IDX] = (short)((ushort)(inputReportBuffer[14 + data_offset] << 8) | inputReportBuffer[13 + data_offset]);
+                            accel_raw[IMU_ZAXIS_IDX] = (short)((ushort)(inputReportBuffer[18 + data_offset] << 8) | inputReportBuffer[17 + data_offset]);
+
+                            tempShort = gyro_raw[IMU_YAW_IDX + gyro_offset] = (short)((ushort)(inputReportBuffer[24 + data_offset] << 8) | inputReportBuffer[23 + data_offset]);
+                            gyro_out[IMU_YAW_IDX + gyro_offset] = (short)(tempShort);
+
+                            tempShort = gyro_raw[IMU_PITCH_IDX + gyro_offset] = (short)((ushort)(inputReportBuffer[22 + data_offset] << 8) | inputReportBuffer[21 + data_offset]);
+                            gyro_out[IMU_PITCH_IDX + gyro_offset] = (short)(tempShort);
+
+                            tempShort = gyro_raw[IMU_ROLL_IDX + gyro_offset] = (short)((ushort)(inputReportBuffer[20 + data_offset] << 8) | inputReportBuffer[19 + data_offset]);
+                            gyro_out[IMU_ROLL_IDX + gyro_offset] = (short)(tempShort);
+                        }
+
+                        int accelX = accel_raw[IMU_XAXIS_IDX];
+                        int accelY = accel_raw[IMU_YAXIS_IDX];
+                        int accelZ = accel_raw[IMU_ZAXIS_IDX];
+
+                        int gyroYaw = (short)(-1 * (gyro_out[6 + IMU_YAW_IDX] - gyroBias[IMU_YAW_IDX] + gyroCalibOffsets[IMU_YAW_IDX]));
+                        int gyroPitch = (short)(gyro_out[6 + IMU_PITCH_IDX] - gyroBias[IMU_PITCH_IDX] - gyroCalibOffsets[IMU_PITCH_IDX]);
+                        int gyroRoll = (short)(gyro_out[6 + IMU_ROLL_IDX] - gyroBias[IMU_ROLL_IDX] - gyroCalibOffsets[IMU_ROLL_IDX]);
+
+                        SixAxis tempMotion = cState.Motion;
+                        sixAxis.PrepareNonDS4SixAxis(ref gyroYaw, ref gyroPitch, ref gyroRoll,
+                            ref accelX, ref accelY, ref accelZ);
+
+                        tempMotion.gyroYawFull = gyroYaw; tempMotion.gyroPitchFull = -gyroPitch; tempMotion.gyroRollFull = gyroRoll;
+                        tempMotion.accelXFull = accelX * 2; tempMotion.accelYFull = -accelZ * 2; tempMotion.accelZFull = -accelY * 2;
+
+                        tempMotion.elapsed = elapsedDeltaTime;
+                        tempMotion.previousAxis = pState.Motion;
+                        tempMotion.gyroYaw = gyroYaw / 256; tempMotion.gyroPitch = -gyroPitch / 256; tempMotion.gyroRoll = gyroRoll / 256;
+                        tempMotion.accelX = accelX / 31; tempMotion.accelY = -accelZ / 31; tempMotion.accelZ = -accelY / 31;
+                        tempMotion.outputAccelX = 0; tempMotion.outputAccelY = 0; tempMotion.outputAccelZ = 0;
+                        tempMotion.outputGyroControls = false;
+                        tempMotion.accelXG = (accelX * 2) / DS4Windows.SixAxis.F_ACC_RES_PER_G;
+                        tempMotion.accelYG = (-accelZ * 2) / DS4Windows.SixAxis.F_ACC_RES_PER_G;
+                        tempMotion.accelZG = (-accelY * 2) / DS4Windows.SixAxis.F_ACC_RES_PER_G;
+
+                        tempMotion.angVelYaw = gyroYaw * GYRO_IN_DEG_SEC_FACTOR;
+                        tempMotion.angVelPitch = -gyroPitch * GYRO_IN_DEG_SEC_FACTOR;
+                        tempMotion.angVelRoll = gyroRoll * GYRO_IN_DEG_SEC_FACTOR;
+
+                        SixAxisEventArgs args = new SixAxisEventArgs(cState.ReportTimeStamp, cState.Motion);
+                        sixAxis.FireSixAxisEvent(args);
+
+                        if (conType == ConnectionType.USB)
+                        {
+                            if (idleTimeout == 0)
                             {
                                 lastActive = utcNow;
                             }
-                        }
-                    }
-                    else
-                    {
-                        bool shouldDisconnect = false;
-                        if (!isRemoved && idleTimeout > 0)
-                        {
-                            idleInput = isDS4Idle();
-                            if (idleInput)
+                            else
                             {
-                                DateTime timeout = lastActive + TimeSpan.FromSeconds(idleTimeout);
-                                if (!charging)
-                                    shouldDisconnect = utcNow >= timeout;
+                                idleInput = isDS4Idle();
+                                if (!idleInput)
+                                {
+                                    lastActive = utcNow;
+                                }
+                            }
+                        }
+                        else
+                        {
+                            bool shouldDisconnect = false;
+                            if (!isRemoved && idleTimeout > 0)
+                            {
+                                idleInput = isDS4Idle();
+                                if (idleInput)
+                                {
+                                    DateTime timeout = lastActive + TimeSpan.FromSeconds(idleTimeout);
+                                    if (!charging)
+                                        shouldDisconnect = utcNow >= timeout;
+                                }
+                                else
+                                {
+                                    lastActive = utcNow;
+                                }
                             }
                             else
                             {
                                 lastActive = utcNow;
                             }
-                        }
-                        else
-                        {
-                            lastActive = utcNow;
-                        }
 
-                        if (shouldDisconnect)
-                        {
-                            AppLogger.LogToGui(Mac.ToString() + " disconnecting due to idle disconnect", false);
-
-                            if (conType == ConnectionType.BT)
+                            if (shouldDisconnect)
                             {
-                                if (DisconnectBT(true))
+                                AppLogger.LogToGui($"[SwitchPro] {MacAddress} 因闲置超时断开", false);
+                                if (conType == ConnectionType.BT)
                                 {
-                                    timeoutExecuted = true;
-                                    return; // all done
+                                    if (DisconnectBT(true))
+                                    {
+                                        timeoutExecuted = true;
+                                        return;
+                                    }
                                 }
                             }
                         }
-                    }
 
-                    if (fireReport)
-                    {
-                        Report?.Invoke(this, EventArgs.Empty);
-                    }
-
-                    WriteReport();
-
-                    //forceWrite = false;
-
-                    if (!string.IsNullOrEmpty(currerror))
-                        error = currerror;
-                    else if (!string.IsNullOrEmpty(error))
-                        error = string.Empty;
-
-                    pState.Motion.copy(cState.Motion);
-                    cState.CopyTo(pState);
-
-                    if (hasInputEvts)
-                    {
-                        lock (eventQueueLock)
+                        if (fireReport)
                         {
-                            Action tempAct = null;
-                            for (int actInd = 0, actLen = eventQueue.Count; actInd < actLen; actInd++)
-                            {
-                                tempAct = eventQueue.Dequeue();
-                                tempAct.Invoke();
-                            }
-
-                            hasInputEvts = false;
+                            Report?.Invoke(this, EventArgs.Empty);
                         }
+
+                        WriteReport();
+
+                        if (!string.IsNullOrEmpty(currerror))
+                            error = currerror;
+                        else if (!string.IsNullOrEmpty(error))
+                            error = string.Empty;
+
+                        pState.Motion.copy(cState.Motion);
+                        cState.CopyTo(pState);
+
+                        if (hasInputEvts)
+                        {
+                            lock (eventQueueLock)
+                            {
+                                Action tempAct = null;
+                                for (int actInd = 0, actLen = eventQueue.Count; actInd < actLen; actInd++)
+                                {
+                                    tempAct = eventQueue.Dequeue();
+                                    tempAct.Invoke();
+                                }
+                                hasInputEvts = false;
+                            }
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        AppLogger.LogToGui($"[SwitchPro] 读取循环异常: {ex.Message}", true);
                     }
                 }
             }
-
             timeoutExecuted = true;
+            AppLogger.LogToGui($"[SwitchPro] 读取线程结束: {MacAddress}", false);
         }
+
+		private bool WaitForHandshake(int timeoutSeconds = 5)
+		{
+			int totalTime = timeoutSeconds * 1000; // 毫秒
+			int interval = 250;                     // 每250ms尝试一次
+			int attemptsPerInterval = 3;             // 每次尝试发送3个空包
+			Stopwatch sw = Stopwatch.StartNew();
+
+			while (sw.ElapsedMilliseconds < totalTime)
+			{
+				// 发送3个空包唤醒设备
+				for (int i = 0; i < attemptsPerInterval; i++)
+				{
+					byte[] wakeup = new byte[64];
+					hDevice.WriteOutputReportViaInterrupt(wakeup, 100);
+					Thread.Sleep(10); // 短暂等待发送完成
+				}
+
+				// 尝试读取一个输入报告
+				byte[] report = new byte[INPUT_REPORT_LEN];
+				var res = hDevice.ReadFile(report, 100);
+				if (res == HidDevice.ReadStatus.Success)
+				{
+					AppLogger.LogToGui($"[SwitchPro] 握手成功，收到报告ID=0x{report[0]:X2}", false);
+					return true;
+				}
+
+				// 等待到下一个间隔开始
+				int elapsed = (int)sw.ElapsedMilliseconds;
+				int nextIntervalStart = ((elapsed / interval) + 1) * interval;
+				int sleepTime = nextIntervalStart - elapsed;
+				if (sleepTime > 0) Thread.Sleep(sleepTime);
+			}
+
+			AppLogger.LogToGui($"[SwitchPro] 握手超时，设备无响应", true);
+			return false;
+		}
 
         public void SetOperational()
         {
-            if (conType == ConnectionType.USB)
+            AppLogger.LogToGui($"[SwitchPro] SetOperational 开始: {MacAddress}", false);
+            try
             {
-                RunUSBSetup();
-                //Thread.Sleep(500);
+
+				byte[] wakeup = new byte[64];
+				hDevice.WriteOutputReportViaInterrupt(wakeup, 100);
+				Thread.Sleep(200);
+				
+				if (conType == ConnectionType.USB)
+				{
+					RunUSBSetup();	
+					// 等待设备握手，5秒内不响应则终止
+					if (!WaitForHandshake())
+					{
+						connectionOpened = false;
+						return;
+					}				
+				}
+
+                byte[] powerChoiceArray = new byte[] { 0x00 };
+                var response = Subcommand(SwitchProSubCmd.SET_LOW_POWER_STATE, powerChoiceArray, 1, checkResponse: true);
+                if (response == null)
+                {
+                    AppLogger.LogToGui($"[SwitchPro] 设置低功耗状态失败", true);
+                }
+
+                if (enableHomeLED)
+                {
+                    byte[] light = Enumerable.Repeat((byte)0xFF, 25).ToArray();
+                    light[0] = 0x1F; light[1] = 0xF0;
+                    response = Subcommand(0x38, light, 25, checkResponse: true);
+                    if (response == null)
+                    {
+                        AppLogger.LogToGui($"[SwitchPro] 设置Home灯失败", true);
+                    }
+                }
+
+                byte[] leds = new byte[] { deviceSlotMask };
+                response = Subcommand(0x30, leds, 1, checkResponse: true);
+                if (response == null)
+                {
+                    AppLogger.LogToGui($"[SwitchPro] 设置底部LED失败", true);
+                }
+
+                byte[] imuEnable = new byte[] { 0x01 };
+                response = Subcommand(0x40, imuEnable, 1, checkResponse: true);
+                if (response == null)
+                {
+                    AppLogger.LogToGui($"[SwitchPro] 启用IMU失败", true);
+                }
+
+                byte[] gyroModeBuffer = new byte[] { 0x03, 0x00, 0x00, 0x00 };
+                response = Subcommand(0x41, gyroModeBuffer, 4, checkResponse: true);
+                if (response == null)
+                {
+                    AppLogger.LogToGui($"[SwitchPro] 设置陀螺仪模式失败", true);
+                }
+
+                byte[] rumbleEnable = new byte[] { 0x01 };
+                response = Subcommand(0x48, rumbleEnable, 1, checkResponse: true);
+                if (response == null)
+                {
+                    AppLogger.LogToGui($"[SwitchPro] 启用震动失败", true);
+                }
+
+                EnableFastPollRate();
+                SetInitRumble();
+                CalibrationData();
+
+                connectionOpened = true;
+                AppLogger.LogToGui($"[SwitchPro] SetOperational 成功", false);
             }
-
-            //Thread.Sleep(1000);
-
-            //EnableFastPollRate();
-
-            //Thread.Sleep(5000);
-            //byte[] tmpReport = new byte[INPUT_REPORT_LEN];
-            //byte[] command2 = new byte[SUBCOMMAND_BUFFER_LEN];
-            //bool result;
-            //HidDevice.ReadStatus res;
-
-            // Set device to normal power state
-            byte[] powerChoiceArray = new byte[] { 0x00 };
-            Subcommand(SwitchProSubCmd.SET_LOW_POWER_STATE, powerChoiceArray, 1, checkResponse: true);
-
-            if (enableHomeLED)
+            catch (Exception ex)
             {
-                // Turn on Home light (Solid)
-                byte[] light = Enumerable.Repeat((byte)0xFF, 25).ToArray();
-                light[0] = 0x1F; light[1] = 0xF0;
-                //Thread.Sleep(1000);
-                Subcommand(0x38, light, 25, checkResponse: true);
+                AppLogger.LogToGui($"[SwitchPro] SetOperational 异常: {ex.Message}", true);
+                connectionOpened = false;
             }
-
-            // Turn on bottom LEDs
-            byte[] leds = new byte[] { deviceSlotMask };
-            //Thread.Sleep(1000);
-            Subcommand(0x30, leds, 1, checkResponse: true);
-
-            // Enable Gyro
-            byte[] imuEnable = new byte[] { 0x01 };
-            //Thread.Sleep(1000);
-            Subcommand(0x40, imuEnable, 1, checkResponse: true);
-
-            // Enable High Performance Gyro mode
-            byte[] gyroModeBuffer = new byte[] { 0x03, 0x00, 0x00, 0x00 };
-            //Thread.Sleep(1000);
-            Subcommand(0x41, gyroModeBuffer, 4, checkResponse: true);
-
-            // Enable Rumble
-            byte[] rumbleEnable = new byte[] { 0x01 };
-            // Disable Rumble
-            //byte[] rumbleEnable = new byte[] { 0x00 };
-            //Thread.Sleep(1000);
-            Subcommand(0x48, rumbleEnable, 1, checkResponse: true);
-
-            //Thread.Sleep(1000);
-            EnableFastPollRate();
-
-            // USB Connections seem to need a delay after switching input modes
-            //if (conType == ConnectionType.USB)
-            //{
-            //    Thread.Sleep(1000);
-            //}
-
-            SetInitRumble();
-            //Thread.Sleep(1000);
-            CalibrationData();
-
-            Console.WriteLine("FINISHED");
-
-            //if (connectionType == ConnectionType.USB)
-            //{
-            //    Thread.Sleep(300);
-            //    //SetInitRumble();
-            //}
-
-            connectionOpened = true;
         }
 
         private void RunUSBSetup()
         {
+			byte[] wakeup = new byte[64];
+			hDevice.WriteOutputReportViaInterrupt(wakeup, 100);
+			Thread.Sleep(200);
+			
+            AppLogger.LogToGui($"[SwitchPro] USB设置开始", false);
             bool result;
-            //byte[] tmpReport = new byte[INPUT_REPORT_LEN];
-
             byte[] modeSwitchCommand = new byte[] { 0x3F };
             Subcommand(0x03, modeSwitchCommand, 1, checkResponse: true);
 
             byte[] data = new byte[64];
             data[0] = 0x80; data[1] = 0x01;
-            //result = hidDevice.WriteAsyncOutputReportViaInterrupt(data);
-            result = hDevice.WriteOutputReportViaInterrupt(data, 0);
-            //Array.Clear(tmpReport, 0 , 64);
-            //res = hidDevice.ReadWithFileStream(tmpReport);
-            //Console.WriteLine("TEST BYTE: {0}", tmpReport[2]);
-
-            data[0] = 0x80; data[1] = 0x02; // USB Pairing
-            //result = hidDevice.WriteOutputReportViaControl(data);
-            //Thread.Sleep(2000);
-            //Thread.Sleep(1000);
             result = hDevice.WriteOutputReportViaInterrupt(data, 0);
 
-            data[0] = 0x80; data[1] = 0x03; // 3Mbit baud rate
-            //result = hidDevice.WriteAsyncOutputReportViaInterrupt(data);
+            data[0] = 0x80; data[1] = 0x02;
             result = hDevice.WriteOutputReportViaInterrupt(data, 0);
-            //Thread.Sleep(2000);
 
-            data[0] = 0x80; data[1] = 0x02; // Handshake at new baud rate
+            data[0] = 0x80; data[1] = 0x03;
             result = hDevice.WriteOutputReportViaInterrupt(data, 0);
-            //Thread.Sleep(1000);
-            //result = hidDevice.WriteOutputReportViaInterrupt(command, 500);
-            //Thread.Sleep(2000);
 
-            data[0] = 0x80; data[1] = 0x4; // Prevent HID timeout
+            data[0] = 0x80; data[1] = 0x02;
             result = hDevice.WriteOutputReportViaInterrupt(data, 0);
-            //result = hidDevice.WriteOutputReportViaInterrupt(command, 500);
-        }
 
-        // Deprecated method. Leave a stub for now
-        private void RunBluetoothSetup()
-        {
+            data[0] = 0x80; data[1] = 0x4;
+            result = hDevice.WriteOutputReportViaInterrupt(data, 0);
+            AppLogger.LogToGui($"[SwitchPro] USB设置完成", false);
+			
+			// USB设置后需要一点时间让设备稳定
+			Thread.Sleep(500);
         }
 
         private void EnableFastPollRate()
         {
-            // Enable fatest poll rate
             byte[] tempArray = new byte[] { 0x30 };
-            Subcommand(0x03, tempArray, 1, checkResponse: true);
-            //Thread.Sleep(1000);
+            var response = Subcommand(0x03, tempArray, 1, checkResponse: true);
+            if (response == null)
+            {
+                AppLogger.LogToGui($"[SwitchPro] 启用快速轮询失败", true);
+            }
         }
 
         public void SetInitRumble()
         {
             bool result;
-            //HidDevice.ReadStatus res;
-            //byte[] tmpReport = new byte[64];
             byte[] rumble_data = new byte[8];
             rumble_data[0] = 0x0;
             rumble_data[1] = 0x1;
@@ -856,46 +863,64 @@ namespace DS4Windows.InputDevices
             frameCount = (byte)(++frameCount & 0x0F);
 
             result = hDevice.WriteOutputReportViaInterrupt(tmpRumble, 0);
-            //res = hidDevice.ReadWithFileStream(tmpReport, 500);
-            //res = hidDevice.ReadFile(tmpReport);
+            if (!result)
+            {
+                AppLogger.LogToGui($"[SwitchPro] 初始震动发送失败", true);
+            }
         }
 
         public byte[] Subcommand(byte subcommand, byte[] tmpBuffer, uint bufLen,
             bool checkResponse = false)
         {
             int retryLimit = 100;
-            byte[] tmpReport;
+            byte[] tmpReport = null;
 
             do
             {
-                bool result;
-                byte[] commandBuffer = new byte[SUBCOMMAND_BUFFER_LEN];
-                Array.Copy(commandBuffHeader, 0, commandBuffer, 2, SUBCOMMAND_HEADER_LEN);
-                Array.Copy(tmpBuffer, 0, commandBuffer, 11, bufLen);
-
-                commandBuffer[0] = 0x01;
-                commandBuffer[1] = frameCount;
-                frameCount = (byte)(++frameCount & 0x0F);
-                commandBuffer[10] = subcommand;
-
-                result = hDevice.WriteOutputReportViaInterrupt(commandBuffer, 0);
-
-                tmpReport = null;
-                if (result && checkResponse)
+                try
                 {
-                    tmpReport = new byte[INPUT_REPORT_LEN];
-                    HidDevice.ReadStatus res;
-                    res = hDevice.ReadFile(tmpReport, SUBCOMMAND_RESPONSE_TIMEOUT);
-                    int tries = 1;
-                    while (res == HidDevice.ReadStatus.Success &&
-                        tmpReport[0] != 0x21 && tmpReport[14] != subcommand && tries < 100)
+                    bool result;
+                    byte[] commandBuffer = new byte[SUBCOMMAND_BUFFER_LEN];
+                    Array.Copy(commandBuffHeader, 0, commandBuffer, 2, SUBCOMMAND_HEADER_LEN);
+                    Array.Copy(tmpBuffer, 0, commandBuffer, 11, bufLen);
+
+                    commandBuffer[0] = 0x01;
+                    commandBuffer[1] = frameCount;
+                    frameCount = (byte)(++frameCount & 0x0F);
+                    commandBuffer[10] = subcommand;
+
+                    result = hDevice.WriteOutputReportViaInterrupt(commandBuffer, 0);
+                    if (!result)
                     {
-                        //Console.WriteLine("TRY AGAIN: {0}", tmpReport[0]);
-                        res = hDevice.ReadFile(tmpReport, SUBCOMMAND_RESPONSE_TIMEOUT);
-                        tries++;
+                        AppLogger.LogToGui($"[SwitchPro] 子命令 {subcommand} 发送失败", true);
+                        return null;
                     }
 
-                    //Console.WriteLine("END GAME: {0} {1} {2}", subcommand, tmpReport[0], tries);
+                    tmpReport = null;
+                    if (result && checkResponse)
+                    {
+                        tmpReport = new byte[INPUT_REPORT_LEN];
+                        HidDevice.ReadStatus res;
+                        res = hDevice.ReadFile(tmpReport, SUBCOMMAND_RESPONSE_TIMEOUT);
+                        int tries = 1;
+                        while (res == HidDevice.ReadStatus.Success &&
+                            tmpReport[0] != 0x21 && tmpReport[14] != subcommand && tries < 100)
+                        {
+                            res = hDevice.ReadFile(tmpReport, SUBCOMMAND_RESPONSE_TIMEOUT);
+                            tries++;
+                        }
+
+                        if (res != HidDevice.ReadStatus.Success)
+                        {
+                            AppLogger.LogToGui($"[SwitchPro] 子命令 {subcommand} 响应读取失败", true);
+                            return null;
+                        }
+                    }
+                }
+                catch (Exception ex)
+                {
+                    AppLogger.LogToGui($"[SwitchPro] 子命令 {subcommand} 异常: {ex.Message}", true);
+                    return null;
                 }
             } while (ReloadStickCalib(subcommand, tmpBuffer, tmpReport, ref retryLimit));
 
@@ -921,7 +946,12 @@ namespace DS4Windows.InputDevices
                 stickCalib[4] = (ushort)(((tmpReport[7 + SPI_RESP_OFFSET] << 8) & 0xF00) | tmpReport[6 + SPI_RESP_OFFSET]); // X Axis Min below center
                 stickCalib[5] = (ushort)((tmpReport[8 + SPI_RESP_OFFSET] << 4) | (tmpReport[7 + SPI_RESP_OFFSET] >> 4)); // Y Axis Min below center
 
-                return stickCalib.Any(item => item == 0);
+                bool anyZero = stickCalib.Any(item => item == 0);
+                if (anyZero)
+                {
+                    AppLogger.LogToGui($"[SwitchPro] 摇杆校准数据包含零值，需要重试", true);
+                }
+                return anyZero;
             }
             else
             {
@@ -936,7 +966,6 @@ namespace DS4Windows.InputDevices
         {
             // Using rumble frequency and amplitude values documented at
             // https://github.com/dekuNukem/Nintendo_Switch_Reverse_Engineering/blob/master/rumble_data_table.md
-            //Array.Copy(commandBuffHeader, 0, buffer, 2, SUBCOMMAND_HEADER_LEN);
             buffer[0] = 0x10;
             buffer[1] = frameCount;
             frameCount = (byte)(++frameCount & 0x0F);
@@ -947,60 +976,40 @@ namespace DS4Windows.InputDevices
             RumbleTableData entry = compiledRumbleTable[idx];
             byte amp_high = entry.high;
             ushort amp_low = entry.low;
-            //byte amp_high = 0x9a; // 609
-            //ushort amp_low = 0x8066; // 609
-            //buffer[2] = 0x28; // 0
-            //buffer[3] = 0xc8; // 1
-            //buffer[4] = 0x81; // 2
-            //buffer[5] = 0x71; // 3
 
-            //buffer[6] = 0x28; // 4
-            //buffer[7] = 0xc8; // 5
-            //buffer[8] = 0x81; // 6
-            //buffer[9] = 0x71; // 7
-
-            // Slightly different bit shifts as HF and LF are used as written
-            // in the frequency table rather than swapping bytes in advanced.
-            // Unconventional but it results in the same output
-            buffer[2] = (byte)((freq_data_high >> 8) & 0xFF); // 0
-            buffer[3] = (byte)((freq_data_high & 0xFF) + amp_high); // 1
-            buffer[4] = (byte)(freq_data_low + (amp_low >> 8) & 0xFF); // 2
-            buffer[5] = (byte)(amp_low & 0xFF); // 3
+            buffer[2] = (byte)((freq_data_high >> 8) & 0xFF);
+            buffer[3] = (byte)((freq_data_high & 0xFF) + amp_high);
+            buffer[4] = (byte)(freq_data_low + (amp_low >> 8) & 0xFF);
+            buffer[5] = (byte)(amp_low & 0xFF);
 
             idx = (int)(currentRightAmpRatio * AMP_LIMIT_MAX);
             entry = compiledRumbleTable[idx];
             amp_high = entry.high;
             amp_low = entry.low;
 
-            // Slightly different bit shifts as HF and LF are used as written
-            // in the frequency table rather than swapping bytes in advanced.
-            // Unconventional but it results in the same output
-            buffer[6] = (byte)((freq_data_high >> 8) & 0xFF); // 4
-            buffer[7] = (byte)((freq_data_high & 0xFF) + amp_high); // 5
-            buffer[8] = (byte)(freq_data_low + (amp_low >> 8) & 0xFF); // 6
-            buffer[9] = (byte)(amp_low & 0xFF); // 7
-            //Console.WriteLine("RUMBLE BUFF: {0}", string.Join(", ", buffer));
-            //Console.WriteLine("RUMBLE BUFF: {0}",
-            //    string.Concat(buffer.Select(i => string.Format("{0:x2} ", i))));
+            buffer[6] = (byte)((freq_data_high >> 8) & 0xFF);
+            buffer[7] = (byte)((freq_data_high & 0xFF) + amp_high);
+            buffer[8] = (byte)(freq_data_low + (amp_low >> 8) & 0xFF);
+            buffer[9] = (byte)(amp_low & 0xFF);
         }
 
         public void CalibrationData()
         {
+            AppLogger.LogToGui($"[SwitchPro] 开始读取校准数据: {MacAddress}", false);
             const int SPI_RESP_OFFSET = 20;
             byte[] command;
             byte[] tmpBuffer;
 
-            //command = new byte[] { 0x00, 0x50, 0x00, 0x00, 0x01 };
-            //tmpBuffer = Subcommand(SwitchProSubCmd.SPI_FLASH_READ, command, 5, checkResponse: true);
-            //Console.WriteLine("THE POWER");
-            //Console.WriteLine(string.Join(",", tmpBuffer));
-            //Console.WriteLine(tmpBuffer[SPI_RESP_OFFSET]);
-            //Console.WriteLine();
-
             bool foundUserCalib = false;
             command = new byte[] { 0x10, 0x80, 0x00, 0x00, 0x02 };
             tmpBuffer = Subcommand(0x10, command, 5, checkResponse: true);
-            if (tmpBuffer[SPI_RESP_OFFSET] == 0xB2 && tmpBuffer[SPI_RESP_OFFSET + 1] == 0xA1)
+            if (tmpBuffer == null)
+            {
+                AppLogger.LogToGui($"[SwitchPro] 读取用户校准标识失败，使用默认值", true);
+                SetDefaultCalib();
+                return;
+            }
+            if (tmpBuffer.Length > SPI_RESP_OFFSET + 1 && tmpBuffer[SPI_RESP_OFFSET] == 0xB2 && tmpBuffer[SPI_RESP_OFFSET + 1] == 0xA1)
             {
                 foundUserCalib = true;
             }
@@ -1008,22 +1017,25 @@ namespace DS4Windows.InputDevices
             if (foundUserCalib)
             {
                 command = new byte[] { 0x12, 0x80, 0x00, 0x00, 0x09 };
-                tmpBuffer = Subcommand(0x10, command, 5, checkResponse: true);
-                //Console.WriteLine("FOUND USER CALIB");
             }
             else
             {
                 command = new byte[] { 0x3D, 0x60, 0x00, 0x00, 0x09 };
-                tmpBuffer = Subcommand(0x10, command, 5, checkResponse: true);
-                //Console.WriteLine("CHECK FACTORY CALIB");
+            }
+            tmpBuffer = Subcommand(0x10, command, 5, checkResponse: true);
+            if (tmpBuffer == null || tmpBuffer.Length < SPI_RESP_OFFSET + 9)
+            {
+                AppLogger.LogToGui($"[SwitchPro] 读取左摇杆校准失败，使用默认值", true);
+                SetDefaultCalib();
+                return;
             }
 
-            leftStickCalib[0] = (ushort)(((tmpBuffer[1 + SPI_RESP_OFFSET] << 8) & 0xF00) | tmpBuffer[0 + SPI_RESP_OFFSET]); // X Axis Max above center
-            leftStickCalib[1] = (ushort)((tmpBuffer[2 + SPI_RESP_OFFSET] << 4) | (tmpBuffer[1 + SPI_RESP_OFFSET] >> 4)); // Y Axis Max above center
-            leftStickCalib[2] = (ushort)(((tmpBuffer[4 + SPI_RESP_OFFSET] << 8) & 0xF00) | tmpBuffer[3 + SPI_RESP_OFFSET]); // X Axis Center
-            leftStickCalib[3] = (ushort)((tmpBuffer[5 + SPI_RESP_OFFSET] << 4) | (tmpBuffer[4 + SPI_RESP_OFFSET] >> 4)); // Y Axis Center
-            leftStickCalib[4] = (ushort)(((tmpBuffer[7 + SPI_RESP_OFFSET] << 8) & 0xF00) | tmpBuffer[6 + SPI_RESP_OFFSET]); // X Axis Min below center
-            leftStickCalib[5] = (ushort)((tmpBuffer[8 + SPI_RESP_OFFSET] << 4) | (tmpBuffer[7 + SPI_RESP_OFFSET] >> 4)); // Y Axis Min below center
+            leftStickCalib[0] = (ushort)(((tmpBuffer[1 + SPI_RESP_OFFSET] << 8) & 0xF00) | tmpBuffer[0 + SPI_RESP_OFFSET]);
+            leftStickCalib[1] = (ushort)((tmpBuffer[2 + SPI_RESP_OFFSET] << 4) | (tmpBuffer[1 + SPI_RESP_OFFSET] >> 4));
+            leftStickCalib[2] = (ushort)(((tmpBuffer[4 + SPI_RESP_OFFSET] << 8) & 0xF00) | tmpBuffer[3 + SPI_RESP_OFFSET]);
+            leftStickCalib[3] = (ushort)((tmpBuffer[5 + SPI_RESP_OFFSET] << 4) | (tmpBuffer[4 + SPI_RESP_OFFSET] >> 4));
+            leftStickCalib[4] = (ushort)(((tmpBuffer[7 + SPI_RESP_OFFSET] << 8) & 0xF00) | tmpBuffer[6 + SPI_RESP_OFFSET]);
+            leftStickCalib[5] = (ushort)((tmpBuffer[8 + SPI_RESP_OFFSET] << 4) | (tmpBuffer[7 + SPI_RESP_OFFSET] >> 4));
 
             if (foundUserCalib)
             {
@@ -1039,30 +1051,18 @@ namespace DS4Windows.InputDevices
             {
                 leftStickXData.max = (ushort)((leftStickCalib[0] + leftStickCalib[2]) * STICK_AXIS_MAX_CUTOFF);
                 leftStickXData.min = (ushort)((leftStickCalib[2] - leftStickCalib[4]) * STICK_AXIS_MIN_CUTOFF);
-                //leftStickXData.mid = leftStickCalib[2];
                 leftStickXData.mid = (ushort)((leftStickXData.max - leftStickXData.min) / 2.0 + leftStickXData.min);
 
                 leftStickYData.max = (ushort)((leftStickCalib[1] + leftStickCalib[3]) * STICK_AXIS_MAX_CUTOFF);
                 leftStickYData.min = (ushort)((leftStickCalib[3] - leftStickCalib[5]) * STICK_AXIS_MIN_CUTOFF);
-                //leftStickYData.mid = leftStickCalib[3];
                 leftStickYData.mid = (ushort)((leftStickYData.max - leftStickYData.min) / 2.0 + leftStickYData.min);
-
-                //Debug.WriteLine("New: {0} | Old: {1}", leftStickXData.mid, leftStickCalib[2]);
-                //Debug.WriteLine("MAX: {0} | MIN: {1}", leftStickXData.max, leftStickXData.min);
-                //leftStickOffsetX = leftStickOffsetY = 140;
             }
 
-            //leftStickOffsetX = leftStickCalib[2];
-            //leftStickOffsetY = leftStickCalib[3];
-
-            //Console.WriteLine(string.Join(",", tmpBuffer));
-            //Console.WriteLine();
-            //Console.WriteLine(string.Join(",", leftStickCalib));
-
+            // 右摇杆校准
             foundUserCalib = false;
             command = new byte[] { 0x1B, 0x80, 0x00, 0x00, 0x02 };
             tmpBuffer = Subcommand(0x10, command, 5, checkResponse: true);
-            if (tmpBuffer[SPI_RESP_OFFSET] == 0xB2 && tmpBuffer[SPI_RESP_OFFSET + 1] == 0xA1)
+            if (tmpBuffer != null && tmpBuffer.Length > SPI_RESP_OFFSET + 1 && tmpBuffer[SPI_RESP_OFFSET] == 0xB2 && tmpBuffer[SPI_RESP_OFFSET + 1] == 0xA1)
             {
                 foundUserCalib = true;
             }
@@ -1070,22 +1070,25 @@ namespace DS4Windows.InputDevices
             if (foundUserCalib)
             {
                 command = new byte[] { 0x1D, 0x80, 0x00, 0x00, 0x09 };
-                tmpBuffer = Subcommand(0x10, command, 5, checkResponse: true);
-                //Console.WriteLine("FOUND RIGHT USER CALIB");
             }
             else
             {
                 command = new byte[] { 0x46, 0x60, 0x00, 0x00, 0x09 };
-                tmpBuffer = Subcommand(0x10, command, 5, checkResponse: true);
-                //Console.WriteLine("CHECK RIGHT FACTORY CALIB");
+            }
+            tmpBuffer = Subcommand(0x10, command, 5, checkResponse: true);
+            if (tmpBuffer == null || tmpBuffer.Length < SPI_RESP_OFFSET + 9)
+            {
+                AppLogger.LogToGui($"[SwitchPro] 读取右摇杆校准失败，使用默认值", true);
+                SetDefaultCalib();
+                return;
             }
 
-            rightStickCalib[2] = (ushort)(((tmpBuffer[1 + SPI_RESP_OFFSET] << 8) & 0xF00) | tmpBuffer[0 + SPI_RESP_OFFSET]); // X Axis Center
-            rightStickCalib[3] = (ushort)((tmpBuffer[2 + SPI_RESP_OFFSET] << 4) | (tmpBuffer[1 + SPI_RESP_OFFSET] >> 4)); // Y Axis Center
-            rightStickCalib[4] = (ushort)(((tmpBuffer[4 + SPI_RESP_OFFSET] << 8) & 0xF00) | tmpBuffer[3 + SPI_RESP_OFFSET]); // X Axis Min below center
-            rightStickCalib[5] = (ushort)((tmpBuffer[5 + SPI_RESP_OFFSET] << 4) | (tmpBuffer[4 + SPI_RESP_OFFSET] >> 4)); // Y Axis Min below center
-            rightStickCalib[0] = (ushort)(((tmpBuffer[7 + SPI_RESP_OFFSET] << 8) & 0xF00) | tmpBuffer[6 + SPI_RESP_OFFSET]); // X Axis Max above center
-            rightStickCalib[1] = (ushort)((tmpBuffer[8 + SPI_RESP_OFFSET] << 4) | (tmpBuffer[7 + SPI_RESP_OFFSET] >> 4)); // Y Axis Max above center
+            rightStickCalib[2] = (ushort)(((tmpBuffer[1 + SPI_RESP_OFFSET] << 8) & 0xF00) | tmpBuffer[0 + SPI_RESP_OFFSET]);
+            rightStickCalib[3] = (ushort)((tmpBuffer[2 + SPI_RESP_OFFSET] << 4) | (tmpBuffer[1 + SPI_RESP_OFFSET] >> 4));
+            rightStickCalib[4] = (ushort)(((tmpBuffer[4 + SPI_RESP_OFFSET] << 8) & 0xF00) | tmpBuffer[3 + SPI_RESP_OFFSET]);
+            rightStickCalib[5] = (ushort)((tmpBuffer[5 + SPI_RESP_OFFSET] << 4) | (tmpBuffer[4 + SPI_RESP_OFFSET] >> 4));
+            rightStickCalib[0] = (ushort)(((tmpBuffer[7 + SPI_RESP_OFFSET] << 8) & 0xF00) | tmpBuffer[6 + SPI_RESP_OFFSET]);
+            rightStickCalib[1] = (ushort)((tmpBuffer[8 + SPI_RESP_OFFSET] << 4) | (tmpBuffer[7 + SPI_RESP_OFFSET] >> 4));
 
             if (foundUserCalib)
             {
@@ -1101,116 +1104,82 @@ namespace DS4Windows.InputDevices
             {
                 rightStickXData.max = (ushort)((rightStickCalib[2] + rightStickCalib[0]) * STICK_AXIS_MAX_CUTOFF);
                 rightStickXData.min = (ushort)((rightStickCalib[2] - rightStickCalib[4]) * STICK_AXIS_MIN_CUTOFF);
-                //rightStickXData.mid = rightStickCalib[2];
                 rightStickXData.mid = (ushort)((rightStickXData.max - rightStickXData.min) / 2.0 + rightStickXData.min);
 
                 rightStickYData.max = (ushort)((rightStickCalib[3] + rightStickCalib[1]) * STICK_AXIS_MAX_CUTOFF);
                 rightStickYData.min = (ushort)((rightStickCalib[3] - rightStickCalib[5]) * STICK_AXIS_MIN_CUTOFF);
-                //rightStickYData.mid = rightStickCalib[3];
                 rightStickYData.mid = (ushort)((rightStickYData.max - rightStickYData.min) / 2.0 + rightStickYData.min);
-                //rightStickOffsetX = rightStickOffsetY = 140;
             }
 
-            //rightStickOffsetX = rightStickCalib[2];
-            //rightStickOffsetY = rightStickCalib[5];
-
-            //Console.WriteLine(string.Join(",", tmpBuffer));
-            //Console.WriteLine();
-            //Console.WriteLine(string.Join(",", rightStickCalib));
-
-            /*
-            // Grab Factory LS Dead Zone
-            command = new byte[] { 0x86, 0x60, 0x00, 0x00, 0x10 };
-            byte[] deadZoneBuffer = Subcommand(0x10, command, 5, checkResponse: true);
-            deadzoneLS = (ushort)((deadZoneBuffer[4 + SPI_RESP_OFFSET] << 8) & 0xF00 | deadZoneBuffer[3 + SPI_RESP_OFFSET]);
-            //Console.WriteLine("DZ Left: {0}", deadzoneLS);
-            //Console.WriteLine(string.Join(",", deadZoneBuffer));
-
-            // Grab Factory RS Dead Zone
-            command = new byte[] { 0x98, 0x60, 0x00, 0x00, 0x10 };
-            deadZoneBuffer = Subcommand(0x10, command, 5, checkResponse: true);
-            deadzoneRS = (ushort)((deadZoneBuffer[4 + SPI_RESP_OFFSET] << 8) & 0xF00 | deadZoneBuffer[3 + SPI_RESP_OFFSET]);
-            //Console.WriteLine("DZ Right: {0}", deadzoneRS);
-            //Console.WriteLine(string.Join(",", deadZoneBuffer));*/
-
+            // 加速度计和陀螺仪校准
             foundUserCalib = false;
             command = new byte[] { 0x26, 0x80, 0x00, 0x00, 0x02 };
             tmpBuffer = Subcommand(0x10, command, 5, checkResponse: true);
-            if (tmpBuffer[SPI_RESP_OFFSET] == 0xB2 && tmpBuffer[SPI_RESP_OFFSET + 1] == 0xA1)
+            if (tmpBuffer != null && tmpBuffer.Length > SPI_RESP_OFFSET + 1 && tmpBuffer[SPI_RESP_OFFSET] == 0xB2 && tmpBuffer[SPI_RESP_OFFSET + 1] == 0xA1)
             {
                 foundUserCalib = true;
             }
 
-            //Console.WriteLine("{0}", string.Join(",", tmpBuffer.Skip(offset).ToArray()));
             if (foundUserCalib)
             {
                 command = new byte[] { 0x28, 0x80, 0x00, 0x00, 0x18 };
-                tmpBuffer = Subcommand(0x10, command, 5, checkResponse: true);
-                //Console.WriteLine("FOUND USER CALIB");
             }
             else
             {
                 command = new byte[] { 0x20, 0x60, 0x00, 0x00, 0x18 };
-                tmpBuffer = Subcommand(0x10, command, 5, checkResponse: true);
-                //Console.WriteLine("CHECK FACTORY CALIB");
+            }
+            tmpBuffer = Subcommand(0x10, command, 5, checkResponse: true);
+            if (tmpBuffer == null || tmpBuffer.Length < SPI_RESP_OFFSET + 24)
+            {
+                AppLogger.LogToGui($"[SwitchPro] 读取IMU校准失败，使用默认值", true);
+                return;
             }
 
-            accelNeutral[IMU_XAXIS_IDX] = (short)((tmpBuffer[3 + SPI_RESP_OFFSET] << 8) & 0xFF00 | tmpBuffer[2 + SPI_RESP_OFFSET]); // Accel X Offset
-            accelNeutral[IMU_YAXIS_IDX] = (short)((tmpBuffer[1 + SPI_RESP_OFFSET] << 8) & 0xFF00 | tmpBuffer[0 + SPI_RESP_OFFSET]); // Accel Y Offset
-            accelNeutral[IMU_ZAXIS_IDX] = (short)((tmpBuffer[5 + SPI_RESP_OFFSET] << 8) & 0xFF00 | tmpBuffer[4 + SPI_RESP_OFFSET]); // Accel Z Offset
-            //Console.WriteLine("ACCEL NEUTRAL: {0}", string.Join(",", accelNeutral));
-            //Console.WriteLine("{0}", string.Join(",", tmpBuffer.Skip(offset).ToArray()));
+            accelNeutral[IMU_XAXIS_IDX] = (short)((tmpBuffer[3 + SPI_RESP_OFFSET] << 8) & 0xFF00 | tmpBuffer[2 + SPI_RESP_OFFSET]);
+            accelNeutral[IMU_YAXIS_IDX] = (short)((tmpBuffer[1 + SPI_RESP_OFFSET] << 8) & 0xFF00 | tmpBuffer[0 + SPI_RESP_OFFSET]);
+            accelNeutral[IMU_ZAXIS_IDX] = (short)((tmpBuffer[5 + SPI_RESP_OFFSET] << 8) & 0xFF00 | tmpBuffer[4 + SPI_RESP_OFFSET]);
 
-            accelSens[IMU_XAXIS_IDX] = (short)((tmpBuffer[9 + SPI_RESP_OFFSET] << 8) & 0xFF00 | tmpBuffer[8 + SPI_RESP_OFFSET]); // Accel X Sens
-            accelSens[IMU_YAXIS_IDX] = (short)((tmpBuffer[7 + SPI_RESP_OFFSET] << 8) & 0xFF00 | tmpBuffer[6 + SPI_RESP_OFFSET]); // Accel Y Sens
-            accelSens[IMU_ZAXIS_IDX] = (short)((tmpBuffer[11 + SPI_RESP_OFFSET] << 8) & 0xFF00 | tmpBuffer[10 + SPI_RESP_OFFSET]); // Accel Z Sens
-            //Console.WriteLine("ACCEL SENS: {0}", string.Join(",", accelSens));
-            //Console.WriteLine("{0}", string.Join(",", tmpBuffer.Skip(SPI_RESP_OFFSET).ToArray()));
+            accelSens[IMU_XAXIS_IDX] = (short)((tmpBuffer[9 + SPI_RESP_OFFSET] << 8) & 0xFF00 | tmpBuffer[8 + SPI_RESP_OFFSET]);
+            accelSens[IMU_YAXIS_IDX] = (short)((tmpBuffer[7 + SPI_RESP_OFFSET] << 8) & 0xFF00 | tmpBuffer[6 + SPI_RESP_OFFSET]);
+            accelSens[IMU_ZAXIS_IDX] = (short)((tmpBuffer[11 + SPI_RESP_OFFSET] << 8) & 0xFF00 | tmpBuffer[10 + SPI_RESP_OFFSET]);
 
             accelCoeff[IMU_XAXIS_IDX] = 1.0 / (accelSens[IMU_XAXIS_IDX] - accelNeutral[IMU_XAXIS_IDX]) * 4.0;
             accelCoeff[IMU_YAXIS_IDX] = 1.0 / (accelSens[IMU_YAXIS_IDX] - accelNeutral[IMU_YAXIS_IDX]) * 4.0;
             accelCoeff[IMU_ZAXIS_IDX] = 1.0 / (accelSens[IMU_ZAXIS_IDX] - accelNeutral[IMU_ZAXIS_IDX]) * 4.0;
-            //accelCoeff[IMU_XAXIS_IDX] = (accelSens[IMU_XAXIS_IDX] - accelNeutral[IMU_XAXIS_IDX]) / 65535.0 / 1000.0;
-            //accelCoeff[IMU_YAXIS_IDX] = (accelSens[IMU_YAXIS_IDX] - accelNeutral[IMU_YAXIS_IDX]) / 65535.0 / 1000.0;
-            //accelCoeff[IMU_ZAXIS_IDX] = (accelSens[IMU_ZAXIS_IDX] - accelNeutral[IMU_ZAXIS_IDX]) / 65535.0 / 1000.0;
-            //Console.WriteLine("ACCEL COEFF: {0}", string.Join(",", accelCoeff));
 
-            //accelSensMulti[IMU_XAXIS_IDX] = accelSens[IMU_XAXIS_IDX] / (2 * 8192.0);
-            //accelSensMulti[IMU_YAXIS_IDX] = accelSens[IMU_YAXIS_IDX] / (2 * 8192.0);
-            //accelSensMulti[IMU_ZAXIS_IDX] = accelSens[IMU_ZAXIS_IDX] / (2 * 8192.0);
+            gyroBias[0] = (short)((tmpBuffer[17 + SPI_RESP_OFFSET] << 8) & 0xFF00 | tmpBuffer[16 + SPI_RESP_OFFSET]);
+            gyroBias[1] = (short)((tmpBuffer[15 + SPI_RESP_OFFSET] << 8) & 0xFF00 | tmpBuffer[14 + SPI_RESP_OFFSET]);
+            gyroBias[2] = (short)((tmpBuffer[13 + SPI_RESP_OFFSET] << 8) & 0xFF00 | tmpBuffer[12 + SPI_RESP_OFFSET]);
 
-            gyroBias[0] = (short)((tmpBuffer[17 + SPI_RESP_OFFSET] << 8) & 0xFF00 | tmpBuffer[16 + SPI_RESP_OFFSET]); // Gyro Yaw Offset
-            gyroBias[1] = (short)((tmpBuffer[15 + SPI_RESP_OFFSET] << 8) & 0xFF00 | tmpBuffer[14 + SPI_RESP_OFFSET]); // Gyro Pitch Offset
-            gyroBias[2] = (short)((tmpBuffer[13 + SPI_RESP_OFFSET] << 8) & 0xFF00 | tmpBuffer[12 + SPI_RESP_OFFSET]); // Gyro Roll Offset
-
-            gyroSens[IMU_YAW_IDX] = (short)((tmpBuffer[23 + SPI_RESP_OFFSET] << 8) & 0xFF00 | tmpBuffer[22 + SPI_RESP_OFFSET]); // Gyro Yaw Sens
-            gyroSens[IMU_PITCH_IDX] = (short)((tmpBuffer[21 + SPI_RESP_OFFSET] << 8) & 0xFF00 | tmpBuffer[20 + SPI_RESP_OFFSET]); // Gyro Pitch Sens
-            gyroSens[IMU_ROLL_IDX] = (short)((tmpBuffer[19 + SPI_RESP_OFFSET] << 8) & 0xFF00 | tmpBuffer[18 + SPI_RESP_OFFSET]); // Gyro Roll Sens
-
-            //Console.WriteLine("GYRO BIAS: {0}", string.Join(",", gyroBias));
-            //Console.WriteLine("GYRO SENS: {0}", string.Join(",", gyroSens));
-            //Console.WriteLine("{0}", string.Join(",", tmpBuffer.Skip(SPI_RESP_OFFSET).ToArray()));
+            gyroSens[IMU_YAW_IDX] = (short)((tmpBuffer[23 + SPI_RESP_OFFSET] << 8) & 0xFF00 | tmpBuffer[22 + SPI_RESP_OFFSET]);
+            gyroSens[IMU_PITCH_IDX] = (short)((tmpBuffer[21 + SPI_RESP_OFFSET] << 8) & 0xFF00 | tmpBuffer[20 + SPI_RESP_OFFSET]);
+            gyroSens[IMU_ROLL_IDX] = (short)((tmpBuffer[19 + SPI_RESP_OFFSET] << 8) & 0xFF00 | tmpBuffer[18 + SPI_RESP_OFFSET]);
 
             gyroCoeff[IMU_YAW_IDX] = 936.0 / (gyroSens[IMU_YAW_IDX] - gyroBias[IMU_YAW_IDX]);
             gyroCoeff[IMU_PITCH_IDX] = 936.0 / (gyroSens[IMU_PITCH_IDX] - gyroBias[IMU_PITCH_IDX]);
             gyroCoeff[IMU_ROLL_IDX] = 936.0 / (gyroSens[IMU_ROLL_IDX] - gyroBias[IMU_ROLL_IDX]);
-            //gyroCoeff[IMU_YAW_IDX] = (gyroSens[IMU_YAW_IDX] - gyroBias[IMU_YAW_IDX]) / 65535.0;
-            //gyroCoeff[IMU_PITCH_IDX] = (gyroSens[IMU_PITCH_IDX] - gyroBias[IMU_PITCH_IDX]) / 65535.0;
-            //gyroCoeff[IMU_ROLL_IDX] = (gyroSens[IMU_ROLL_IDX] - gyroBias[IMU_ROLL_IDX]) / 65535.0;
-            //Console.WriteLine("GYRO COEFF: {0}", string.Join(",", gyroCoeff));
+
+            AppLogger.LogToGui($"[SwitchPro] 校准数据读取完成", false);
+        }
+
+        private void SetDefaultCalib()
+        {
+            leftStickXData.max = SAMPLE_STICK_MAX; leftStickXData.min = SAMPLE_STICK_MIN; leftStickXData.mid = SAMPLE_STICK_MID;
+            leftStickYData.max = SAMPLE_STICK_MAX; leftStickYData.min = SAMPLE_STICK_MIN; leftStickYData.mid = SAMPLE_STICK_MID;
+            rightStickXData.max = SAMPLE_STICK_MAX; rightStickXData.min = SAMPLE_STICK_MIN; rightStickXData.mid = SAMPLE_STICK_MID;
+            rightStickYData.max = SAMPLE_STICK_MAX; rightStickYData.min = SAMPLE_STICK_MIN; rightStickYData.mid = SAMPLE_STICK_MID;
         }
 
         public override bool DisconnectWireless(bool callRemoval = false)
         {
             bool result = false;
             result = DisconnectBT(callRemoval);
-            //StopOutputUpdate();
-            //Detach();
             return result;
         }
 
         public override bool DisconnectBT(bool callRemoval = false)
         {
+            AppLogger.LogToGui($"[SwitchPro] 断开蓝牙连接: {MacAddress}", false);
             StopOutputUpdate();
             Detach();
 
@@ -1220,7 +1189,6 @@ namespace DS4Windows.InputDevices
             string[] sbytes = Mac.Split(':');
             for (int i = 0; i < 6; i++)
             {
-                // parse hex byte in reverse order
                 btAddr[5 - i] = Convert.ToByte(sbytes[i], 16);
             }
 
@@ -1259,6 +1227,7 @@ namespace DS4Windows.InputDevices
 
         public override bool DisconnectDongle(bool remove = false)
         {
+            AppLogger.LogToGui($"[SwitchPro] 断开USB连接: {MacAddress}", false);
             StopOutputUpdate();
             Detach();
 
@@ -1277,19 +1246,17 @@ namespace DS4Windows.InputDevices
 
         public void Detach()
         {
+            AppLogger.LogToGui($"[SwitchPro] Detach 开始: {MacAddress}", false);
             bool result;
 
             if (connectionOpened)
             {
-                // Disable Gyro
                 byte[] tmpOffBuffer = new byte[] { 0x0 };
                 Subcommand(0x40, tmpOffBuffer, 1, checkResponse: true);
 
-                // Possibly disable rumble? Leave commented
                 tmpOffBuffer = new byte[] { 0x0 };
                 Subcommand(0x48, tmpOffBuffer, 1, checkResponse: true);
 
-                // Revert back to low power state
                 byte[] powerChoiceArray = new byte[] { 0x01 };
                 Subcommand(SwitchProSubCmd.SET_LOW_POWER_STATE, powerChoiceArray, 1, checkResponse: true);
 
@@ -1305,6 +1272,7 @@ namespace DS4Windows.InputDevices
             }
 
             connectionOpened = false;
+            AppLogger.LogToGui($"[SwitchPro] Detach 完成", false);
         }
 
         public void WriteReport()
@@ -1324,6 +1292,10 @@ namespace DS4Windows.InputDevices
             {
                 PrepareRumbleData(rumbleReportBuffer);
                 bool result = hDevice.WriteOutputReportViaInterrupt(rumbleReportBuffer, 100);
+                if (!result)
+                {
+                    AppLogger.LogToGui($"[SwitchPro] 震动报告发送失败", true);
+                }
             }
         }
 
@@ -1352,18 +1324,15 @@ namespace DS4Windows.InputDevices
                 case 6:
                     deviceSlotMask = 0x01 | 0x08;
                     break;
-
                 case 7:
                     deviceSlotMask = 0x02 | 0x04;
                     break;
                 case 8:
                     deviceSlotMask = 0x02 | 0x08;
                     break;
-
                 case 9:
                     deviceSlotMask = 0x04 | 0x08;
                     break;
-
                 case 10:
                     deviceSlotMask = 0x01 | 0x02 | 0x04;
                     break;
@@ -1373,11 +1342,9 @@ namespace DS4Windows.InputDevices
                 case 12:
                     deviceSlotMask = 0x01 | 0x04 | 0x08;
                     break;
-
                 case 13:
                     deviceSlotMask = 0x02 | 0x04 | 0x08;
                     break;
-
                 case 14:
                     deviceSlotMask = 0x01 | 0x02 | 0x04 | 0x08;
                     break;
@@ -1385,6 +1352,7 @@ namespace DS4Windows.InputDevices
                     deviceSlotMask = 0x00;
                     break;
             }
+            AppLogger.LogToGui($"[SwitchPro] 设备槽位掩码计算: {deviceSlotNumber} -> {deviceSlotMask:X2}", false);
         }
 
         private void SetupOptionsEvents()
@@ -1399,6 +1367,7 @@ namespace DS4Windows.InputDevices
             if (nativeOptionsStore != null)
             {
                 enableHomeLED = nativeOptionsStore.EnableHomeLED;
+                AppLogger.LogToGui($"[SwitchPro] 加载设置: EnableHomeLED={enableHomeLED}", false);
             }
         }
     }
