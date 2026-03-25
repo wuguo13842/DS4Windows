@@ -1,4 +1,4 @@
-﻿/*
+﻿﻿/*
 DS4Windows
 Copyright (C) 2023  Travis Nickles
 
@@ -205,91 +205,86 @@ namespace DS4WinWPF.DS4Forms.ViewModels
             PopulateControllerList();
         }
 
+        /// <summary>
+        /// 构建托盘图标右键菜单
+        /// 将配置文件切换、断开连接、陀螺仪校准功能整合到每个控制器的子菜单中
+        /// </summary>
         public void PopulateContextMenu()
         {
             contextMenu.Items.Clear();
             ItemCollection items = contextMenu.Items;
-            MenuItem item;
             int idx = 0;
 
             using (ReadLocker locker = new ReadLocker(_colLocker))
             {
-                // 为每个控制器创建子菜单
+                // 为每个控制器创建独立的子菜单
                 foreach (ControllerHolder holder in controllerList)
                 {
                     DS4Device currentDev = holder.Device;
-					// string itemHeader = string.Format(GetLocalizedString("ControllerNumber"), idx + 1);
-                    item = new MenuItem() { Header = GetLocalizedString("Controllers") + " " + (idx + 1) };
-                    item.Tag = idx;
-                    ItemCollection subitems = item.Items;
+                    
+                    // 创建控制器主菜单项
+                    MenuItem controllerItem = new MenuItem() 
+                    { 
+                        Header = GetLocalizedString("Controllers") + " " + (idx + 1) 
+                    };
+                    controllerItem.Tag = idx;
+                    ItemCollection subitems = controllerItem.Items;
+
+                    // 1. 添加配置文件切换子菜单项
                     string currentProfile = Global.ProfilePath[idx];
                     foreach (ProfileEntity entry in profileListHolder.ProfileListCol)
                     {
                         string name = entry.Name;
                         name = Regex.Replace(name, "_{1}", "__");
-                        MenuItem temp = new MenuItem() { Header = name };
-                        temp.Tag = idx;
-                        temp.Click += ProfileItem_Click;
+                        MenuItem profileItem = new MenuItem() { Header = name };
+                        profileItem.Tag = idx;
+                        profileItem.Click += ProfileItem_Click;
                         if (entry.Name == currentProfile)
                         {
-                            temp.IsChecked = true;
+                            profileItem.IsChecked = true;
                         }
-                        subitems.Add(temp);
+                        subitems.Add(profileItem);
                     }
-                    items.Add(item);
-                    idx++;
-                }
 
-                // 断开连接菜单（父菜单）
-                item = new MenuItem() {  Header = GetLocalizedString("MenuDisconnect") };
-                idx = 0;
-                foreach (ControllerHolder holder in controllerList)
-                {
-                    DS4Device tempDev = holder.Device;
-                    if (tempDev.Synced && !tempDev.Charging)
+                    // 2. 如果有配置文件列表，添加分隔符
+                    if (profileListHolder.ProfileListCol.Count > 0)
                     {
-						// string disconnectHeader = string.Format(GetLocalizedString("Controllers"), idx + 1);
-                        // MenuItem subitem = new MenuItem() { Header = disconnectHeader  };
-                        // MenuItem subitem = new MenuItem() { Header = GetLocalizedString("Disconnect Controller") + " " + (idx + 1) };
-                        MenuItem subitem = new MenuItem() { Header = GetLocalizedString("DisconnectController") + " " + (idx + 1) };
-                        subitem.Click += DisconnectMenuItem_Click;
-                        subitem.Tag = idx;
-                        item.Items.Add(subitem);
+                        subitems.Add(new Separator());
                     }
-                    idx++;
-                }
-                if (item.Items.Count == 0)
-                {
-                    item.IsEnabled = false;
-                }
-                items.Add(item);
 
-                // ========== 新增：陀螺仪校准菜单 ==========
-                MenuItem gyroCalibItem = new MenuItem() { Header = GetLocalizedString("GyroCalibration") }; // 使用本地化标题
-                idx = 0;
-                foreach (ControllerHolder holder in controllerList)
-                {
-                    DS4Device tempDev = holder.Device;
-                    // 只要设备支持陀螺仪（SixAxis 不为 null）且已同步（可选），就添加子菜单项
-                    if (tempDev?.SixAxis != null)
+                    // 3. 添加断开连接菜单项（仅当设备支持断开时显示）
+                    if (currentDev.Synced && !currentDev.Charging)
                     {
-                        // string calibHeader = GetLocalizedString("Calibrate") + " " + GetLocalizedString("Controllers") + " " +  (idx + 1).ToString();
-						string calibHeader = string.Format(GetLocalizedString("Controllers"), idx + 1);
-						MenuItem subitem = new MenuItem() { Header = GetLocalizedString("Controllers") + " " + (idx + 1) };// 本地化
-                        subitem.Click += CalibrateGyroMenuItem_Click;
-                        subitem.Tag = idx;
-                        gyroCalibItem.Items.Add(subitem);
+                        MenuItem disconnectItem = new MenuItem() 
+                        { 
+                            Header = GetLocalizedString("DisconnectController")
+                        };
+                        disconnectItem.Click += DisconnectMenuItem_Click;
+                        disconnectItem.Tag = idx;
+                        subitems.Add(disconnectItem);
                     }
+
+                    // 4. 添加陀螺仪校准菜单项（仅当设备支持陀螺仪时显示）
+                    if (currentDev?.SixAxis != null)
+                    {
+                        MenuItem gyroItem = new MenuItem() 
+                        { 
+                            Header = GetLocalizedString("GyroCalibration")
+                        };
+                        gyroItem.Click += CalibrateGyroMenuItem_Click;
+                        gyroItem.Tag = idx;
+                        subitems.Add(gyroItem);
+                    }
+
+                    // 将控制器菜单项添加到主菜单
+                    items.Add(controllerItem);
                     idx++;
                 }
-                if (gyroCalibItem.Items.Count == 0)
-                {
-                    gyroCalibItem.IsEnabled = false; // 没有可校准的控制器时禁用
-                }
-                items.Add(gyroCalibItem);
-                // =========================================
 
+                // 添加分隔符
                 items.Add(new Separator());
+                
+                // 添加静态菜单项（服务控制、打开、最小化、打开程序文件夹、退出）
                 PopulateStaticItems();
             }
         }
@@ -345,7 +340,9 @@ namespace DS4WinWPF.DS4Forms.ViewModels
             }
         }
 
-        // ========== 新增：陀螺仪校准菜单项点击事件 ==========
+        /// <summary>
+        /// 陀螺仪校准菜单项点击事件
+        /// </summary>
         private void CalibrateGyroMenuItem_Click(object sender, System.Windows.RoutedEventArgs e)
         {
             MenuItem item = sender as MenuItem;
@@ -367,7 +364,6 @@ namespace DS4WinWPF.DS4Forms.ViewModels
                 }
             }
         }
-        // ==================================================
 
         private void PopulateControllerList()
         {
@@ -723,6 +719,9 @@ namespace DS4WinWPF.DS4Forms.ViewModels
             });
         }
 
+        /// <summary>
+        /// 添加静态菜单项（服务控制、打开、最小化、打开程序文件夹、退出）
+        /// </summary>
         private void PopulateStaticItems()
         {
             ItemCollection items = contextMenu.Items;

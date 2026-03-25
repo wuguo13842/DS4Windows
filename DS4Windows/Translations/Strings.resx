@@ -1864,10 +1864,6 @@ Please click OK to confirm that you have read the message. Press Cancel to be re
 	<data name="ControllerReadings" xml:space="preserve">
 		<value>Controller Readings</value>
 	</data>
-	
-	<data name="MenuDisconnect" xml:space="preserve">
-		<value>Disconnect Menu</value>
-	</data>
 	<data name="ServiceStart" xml:space="preserve">
 		<value>Start</value>
 	</data>

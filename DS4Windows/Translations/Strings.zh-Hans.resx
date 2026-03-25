@@ -184,7 +184,7 @@
     <value>控制器</value>
   </data>
   <data name="DisconnectController" xml:space="preserve">
-    <value>控制器</value>
+    <value>断开控制器</value>
   </data>
   <data name="ControlPanel" xml:space="preserve">
     <value>手柄</value>
@@ -1851,9 +1851,6 @@
   </data>
   <data name="ControllerReadings" xml:space="preserve">
     <value>控制器读数</value>
-  </data>
-  <data name="MenuDisconnect" xml:space="preserve">
-    <value>断开控制器</value>
   </data>
   <data name="ServiceStart" xml:space="preserve">
     <value>启动</value>
