@@ -1051,6 +1051,31 @@ Suspend support not enabled.", true);
 			}
 		}
 
+		/// <summary>
+		/// 断开控制器按钮点击事件
+		/// </summary>
+		private void DisconnectControllerBtn_Click(object sender, RoutedEventArgs e)
+		{
+			Button btn = sender as Button;
+			if (btn == null) return;
+
+			int devIndex = Convert.ToInt32(btn.Tag);
+			if (devIndex < 0 || devIndex >= Program.rootHub.DS4Controllers.Length) return;
+
+			DS4Device device = Program.rootHub.DS4Controllers[devIndex];
+			if (device != null && device.Synced && !device.Charging)
+			{
+				if (device.ConnectionType == ConnectionType.BT)
+				{
+					device.DisconnectBT();
+				}
+				else if (device.ConnectionType == ConnectionType.SONYWA)
+				{
+					device.DisconnectDongle();
+				}
+			}
+		}
+
         private void MainDS4Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)
         {
             if (editor != null)

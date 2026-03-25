@@ -136,7 +136,7 @@
                                         </DataTemplate>
                                     </GridViewColumn.CellTemplate>
                                 </GridViewColumn>
-                                <GridViewColumn x:Name="customColorColumn" Width="150">
+                                <GridViewColumn x:Name="customColorColumn" Width="80">
                                     <GridViewColumn.CellTemplate>
                                         <DataTemplate>
                                             <StackPanel Width="{Binding ElementName=customColorColumn, Path=Width}">
@@ -156,10 +156,10 @@
                                 </GridViewColumn>
 								
 								<!-- 新增校准陀螺列 -->
-								<GridViewColumn x:Name="calibrateGyroColumn" Width="110" Header="{lex:Loc GyroCalibration}">
+								<GridViewColumn x:Name="DisconnectController" Width="110" Header="{lex:Loc GyroCalibration}">
 									<GridViewColumn.CellTemplate>
 										<DataTemplate>
-											<StackPanel Width="{Binding Path=Width, ElementName=calibrateGyroColumn, Mode=OneWay}" HorizontalAlignment="Center">
+											<StackPanel Width="{Binding Path=Width, ElementName=DisconnectController, Mode=OneWay}" HorizontalAlignment="Center">
 												<Grid HorizontalAlignment="Center" VerticalAlignment="Center">
 													<Grid.ColumnDefinitions>
 														<ColumnDefinition Width="*"/>
@@ -181,6 +181,22 @@
 															VerticalAlignment="Center"
 															Width="70" Padding="5,2"/>
 												</Grid>
+											</StackPanel>
+										</DataTemplate>
+									</GridViewColumn.CellTemplate>
+								</GridViewColumn>
+								
+								<!-- 新增断开控制器 -->
+								<GridViewColumn x:Name="DisconnectColumn" Width="80" >
+									<GridViewColumn.CellTemplate>
+										<DataTemplate>
+											<StackPanel Width="{Binding Path=Width, ElementName=DisconnectColumn, Mode=OneWay}" HorizontalAlignment="Center">
+												<Button Content="{lex:Loc Disconnect}" 
+														Click="DisconnectControllerBtn_Click" 
+														Tag="{Binding DevIndex}" 
+														HorizontalAlignment="Center" 
+														VerticalAlignment="Center"
+														Width="60" Padding="5,2"/>
 											</StackPanel>
 										</DataTemplate>
 									</GridViewColumn.CellTemplate>

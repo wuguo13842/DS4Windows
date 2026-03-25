@@ -183,8 +183,8 @@
   <data name="Controllers" xml:space="preserve">
     <value>Controllers</value>
   </data>
-  <data name="DisconnectController" xml:space="preserve">
-    <value>Disconnect Controller</value>
+  <data name="Disconnect" xml:space="preserve">
+    <value>Disconnect</value>
   </data>
   <data name="ControlPanel" xml:space="preserve">
     <value>Control Panel</value>

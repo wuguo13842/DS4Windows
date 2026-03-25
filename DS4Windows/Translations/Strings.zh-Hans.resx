@@ -183,8 +183,8 @@
   <data name="Controllers" xml:space="preserve">
     <value>控制器</value>
   </data>
-  <data name="DisconnectController" xml:space="preserve">
-    <value>断开控制器</value>
+  <data name="Disconnect" xml:space="preserve">
+    <value>断开</value>
   </data>
   <data name="ControlPanel" xml:space="preserve">
     <value>手柄</value>
@@ -990,7 +990,7 @@
     <value>灯条</value>
   </data>
   <data name="LinkProfileId" xml:space="preserve">
-    <value>链接配置/ID</value>
+    <value>关联配置/ID</value>
   </data>
   <data name="MainWin.AbsDisplayMonitor" xml:space="preserve">
     <value>触板映射显示器</value>
