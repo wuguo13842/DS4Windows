@@ -213,6 +213,10 @@ namespace DS4WinWPF.DS4Forms.ViewModels
         {
             contextMenu.Items.Clear();
             ItemCollection items = contextMenu.Items;
+			
+			// 将“打开程序文件夹”放在最上面
+			items.Add(openProgramItem);
+			
             int idx = 0;
 
             using (ReadLocker locker = new ReadLocker(_colLocker))
@@ -728,7 +732,7 @@ namespace DS4WinWPF.DS4Forms.ViewModels
             items.Add(changeServiceItem);
             items.Add(openItem);
             items.Add(minimizeItem);
-            items.Add(openProgramItem);
+            // items.Add(openProgramItem);
             items.Add(new Separator());
             items.Add(closeItem);
         }
@@ -736,7 +740,7 @@ namespace DS4WinWPF.DS4Forms.ViewModels
         public void ClearContextMenu()
         {
             contextMenu.Items.Clear();
-            PopulateStaticItems();
+            PopulateContextMenu();
             // 停止所有定时器
             blinkTimer?.Stop();
             blinkTimeoutTimer?.Stop();
