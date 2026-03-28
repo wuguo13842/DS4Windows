@@ -1858,9 +1858,9 @@ namespace DS4WinWPF.Translations {
         /// <summary>
         ///   查找类似 Full 的本地化字符串。
         /// </summary>
-        public static string Full {
+        public static string FullyCharged {
             get {
-                return ResourceManager.GetString("Full", resourceCulture);
+                return ResourceManager.GetString("FullyCharged", resourceCulture);
             }
         }
         
@@ -4829,15 +4829,6 @@ namespace DS4WinWPF.Translations {
         public static string TriggerEffectFullClickDesc {
             get {
                 return ResourceManager.GetString("TriggerEffectFullClickDesc", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   查找类似 None 的本地化字符串。
-        /// </summary>
-        public static string TriggerEffectNone {
-            get {
-                return ResourceManager.GetString("TriggerEffectNone", resourceCulture);
             }
         }
         

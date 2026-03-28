@@ -11,7 +11,11 @@
              mc:Ignorable="d" 
              d:DesignHeight="40" d:DesignWidth="400">
     <StackPanel Orientation="Horizontal" HorizontalAlignment="Left">
-        <Label Content="{lex:Loc ButtonActivationMode}" ContentStringFormat="{}{0}:" Padding="0" VerticalAlignment="Center"/>
+		<Label Content="{lex:Loc ButtonActivationMode}" 
+			   ContentStringFormat="{}{0}:" 
+			   Padding="0" 
+			   VerticalAlignment="Center" 
+			   VerticalContentAlignment="Center"/>
         <ComboBox ItemsSource="{Binding TouchButtonModes}" DisplayMemberPath="DisplayName" 
                   SelectedValuePath="ChoiceValue" SelectedValue="{Binding CurrentMode}" VerticalAlignment="Center"
                   MinWidth="120" Margin="8,0,0,0">

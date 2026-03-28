@@ -207,8 +207,8 @@
   <data name="Export" xml:space="preserve">
     <value>导出</value>
   </data>
-  <data name="Full" xml:space="preserve">
-    <value>全部</value>
+  <data name="FullyCharged" xml:space="preserve">
+    <value>满电</value>
   </data>
   <data name="Gyro" xml:space="preserve">
     <value>体感</value>
@@ -1043,9 +1043,6 @@
   <data name="Other" xml:space="preserve">
     <value>其他</value>
   </data>
-  <data name="OuterBind" xml:space="preserve">
-    <value>外圈绑定</value>
-  </data>
   <data name="OuterBtn" xml:space="preserve">
     <value>外圈按钮</value>
   </data>
@@ -1441,11 +1438,11 @@
 		<comment>参数：0=控制器编号</comment>
 	</data>
   <data name="ThresholdPrefix" xml:space="preserve">
-    <value>(阈值：</value>
+    <value>（阀值：</value>
     <comment>Prefix before threshold value, e.g. "(Threshold: "</comment>
   </data>
   <data name="ThresholdSuffix" xml:space="preserve">
-    <value>)</value>
+    <value>）</value>
     <comment>Suffix after threshold value, e.g. ")"</comment>
   </data>
   <data name="LowBatteryNotifyTooltip" xml:space="preserve">
@@ -1492,7 +1489,7 @@
     <value>最大亮度 {0:N2}%</value>
   </data>
   <data name="EmptyColor" xml:space="preserve">
-    <value>电量空</value>
+    <value>空电</value>
   </data>
   <data name="MaxLightPrefix" xml:space="preserve">
     <value>最大亮度 </value>

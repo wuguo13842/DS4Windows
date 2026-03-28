@@ -758,7 +758,7 @@ namespace DS4WinWPF.DS4Forms.ViewModels
                 }
                 else
                 {
-                    temp = "Browse";
+                    temp = Strings.Browse;
                 }
 
                 return temp;
@@ -1840,7 +1840,7 @@ namespace DS4WinWPF.DS4Forms.ViewModels
 
 		private List<TriggerEffectChoice> triggerEffectChoices = new List<TriggerEffectChoice>()
 		{
-			new TriggerEffectChoice(Strings.TriggerEffectNone, DS4Windows.InputDevices.TriggerEffects.None),
+			new TriggerEffectChoice(Strings.None, DS4Windows.InputDevices.TriggerEffects.None),
 			new TriggerEffectChoice(Strings.TriggerEffectFullClick, DS4Windows.InputDevices.TriggerEffects.FullClick),
 			new TriggerEffectChoice(Strings.TriggerEffectRigid, DS4Windows.InputDevices.TriggerEffects.Rigid),
 			new TriggerEffectChoice(Strings.TriggerEffectPulse, DS4Windows.InputDevices.TriggerEffects.Pulse),
@@ -2347,16 +2347,15 @@ namespace DS4WinWPF.DS4Forms.ViewModels
             set => Global.TouchMouseStickInf[device].Beta = value;
         }
 
-        private List<EnumChoiceSelection<StickOutCurve.Curve>> touchMStickOutputCurveOptions =
-            new List<EnumChoiceSelection<StickOutCurve.Curve>>
-            {
-                new EnumChoiceSelection<StickOutCurve.Curve>("Linear", StickOutCurve.Curve.Linear),
-                new EnumChoiceSelection<StickOutCurve.Curve>("Easeout Quad", StickOutCurve.Curve.EaseoutQuad),
-                new EnumChoiceSelection<StickOutCurve.Curve>("Easeout Cubic", StickOutCurve.Curve.EaseoutCubic),
-                new EnumChoiceSelection<StickOutCurve.Curve>("Enhanced Precision", StickOutCurve.Curve.EnhancedPrecision),
-                new EnumChoiceSelection<StickOutCurve.Curve>("Quadratic", StickOutCurve.Curve.Quadratic),
-                new EnumChoiceSelection<StickOutCurve.Curve>("Cubic", StickOutCurve.Curve.Cubic),
-            };
+        private List<EnumChoiceSelection<StickOutCurve.Curve>> touchMStickOutputCurveOptions = new List<EnumChoiceSelection<StickOutCurve.Curve>>
+		{
+			new EnumChoiceSelection<StickOutCurve.Curve>(Strings.Linear, StickOutCurve.Curve.Linear),
+			new EnumChoiceSelection<StickOutCurve.Curve>(Strings.EnhancedPrecision, StickOutCurve.Curve.EnhancedPrecision),
+			new EnumChoiceSelection<StickOutCurve.Curve>(Strings.Quadratic, StickOutCurve.Curve.Quadratic),
+			new EnumChoiceSelection<StickOutCurve.Curve>(Strings.Cubic, StickOutCurve.Curve.Cubic),
+			new EnumChoiceSelection<StickOutCurve.Curve>(Strings.EaseoutQuad, StickOutCurve.Curve.EaseoutQuad),
+			new EnumChoiceSelection<StickOutCurve.Curve>(Strings.EaseoutCubic, StickOutCurve.Curve.EaseoutCubic),
+		};
 
         public List<EnumChoiceSelection<StickOutCurve.Curve>> TouchMouseStickOutputCurveOptions => touchMStickOutputCurveOptions;
 
