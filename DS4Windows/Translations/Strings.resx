@@ -207,8 +207,8 @@
   <data name="Export" xml:space="preserve">
     <value>Export</value>
   </data>
-  <data name="Full" xml:space="preserve">
-    <value>Full</value>
+  <data name="FullyCharged" xml:space="preserve">
+    <value>Fully Charged</value>
   </data>
   <data name="Gyro" xml:space="preserve">
     <value>Gyro</value>
@@ -1077,9 +1077,6 @@ Disabled:
   </data>
   <data name="Other" xml:space="preserve">
     <value>Other</value>
-  </data>
-  <data name="OuterBind" xml:space="preserve">
-    <value>Outer Bind</value>
   </data>
   <data name="OuterBtn" xml:space="preserve">
     <value>Outer Btn</value>

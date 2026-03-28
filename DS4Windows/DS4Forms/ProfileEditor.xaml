@@ -443,8 +443,6 @@
 														<RowDefinition Height="Auto"/>
 														<RowDefinition Height="Auto"/>
 														<RowDefinition Height="Auto"/>
-														<RowDefinition Height="Auto"/>
-														<RowDefinition Height="Auto"/> <!-- 第16行给Delta Acceleration -->
 													</Grid.RowDefinitions>
 													<Grid.ColumnDefinitions>
 														<ColumnDefinition Width="{StaticResource AxisConfig_LSRS_1_Width}" MinWidth="{StaticResource AxisConfig_LSRS_1_MinWidth}"/>
@@ -454,7 +452,7 @@
 													<!-- Output Curve -->
 													<Label Grid.Row="0" Grid.Column="0" Content="{lex:Loc OutputCurve}" ContentStringFormat="{}{0}:" VerticalAlignment="Center" Margin="0,0,0,5"/>
 													<ComboBox Grid.Row="0" Grid.Column="1" SelectedIndex="{Binding LSOutputCurveIndex}" 
-															  HorizontalAlignment="Stretch" Margin="0,0,0,5">
+															  HorizontalAlignment="Stretch" Margin="0,0,0,5" VerticalContentAlignment="Center">
 														<ComboBoxItem Content="{lex:Loc Linear}" />
 														<ComboBoxItem Content="{lex:Loc EnhancedPrecision}" />
 														<ComboBoxItem Content="{lex:Loc Quadratic}" />
@@ -470,7 +468,7 @@
 														<Button x:Name="lsCustomEditorBtn" Content="..." Tag="LS" Width="20" 
 																DockPanel.Dock="Right" Click="CustomEditorBtn_Click" Margin="5,0,0,0"/>
 														<TextBox Text="{Binding LSCustomCurve,UpdateSourceTrigger=LostFocus,FallbackValue='0.00, 0.00, 1.00, 1.00'}" 
-																 Height="22" HorizontalAlignment="Stretch"/>
+																 HorizontalAlignment="Stretch"/>
 													</DockPanel>
 
 													<!-- Square Stick -->
@@ -503,7 +501,7 @@
 													<!-- Fuzz -->
 													<Label Grid.Row="4" Grid.Column="0" Content="{lex:Loc Fuzz}" ContentStringFormat="{}{0}:" VerticalAlignment="Center" Margin="0,0,0,5"/>
 													<DockPanel Grid.Row="4" Grid.Column="1" Margin="0,0,0,5">
-														<TextBlock Text="{lex:Loc Units}" DockPanel.Dock="Right" FontSize="10" Margin="5,0,0,0" VerticalAlignment="Center"/>
+														<TextBlock Text="{lex:Loc Units}" DockPanel.Dock="Right" Margin="5,0,0,0" VerticalAlignment="Center"/>
 														<xctk:IntegerUpDown Value="{Binding LSFuzz}" 
 																			HorizontalAlignment="Stretch"
 																			Minimum="0" Maximum="100">
@@ -526,7 +524,7 @@
 																		   HorizontalAlignment="Stretch"
 																		   Minimum="0.0" Maximum="256.0" Increment="1.0" 
 																		   IsEnabled="{Binding LSAntiSnapback}" Margin="8,0,0,0"/>
-														<TextBlock Grid.Column="2" Text="{lex:Loc Units}" FontSize="10" VerticalAlignment="Center" Margin="5,0,0,0"/>
+														<TextBlock Grid.Column="2" Text="{lex:Loc Units}" VerticalAlignment="Center" Margin="5,0,0,0"/>
 													</Grid>
 
 													<!-- Anti Snapback Timing -->
@@ -540,26 +538,24 @@
 																			HorizontalAlignment="Stretch"
 																			Minimum="0" Maximum="1000" Increment="1" 
 																			IsEnabled="{Binding LSAntiSnapback}"/>
-														<TextBlock Grid.Column="1" Text="{lex:Loc Milliseconds}" FontSize="10" Margin="5,0,0,0" VerticalAlignment="Center"/>
+														<TextBlock Grid.Column="1" Text="{lex:Loc Milliseconds}" Margin="5,0,0,0" VerticalAlignment="Center"/>
 													</Grid>
 
 													<!-- Outer Button - 第一行 -->
 													<Label Grid.Row="7" Grid.Column="0" Content="{lex:Loc OuterBtn}" ContentStringFormat="{}{0}:" VerticalAlignment="Center" Margin="0,0,0,5"/>
-													<Button Grid.Row="7" Grid.Column="1" Content="{lex:Loc OuterBind}" MinWidth="40" 
+													<Button Grid.Row="7" Grid.Column="1" 
+															x:Name="lsOuterBindBtn"
+															MinWidth="40" 
 															Tag="{Binding LSOuterBind, Source={StaticResource controlIndexCheck}}"
 															Click="StickOuterBindButton_Click" 
 															ToolTip="{lex:Loc StickOuterBindTooltip}" 
-															HorizontalAlignment="Stretch" Margin="0,0,0,5"/>
-													
-													<!-- Outer Button - 第二行 -->
-													<Grid Grid.Row="8" Grid.Column="1" Margin="0,0,0,5">
-														<Label x:Name="lsOuterBindLb" Content="{Binding MappingName,FallbackValue=Unassigned}"
-															   HorizontalAlignment="Center"/>
-													</Grid>
+															HorizontalAlignment="Stretch"
+															Content="{Binding MappingName, FallbackValue=''}"  
+															Margin="0,0,0,5"/>
 
 													<!-- Outer Button Deadzone -->
-													<Label Grid.Row="9" Grid.Column="0" Content="{lex:Loc OuterBtnDead}" ContentStringFormat="{}{0}:" VerticalAlignment="Center" Margin="0,0,0,5"/>
-													<Grid Grid.Row="9" Grid.Column="1" Margin="0,0,0,5">
+													<Label Grid.Row="8" Grid.Column="0" Content="{lex:Loc OuterBtnDead}" ContentStringFormat="{}{0}:" VerticalAlignment="Center" Margin="0,0,0,5"/>
+													<Grid Grid.Row="8" Grid.Column="1" Margin="0,0,0,5">
 														<Grid.ColumnDefinitions>
 															<ColumnDefinition Width="*"/>
 															<ColumnDefinition Width="Auto"/>
@@ -573,31 +569,31 @@
 													</Grid>
 
 													<!-- Calibration Section 标题 - 跨两列 -->
-													<Label Grid.Row="10" Grid.Column="0" Grid.ColumnSpan="2" 
+													<Label Grid.Row="9" Grid.Column="0" Grid.ColumnSpan="2" 
 														   Content="{lex:Loc StickCalibration}" 
 														   HorizontalContentAlignment="Center" 
 														   FontWeight="Bold" Margin="0,10,0,5"/>
 
 													<!-- X Axis Offset -->
-													<Label Grid.Row="11" Grid.Column="0" Content="{lex:Loc XAxisOffset}" VerticalAlignment="Center" Margin="0,0,0,5"/>
-													<xctk:SByteUpDown Grid.Row="11" Grid.Column="1" Value="{Binding LeftStickDriftXAxis,UpdateSourceTrigger=LostFocus}" 
+													<Label Grid.Row="10" Grid.Column="0" Content="{lex:Loc XAxisOffset}" VerticalAlignment="Center" Margin="0,0,0,5"/>
+													<xctk:SByteUpDown Grid.Row="10" Grid.Column="1" Value="{Binding LeftStickDriftXAxis,UpdateSourceTrigger=LostFocus}" 
 																	  HorizontalAlignment="Stretch" Margin="0,0,0,5"
 																	  Maximum="127" Minimum="-127" Increment="1"/>
 
 													<!-- Y Axis Offset -->
-													<Label Grid.Row="12" Grid.Column="0" Content="{lex:Loc YAxisOffset}" VerticalAlignment="Center" Margin="0,0,0,5"/>
-													<xctk:SByteUpDown Grid.Row="12" Grid.Column="1" Value="{Binding LeftStickDriftYAxis,UpdateSourceTrigger=LostFocus}" 
+													<Label Grid.Row="11" Grid.Column="0" Content="{lex:Loc YAxisOffset}" VerticalAlignment="Center" Margin="0,0,0,5"/>
+													<xctk:SByteUpDown Grid.Row="11" Grid.Column="1" Value="{Binding LeftStickDriftYAxis,UpdateSourceTrigger=LostFocus}" 
 																	  HorizontalAlignment="Stretch" Margin="0,0,0,5"
 																	  Maximum="127" Minimum="-127" Increment="1"/>
 
 													<!-- Calibrate Button - 跨两列 -->
-													<Button Grid.Row="13" Grid.Column="0" Grid.ColumnSpan="2" 
+													<Button Grid.Row="12" Grid.Column="0" Grid.ColumnSpan="2" 
 															Content="{lex:Loc AutomaticallyRecalibrateStick}" 
 															Click="CalibrateStick_OnClick" Tag="0" 
 															HorizontalAlignment="Stretch" Padding="5" Margin="0,5,0,10"/>
 
 													<!-- Delta Acceleration Section - 跨两列 -->
-													<GroupBox Grid.Row="14" Grid.Column="0" Grid.ColumnSpan="2" 
+													<GroupBox Grid.Row="13" Grid.Column="0" Grid.ColumnSpan="2" 
 															  Header="{lex:Loc DeltaAcceleration}" Margin="0,5,0,0">
 														<StackPanel>
 															<!-- Delta Enabled -->
@@ -648,7 +644,7 @@
 																	<!-- Easing Duration -->
 																	<Label Grid.Row="3" Grid.Column="0" Content="{lex:Loc EasingDuration}" ContentStringFormat="{}{0}:" VerticalAlignment="Center" Margin="0,0,0,5"/>
 																	<DockPanel Grid.Row="3" Grid.Column="1" Margin="0,0,0,5">
-																		<TextBlock Text="{lex:Loc SecondsUnit}" DockPanel.Dock="Right" FontSize="10" 
+																		<TextBlock Text="{lex:Loc SecondsUnit}" DockPanel.Dock="Right" 
 																				  Margin="5,0,0,0" VerticalAlignment="Center"/>
 																		<xctk:DoubleUpDown FormatString="F2" Value="{Binding LSDeltaEasingDuration}"
 																						  HorizontalAlignment="Stretch"
@@ -699,7 +695,7 @@
 													<!-- Flick Time -->
 													<Label Grid.Row="2" Grid.Column="0" Content="{lex:Loc FlickTime}" ContentStringFormat="{}{0}:" VerticalAlignment="Center" Margin="0,0,0,5"/>
 													<DockPanel Grid.Row="2" Grid.Column="1" Margin="0,0,0,5">
-														<TextBlock Text="sec." DockPanel.Dock="Right" FontSize="10" Margin="5,0,0,0" VerticalAlignment="Center"/>
+														<TextBlock Text="sec." DockPanel.Dock="Right" Margin="5,0,0,0" VerticalAlignment="Center"/>
 														<xctk:DoubleUpDown Value="{Binding LSFlickTime,UpdateSourceTrigger=LostFocus}" 
 																		  FormatString="F2" HorizontalAlignment="Stretch"
 																		  Maximum="10.0" Minimum="0.01" Increment="0.1"/>
@@ -868,8 +864,6 @@
 														<RowDefinition Height="Auto"/>
 														<RowDefinition Height="Auto"/>
 														<RowDefinition Height="Auto"/>
-														<RowDefinition Height="Auto"/>
-														<RowDefinition Height="Auto"/> <!-- 第16行给Delta Acceleration -->
 													</Grid.RowDefinitions>
 													<Grid.ColumnDefinitions>
 														<ColumnDefinition Width="{StaticResource AxisConfig_LSRS_1_Width}" MinWidth="{StaticResource AxisConfig_LSRS_1_MinWidth}"/>
@@ -879,7 +873,7 @@
 													<!-- Output Curve -->
 													<Label Grid.Row="0" Grid.Column="0" Content="{lex:Loc OutputCurve}" ContentStringFormat="{}{0}:" VerticalAlignment="Center" Margin="0,0,0,5"/>
 													<ComboBox Grid.Row="0" Grid.Column="1" SelectedIndex="{Binding RSOutputCurveIndex}" 
-															  HorizontalAlignment="Stretch" Margin="0,0,0,5">
+															  HorizontalAlignment="Stretch" Margin="0,0,0,5" VerticalContentAlignment="Center">
 														<ComboBoxItem Content="{lex:Loc Linear}" />
 														<ComboBoxItem Content="{lex:Loc EnhancedPrecision}" />
 														<ComboBoxItem Content="{lex:Loc Quadratic}" />
@@ -895,7 +889,7 @@
 														<Button x:Name="rsCustomEditorBtn" Content="..." Tag="RS" Width="20" 
 																DockPanel.Dock="Right" Click="CustomEditorBtn_Click" Margin="5,0,0,0"/>
 														<TextBox Text="{Binding RSCustomCurve,UpdateSourceTrigger=LostFocus,FallbackValue='0.00, 0.00, 1.00, 1.00'}" 
-																 Height="22" HorizontalAlignment="Stretch"/>
+																 HorizontalAlignment="Stretch"/>
 													</DockPanel>
 
 													<!-- Square Stick -->
@@ -928,7 +922,7 @@
 													<!-- Fuzz -->
 													<Label Grid.Row="4" Grid.Column="0" Content="{lex:Loc Fuzz}" ContentStringFormat="{}{0}:" VerticalAlignment="Center" Margin="0,0,0,5"/>
 													<DockPanel Grid.Row="4" Grid.Column="1" Margin="0,0,0,5">
-														<TextBlock Text="{lex:Loc Units}" DockPanel.Dock="Right" FontSize="10" Margin="5,0,0,0" VerticalAlignment="Center"/>
+														<TextBlock Text="{lex:Loc Units}" DockPanel.Dock="Right" Margin="5,0,0,0" VerticalAlignment="Center"/>
 														<xctk:IntegerUpDown Value="{Binding RSFuzz}" 
 																			HorizontalAlignment="Stretch"
 																			Minimum="0" Maximum="100">
@@ -951,7 +945,7 @@
 																		   HorizontalAlignment="Stretch"
 																		   Minimum="0.0" Maximum="256.0" Increment="1.0" 
 																		   IsEnabled="{Binding RSAntiSnapback}" Margin="8,0,0,0"/>
-														<TextBlock Grid.Column="2" Text="{lex:Loc Units}" FontSize="10" VerticalAlignment="Center" Margin="5,0,0,0"/>
+														<TextBlock Grid.Column="2" Text="{lex:Loc Units}" VerticalAlignment="Center" Margin="5,0,0,0"/>
 													</Grid>
 
 													<!-- Anti Snapback Timing -->
@@ -965,26 +959,24 @@
 																			HorizontalAlignment="Stretch"
 																			Minimum="0" Maximum="1000" Increment="1" 
 																			IsEnabled="{Binding RSAntiSnapback}"/>
-														<TextBlock Grid.Column="1" Text="{lex:Loc Milliseconds}" FontSize="10" Margin="5,0,0,0" VerticalAlignment="Center"/>
+														<TextBlock Grid.Column="1" Text="{lex:Loc Milliseconds}" Margin="5,0,0,0" VerticalAlignment="Center"/>
 													</Grid>
 
 													<!-- Outer Button - 第一行 -->
 													<Label Grid.Row="7" Grid.Column="0" Content="{lex:Loc OuterBtn}" ContentStringFormat="{}{0}:" VerticalAlignment="Center" Margin="0,0,0,5"/>
-													<Button Grid.Row="7" Grid.Column="1" Content="{lex:Loc OuterBind}" MinWidth="40" 
+													<Button Grid.Row="7" Grid.Column="1" 
+															x:Name="rsOuterBindBtn"
+															MinWidth="40" 
 															Tag="{Binding RSOuterBind, Source={StaticResource controlIndexCheck}}"
 															Click="StickOuterBindButton_Click" 
 															ToolTip="{lex:Loc StickOuterBindTooltip}" 
-															HorizontalAlignment="Stretch" Margin="0,0,0,5"/>
-													
-													<!-- Outer Button - 第二行 -->
-													<Grid Grid.Row="8" Grid.Column="1" Margin="0,0,0,5">
-														<Label x:Name="rsOuterBindLb" Content="{Binding MappingName,FallbackValue=Unassigned}"
-															   HorizontalAlignment="Center"/>
-													</Grid>
+															HorizontalAlignment="Stretch"
+															Content="{Binding MappingName, FallbackValue=''}"
+															Margin="0,0,0,5"/>
 
 													<!-- Outer Button Deadzone -->
-													<Label Grid.Row="9" Grid.Column="0" Content="{lex:Loc OuterBtnDead}" ContentStringFormat="{}{0}:" VerticalAlignment="Center" Margin="0,0,0,5"/>
-													<Grid Grid.Row="9" Grid.Column="1" Margin="0,0,0,5">
+													<Label Grid.Row="8" Grid.Column="0" Content="{lex:Loc OuterBtnDead}" ContentStringFormat="{}{0}:" VerticalAlignment="Center" Margin="0,0,0,5"/>
+													<Grid Grid.Row="8" Grid.Column="1" Margin="0,0,0,5">
 														<Grid.ColumnDefinitions>
 															<ColumnDefinition Width="*"/>
 															<ColumnDefinition Width="Auto"/>
@@ -998,31 +990,31 @@
 													</Grid>
 
 													<!-- Calibration Section 标题 - 跨两列 -->
-													<Label Grid.Row="10" Grid.Column="0" Grid.ColumnSpan="2" 
+													<Label Grid.Row="9" Grid.Column="0" Grid.ColumnSpan="2" 
 														   Content="{lex:Loc StickCalibration}" 
 														   HorizontalContentAlignment="Center" 
 														   FontWeight="Bold" Margin="0,10,0,5"/>
 
 													<!-- X Axis Offset -->
-													<Label Grid.Row="11" Grid.Column="0" Content="{lex:Loc XAxisOffset}" VerticalAlignment="Center" Margin="0,0,0,5"/>
-													<xctk:SByteUpDown Grid.Row="11" Grid.Column="1" Value="{Binding RightStickDriftXAxis,UpdateSourceTrigger=LostFocus}" 
+													<Label Grid.Row="10" Grid.Column="0" Content="{lex:Loc XAxisOffset}" VerticalAlignment="Center" Margin="0,0,0,5"/>
+													<xctk:SByteUpDown Grid.Row="10" Grid.Column="1" Value="{Binding RightStickDriftXAxis,UpdateSourceTrigger=LostFocus}" 
 																	  HorizontalAlignment="Stretch" Margin="0,0,0,5"
 																	  Maximum="127" Minimum="-127" Increment="1"/>
 
 													<!-- Y Axis Offset -->
-													<Label Grid.Row="12" Grid.Column="0" Content="{lex:Loc YAxisOffset}" VerticalAlignment="Center" Margin="0,0,0,5"/>
-													<xctk:SByteUpDown Grid.Row="12" Grid.Column="1" Value="{Binding RightStickDriftYAxis,UpdateSourceTrigger=LostFocus}" 
+													<Label Grid.Row="11" Grid.Column="0" Content="{lex:Loc YAxisOffset}" VerticalAlignment="Center" Margin="0,0,0,5"/>
+													<xctk:SByteUpDown Grid.Row="11" Grid.Column="1" Value="{Binding RightStickDriftYAxis,UpdateSourceTrigger=LostFocus}" 
 																	  HorizontalAlignment="Stretch" Margin="0,0,0,5"
 																	  Maximum="127" Minimum="-127" Increment="1"/>
 
 													<!-- Calibrate Button - 跨两列 -->
-													<Button Grid.Row="13" Grid.Column="0" Grid.ColumnSpan="2" 
+													<Button Grid.Row="12" Grid.Column="0" Grid.ColumnSpan="2" 
 															Content="{lex:Loc AutomaticallyRecalibrateStick}" 
 															Click="CalibrateStick_OnClick" Tag="1" 
 															HorizontalAlignment="Stretch" Padding="5" Margin="0,5,0,10"/>
 
 													<!-- Delta Acceleration Section - 跨两列 -->
-													<GroupBox Grid.Row="14" Grid.Column="0" Grid.ColumnSpan="2" 
+													<GroupBox Grid.Row="13" Grid.Column="0" Grid.ColumnSpan="2" 
 															  Header="{lex:Loc DeltaAcceleration}" Margin="0,5,0,0">
 														<StackPanel>
 															<!-- Delta Enabled -->
@@ -1072,7 +1064,7 @@
 																	<!-- Easing Duration -->
 																	<Label Grid.Row="3" Grid.Column="0" Content="{lex:Loc EasingDuration}" ContentStringFormat="{}{0}:" VerticalAlignment="Center" Margin="0,0,0,5"/>
 																	<DockPanel Grid.Row="3" Grid.Column="1" Margin="0,0,0,5">
-																		<TextBlock Text="{lex:Loc SecondsUnit}" DockPanel.Dock="Right" FontSize="10" 
+																		<TextBlock Text="{lex:Loc SecondsUnit}" DockPanel.Dock="Right" 
 																				  Margin="5,0,0,0" VerticalAlignment="Center"/>
 																		<xctk:DoubleUpDown FormatString="F2" Value="{Binding RSDeltaEasingDuration}"
 																						  HorizontalAlignment="Stretch"
@@ -1123,7 +1115,7 @@
 													<!-- Flick Time -->
 													<Label Grid.Row="2" Grid.Column="0" Content="{lex:Loc FlickTime}" ContentStringFormat="{}{0}:" VerticalAlignment="Center" Margin="0,0,0,5"/>
 													<DockPanel Grid.Row="2" Grid.Column="1" Margin="0,0,0,5">
-														<TextBlock Text="sec." DockPanel.Dock="Right" FontSize="10" Margin="5,0,0,0" VerticalAlignment="Center"/>
+														<TextBlock Text="sec." DockPanel.Dock="Right" Margin="5,0,0,0" VerticalAlignment="Center"/>
 														<xctk:DoubleUpDown Value="{Binding RSFlickTime,UpdateSourceTrigger=LostFocus}" 
 																		  FormatString="F2" HorizontalAlignment="Stretch"
 																		  Maximum="10.0" Minimum="0.01" Increment="0.1"/>
@@ -1148,6 +1140,25 @@
 
 					
                         <GroupBox Header="L2 &amp; R2">
+						    <GroupBox.Resources>
+								<!-- 统一高度和垂直对齐的隐式样式 -->
+								<Style TargetType="xctk:DoubleUpDown">
+									<Setter Property="Height" Value="24"/>
+								</Style>
+								<Style TargetType="ComboBox">
+									<Setter Property="Height" Value="24"/>
+								</Style>
+								<Style TargetType="Button">
+									<Setter Property="Height" Value="24"/>
+								</Style>
+								<Style TargetType="xctk:IntegerUpDown">
+									<Setter Property="Height" Value="24"/>
+								</Style>
+								<!-- 可选：统一 TextBox 样式 -->
+								<Style TargetType="TextBox">
+									<Setter Property="Height" Value="24"/>
+								</Style>
+							</GroupBox.Resources>
                             <Grid>
                                 <Grid.RowDefinitions>
                                     <RowDefinition></RowDefinition>
@@ -1205,7 +1216,7 @@
 
                                 <Label Content="{lex:Loc OutputCurve}" ContentStringFormat="{}{0}:" Grid.Row="6" Grid.Column="0" />
                                 <ComboBox Grid.Row="6" Grid.Column="1" SelectedIndex="{Binding L2OutputCurveIndex}"
-                                          Margin="{StaticResource spaceMargin}">
+                                          Margin="{StaticResource spaceMargin}" VerticalContentAlignment="Center">
                                     <ComboBoxItem Content="{lex:Loc Linear}" />
                                     <ComboBoxItem Content="{lex:Loc EnhancedPrecision}" />
                                     <ComboBoxItem Content="{lex:Loc Quadratic}" />
@@ -1215,7 +1226,7 @@
                                     <ComboBoxItem Content="{lex:Loc Custom}" />
                                 </ComboBox>
                                 <ComboBox Grid.Row="6" Grid.Column="2" SelectedIndex="{Binding R2OutputCurveIndex}"
-                                          Margin="{StaticResource spaceMargin}">
+                                          Margin="{StaticResource spaceMargin}" VerticalContentAlignment="Center">
                                     <ComboBoxItem Content="{lex:Loc Linear}" />
                                     <ComboBoxItem Content="{lex:Loc EnhancedPrecision}" />
                                     <ComboBoxItem Content="{lex:Loc Quadratic}" />
@@ -1293,30 +1304,32 @@
 									</ComboBox.ToolTip>
 								</ComboBox>
 
-								<!-- Full Button Pull Label -->
-                                <Label Content="{lex:Loc FullBtnPull}" ContentStringFormat="{}{0}:" Grid.Row="9" Grid.Column="0" />
-                                <DockPanel Grid.Row="9" Grid.Column="1">
-                                    <Button Content="{lex:Loc Full}" MinWidth="40" Tag="{Binding L2FullPull, Source={StaticResource controlIndexCheck}}" Click="TriggerFullPullBtn_Click"
-                                            Margin="{StaticResource spaceMargin}" DockPanel.Dock="Top" />
-                                    <Label x:Name="l2FullPullLb" Content="{Binding MappingName,FallbackValue=Unassigned}"
-                                           Margin="{StaticResource spaceMargin}" HorizontalAlignment="Center" DockPanel.Dock="Top"/>
-                                </DockPanel>
-								
-								<!-- L2 Full Pull -->
-                                <DockPanel Grid.Row="9" Grid.Column="2">
-                                    <Button Content="{lex:Loc Full}" MinWidth="40" Tag="{Binding R2FullPull, Source={StaticResource controlIndexCheck}}" Click="TriggerFullPullBtn_Click"
-                                            Margin="{StaticResource spaceMargin}" DockPanel.Dock="Top" />
-                                    <Label x:Name="r2FullPullLb" Content="{Binding MappingName,FallbackValue=Unassigned}"
-                                           Margin="{StaticResource spaceMargin}" HorizontalAlignment="Center" DockPanel.Dock="Top" />
-                                </DockPanel>
+								<!-- 第9行：Full Button Pull 和按钮 -->
+								<Label  Grid.Row="9" Grid.Column="0" Content="{lex:Loc FullBtnPull}" ContentStringFormat="{}{0}:" VerticalAlignment="Center"/>
+								<DockPanel Grid.Row="9" Grid.Column="1" VerticalAlignment="Center">
+									<Button x:Name="l2FullPullBtn" 
+											Content="{Binding MappingName, FallbackValue='Full'}" 
+											MinWidth="40" 
+											Tag="{Binding L2FullPull, Source={StaticResource controlIndexCheck}}" 
+											Click="TriggerFullPullBtn_Click"
+											Margin="{StaticResource spaceMargin}"/>
+								</DockPanel>
+								<DockPanel Grid.Row="9" Grid.Column="2" VerticalAlignment="Center">
+									<Button x:Name="r2FullPullBtn" 
+											Content="{Binding MappingName, FallbackValue='Full'}" 
+											MinWidth="40" 
+											Tag="{Binding R2FullPull, Source={StaticResource controlIndexCheck}}" 
+											Click="TriggerFullPullBtn_Click"
+											Margin="{StaticResource spaceMargin}"/>
+								</DockPanel>
 
-								<!-- Hip Fire Delay Label -->
-                                <Label Content="{lex:Loc HipFireDelay}" ContentStringFormat="{}{0}:" Grid.Row="10" Grid.Column="0" />
+								<!-- 第10行：Hip Fire Delay -->
+                                <Label Grid.Row="10" Grid.Column="0" Content="{lex:Loc HipFireDelay}" ContentStringFormat="{}{0}:" />
 								
 								<!-- L2 Hip Fire Delay -->
 								<DockPanel Grid.Row="10" Grid.Column="1" LastChildFill="True">
 									<Label Content="{lex:Loc Milliseconds}" DockPanel.Dock="Right" 
-										   VerticalAlignment="Center" Margin="5,0,0,0"/>
+										   VerticalAlignment="Center" Margin="0,-5,0,0"/>
 									<xctk:IntegerUpDown d:IsHidden="True" Value="{Binding L2HipFireTime}" 
 														MinWidth="50" Maximum="5000" Minimum="0" Increment="10"
 														Margin="{StaticResource spaceMargin}"
@@ -1330,7 +1343,7 @@
 								<!-- R2 Hip Fire Delay -->
 								<DockPanel Grid.Row="10" Grid.Column="2" LastChildFill="True">
 									<Label Content="{lex:Loc Milliseconds}" DockPanel.Dock="Right" 
-										   VerticalAlignment="Center" Margin="5,0,0,0"/>
+										   VerticalAlignment="Center" Margin="0,-5,0,0"/>
 									<xctk:IntegerUpDown d:IsHidden="True" Value="{Binding R2HipFireTime}" 
 														MinWidth="50" Maximum="5000" Minimum="0" Increment="10"
 														Margin="{StaticResource spaceMargin}"
@@ -1437,7 +1450,7 @@
 
                                 <Label Content="{lex:Loc OutputCurve}" ContentStringFormat="{}{0}:" Grid.Row="5" Grid.Column="0" />
                                 <ComboBox Grid.Row="5" Grid.Column="1" SelectedIndex="{Binding SXOutputCurveIndex}"
-                                          Margin="{StaticResource spaceMargin}">
+                                          Margin="{StaticResource spaceMargin}" VerticalContentAlignment="Center">
                                     <ComboBoxItem Content="{lex:Loc Linear}" />
                                     <ComboBoxItem Content="{lex:Loc EnhancedPrecision}" />
                                     <ComboBoxItem Content="{lex:Loc Quadratic}" />
@@ -1447,7 +1460,7 @@
                                     <ComboBoxItem Content="{lex:Loc Custom}" />
                                 </ComboBox>
                                 <ComboBox Grid.Row="5" Grid.Column="2" SelectedIndex="{Binding SZOutputCurveIndex}"
-                                          Margin="{StaticResource spaceMargin}">
+                                          Margin="{StaticResource spaceMargin}" VerticalContentAlignment="Center">
                                     <ComboBoxItem Content="{lex:Loc Linear}" />
                                     <ComboBoxItem Content="{lex:Loc EnhancedPrecision}" />
                                     <ComboBoxItem Content="{lex:Loc Quadratic}" />
@@ -1517,6 +1530,22 @@
 
 								<!-- 第一行：Color 和 EmptyColor GroupBox 并列 -->
 								<Grid Grid.Row="0" Margin="0,0,0,10">
+									<Grid.Resources>
+										<!-- 统一 Label 和 Slider 的样式 -->
+										<Style TargetType="TextBlock">
+											<Setter Property="Height" Value="22"/>
+											<Setter Property="Margin" Value="0,3,5,-5"/>
+											<Setter Property="VerticalAlignment" Value="Center"/>
+										</Style>
+										<Style TargetType="Slider">
+											<Setter Property="Height" Value="18"/>
+											<Setter Property="Margin" Value="0"/>
+											<Setter Property="VerticalAlignment" Value="Center"/>
+											<Setter Property="MinWidth" Value="100"/>
+											<Setter Property="Minimum" Value="0"/>
+											<Setter Property="Maximum" Value="255"/>
+										</Style>
+									</Grid.Resources>
 									<Grid.ColumnDefinitions>
 										<ColumnDefinition Width="Auto"/>
 										<ColumnDefinition Width="Auto"/>
@@ -1535,23 +1564,20 @@
 												<ColumnDefinition Width="*"/>
 											</Grid.ColumnDefinitions>
 											<!-- R -->
-											<Label Grid.Row="0" Grid.Column="0" Content="R" VerticalAlignment="Center"/>
+											<TextBlock Grid.Row="0" Grid.Column="0" Text="R"/>
 											<Slider Grid.Row="0" Grid.Column="1" Value="{Binding MainColorR}" 
-													Minimum="0" Maximum="255" ToolTip="{Binding MainColorR}" 
-													MinWidth="100" Background="{Binding MainColorRString, FallbackValue=Red}"
-													VerticalAlignment="Center"/>
+													ToolTip="{Binding MainColorR}" 
+													Background="{Binding MainColorRString, FallbackValue=Red}"/>
 											<!-- G -->
-											<Label Grid.Row="1" Grid.Column="0" Content="G" VerticalAlignment="Center"/>
+											<TextBlock Grid.Row="1" Grid.Column="0" Text="G"/>
 											<Slider Grid.Row="1" Grid.Column="1" Value="{Binding MainColorG}" 
-													Minimum="0" Maximum="255" ToolTip="{Binding MainColorG}" 
-													MinWidth="100" Background="{Binding MainColorGString, FallbackValue=Lime}"
-													VerticalAlignment="Center"/>
+													ToolTip="{Binding MainColorG}" 
+													Background="{Binding MainColorGString, FallbackValue=Lime}"/>
 											<!-- B -->
-											<Label Grid.Row="2" Grid.Column="0" Content="B" VerticalAlignment="Center"/>
+											<TextBlock Grid.Row="2" Grid.Column="0" Text="B"/>
 											<Slider Grid.Row="2" Grid.Column="1" Value="{Binding MainColorB}" 
-													Minimum="0" Maximum="255" ToolTip="{Binding MainColorB}" 
-													MinWidth="100" Background="{Binding MainColorBString, FallbackValue=Blue}"
-													VerticalAlignment="Center"/>
+													ToolTip="{Binding MainColorB}" 
+													Background="{Binding MainColorBString, FallbackValue=Blue}"/>
 										</Grid>
 									</GroupBox>
 
@@ -1569,27 +1595,24 @@
 												<ColumnDefinition Width="*"/>
 											</Grid.ColumnDefinitions>
 											<!-- R -->
-											<Label Grid.Row="0" Grid.Column="0" Content="R" VerticalAlignment="Center"/>
+											<TextBlock Grid.Row="0" Grid.Column="0" Text="R"/>
 											<Slider Grid.Row="0" Grid.Column="1" Value="{Binding LowColorR}" 
-													Minimum="0" Maximum="255" ToolTip="{Binding LowColorR}" 
-													MinWidth="100" Background="{Binding LowColorRString, FallbackValue=Red}"
-													VerticalAlignment="Center"/>
+													ToolTip="{Binding LowColorR}" 
+													Background="{Binding LowColorRString, FallbackValue=Red}"/>
 											<!-- G -->
-											<Label Grid.Row="1" Grid.Column="0" Content="G" VerticalAlignment="Center"/>
+											<TextBlock Grid.Row="1" Grid.Column="0" Text="G"/>
 											<Slider Grid.Row="1" Grid.Column="1" Value="{Binding LowColorG}" 
-													Minimum="0" Maximum="255" ToolTip="{Binding LowColorG}" 
-													MinWidth="100" Background="{Binding LowColorGString, FallbackValue=Lime}"
-													VerticalAlignment="Center"/>
+													ToolTip="{Binding LowColorG}" 
+													Background="{Binding LowColorGString, FallbackValue=Lime}"/>
 											<!-- B -->
-											<Label Grid.Row="2" Grid.Column="0" Content="B" VerticalAlignment="Center"/>
+											<TextBlock Grid.Row="2" Grid.Column="0" Text="B"/>
 											<Slider Grid.Row="2" Grid.Column="1" Value="{Binding LowColorB}" 
-													Minimum="0" Maximum="255" ToolTip="{Binding LowColorB}" 
-													MinWidth="100" Background="{Binding LowColorBString, FallbackValue=Blue}"
-													VerticalAlignment="Center"/>
+													ToolTip="{Binding LowColorB}" 
+													Background="{Binding LowColorBString, FallbackValue=Blue}"/>
 											<!-- 颜色按钮（位于新增行，跨两列并右对齐） -->
 											<Button x:Name="lowColorBtn" Grid.Row="3" Grid.Column="0" Grid.ColumnSpan="2" 
 													Width="10" Height="10" Background="{Binding LowColor}"
-													HorizontalAlignment="Right" Margin="0,6,0,0" Click="LowColorBtn_Click" />
+													HorizontalAlignment="Right" Click="LowColorBtn_Click" />
 										</Grid>
 									</GroupBox>
 								</Grid>
@@ -1621,23 +1644,19 @@
 								</Grid>
 
 								<!-- 第三行：低电量通知 -->
-								<Grid Grid.Row="2" Margin="0,0,0,10">
+								<Grid Grid.Row="2" Margin="10,-10,0,5">
 									<Grid.ColumnDefinitions>
 										<ColumnDefinition Width="Auto"/>
 										<ColumnDefinition Width="Auto"/>
 										<ColumnDefinition Width="Auto"/>
 										<ColumnDefinition Width="Auto"/>
+										<ColumnDefinition Width="Auto"/>
 									</Grid.ColumnDefinitions>
-									<CheckBox Grid.Column="0" Content="{lex:Loc LowBatteryNotify}" 
-											  IsChecked="{Binding EnableLowBatteryNotification}"
-											  ToolTip="{lex:Loc LowBatteryNotifyTooltip}" 
-											  VerticalAlignment="Center"/>
-									<TextBlock Grid.Column="1" Text="{lex:Loc ThresholdPrefix}" 
-											   Margin="10,0,0,0" VerticalAlignment="Center"/>
-									<TextBlock Grid.Column="2" Text="{Binding FlashAt, StringFormat={}{0}%}" 
-											   VerticalAlignment="Center" Margin="4,0,0,0"/>
-									<TextBlock Grid.Column="3" Text="{lex:Loc ThresholdSuffix}" 
-											   VerticalAlignment="Center" Margin="4,0,0,0"/>
+									<TextBlock Grid.Column="0" Text="└ " VerticalAlignment="Center" />
+									<CheckBox Grid.Column="1" Content="{lex:Loc LowBatteryNotify}" IsChecked="{Binding EnableLowBatteryNotification}"/>
+									<TextBlock Grid.Column="2" Text="{lex:Loc ThresholdPrefix}" Margin="0,0,0,0"/>
+									<TextBlock Grid.Column="3" Text="{Binding FlashAt, StringFormat={}{0}%}" Margin="0,0,0,0"/>
+									<TextBlock Grid.Column="4" Text="{lex:Loc ThresholdSuffix}" Margin="0,0,0,0"/>
 								</Grid>
 
 								<!-- 第四行：充电相关控件 -->
@@ -1657,7 +1676,7 @@
 										<ComboBoxItem Content="{lex:Loc ChargingRainbow}" />
 										<ComboBoxItem Content="{lex:Loc ChargingColor}" />
 									</ComboBox>
-									<Button x:Name="chargingColorBtn" Grid.Column="2" Width="20" Height="20" 
+									<Button x:Name="chargingColorBtn" Grid.Column="2" Width="20" Height="20"  
 											Background="{Binding ChargingColor,FallbackValue=Blue}"
 											Visibility="{Binding ChargingColorVisible}" 
 											Click="ChargingColorBtn_Click" Margin="20,0,0,0"
@@ -1678,11 +1697,11 @@
 										<ColumnDefinition Width="Auto"/>
 										<ColumnDefinition Width="Auto"/>
 										<ColumnDefinition Width="Auto"/>
-										<ColumnDefinition Width="*"/> <!-- 最后一列占用剩余空间 -->
+										<ColumnDefinition Width="110"/> <!-- 最后一列占用剩余空间 -->
 									</Grid.ColumnDefinitions>
 									
 									<!-- 彩虹按钮 -->
-									<Button x:Name="rainbowBtn" Grid.Column="0" Height="20" Width="20" 
+									<Button x:Name="rainbowBtn" Grid.Column="0"  Width="20"  Height="20" 
 											ToolTip="{lex:Loc Resources:AlwaysRainbow}" Click="RainbowBtn_Click"
 											VerticalAlignment="Center">
 										<Button.Content>
@@ -1704,22 +1723,22 @@
 									<!-- 右侧滑块与百分比显示区域（使用嵌套Grid） -->
 									<Grid Grid.Column="3" Margin="8,0,0,0">
 										<Grid.RowDefinitions>
-											<RowDefinition Height="Auto"/>
-											<RowDefinition Height="Auto"/>
+											<RowDefinition Height="20"/>
+											<RowDefinition Height="18"/>
 										</Grid.RowDefinitions>
 										
 										<!-- 第一行：百分比文本 -->
-										<StackPanel Grid.Row="0" Orientation="Horizontal" Margin="0,0,0,2">
-											<TextBlock Text="{lex:Loc MaxLightPrefix}" VerticalAlignment="Center"/>
-											<TextBlock Text="{Binding MaxSatRainbow, FallbackValue=100, StringFormat={}{0:F0}%}" 
-													   Margin="4,0,0,0" VerticalAlignment="Center"/>
+										<StackPanel Grid.Row="0" Orientation="Horizontal" HorizontalAlignment="Center" Margin="0,0,0,-5">
+											<TextBlock Text="{lex:Loc MaxLightPrefix}" />
+											<TextBlock Text="{Binding MaxSatRainbow, FallbackValue=100, StringFormat={}{0:F0}%}" />
 										</StackPanel>
 										
 										<!-- 第二行：滑块 - 水平拉伸对齐 -->
 										<Slider Grid.Row="1" Value="{Binding MaxSatRainbow,FallbackValue=100}" 
 												Minimum="0" Maximum="100" Width="100" 
-												IsEnabled="{Binding RainbowExists}" 
-												HorizontalAlignment="Left"/>
+												IsEnabled="{Binding RainbowExists}"
+												Margin="0,-5,0,0"
+												HorizontalAlignment="Center"/>
 									</Grid>
 								</Grid>
 							</Grid>
@@ -2146,7 +2165,7 @@
 												  DisplayMemberPath="DisplayName" 
 												  SelectedValuePath="ChoiceValue" 
 												  SelectedValue="{Binding TouchMouseStickOutputCurve}" 
-												  Margin="8,0,0,0" 
+												  Margin="8,5,0,0" 
 												  VerticalAlignment="Center"
 												  VerticalContentAlignment="Center"/>
 									</StackPanel>
@@ -2416,7 +2435,7 @@
 												<!-- Units TextBlock -->
 												<TextBlock Grid.Column="2" 
 														   Text="{lex:Loc Units}" 
-														   FontSize="10" 
+														   
 														   Margin="5,0,0,0" 
 														   VerticalAlignment="Center" />
 											</Grid>
@@ -3125,15 +3144,9 @@
 									  IsChecked="{Binding LaunchProgramExists}" IsEnabled="{Binding LaunchProgramExists}"
 									  VerticalAlignment="Center"/>
 							<Button x:Name="launchProgBrowseBtn" Click="LaunchProgBrowseBtn_Click" Width="80" Height="30" 
-									Margin="20,0,0,0" VerticalAlignment="Center" VerticalContentAlignment="Center">
-								<Button.Content>
-									<PriorityBinding>
-										<Binding Path="LaunchProgramName" />
-										<lex:BLoc Key="Browse" />
-									</PriorityBinding>
-								</Button.Content>
-							</Button>
-							<Button x:Name="launchProgIconBtn" Width="20" Height="20" Margin="20,0,0,0" 
+									Margin="10,0,0,0" VerticalAlignment="Center" VerticalContentAlignment="Center"
+									Content="{Binding LaunchProgramName}" />
+							<Button x:Name="launchProgIconBtn" Width="20" Height="20"  Margin="10,0,0,0" 
 									Focusable="False" VerticalAlignment="Center">
 								<Button.Background>
 									<ImageBrush ImageSource="{Binding LaunchProgramIcon}" />

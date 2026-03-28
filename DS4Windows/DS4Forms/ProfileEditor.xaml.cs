@@ -344,17 +344,17 @@ namespace DS4WinWPF.DS4Forms
             swipeRightLb.DataContext = mappingListVM.ControlMap[DS4Windows.DS4Controls.SwipeRight];
         }
 
-        private void AssignTriggerFullPullAssociation()
-        {
-            l2FullPullLb.DataContext = mappingListVM.ControlMap[DS4Controls.L2FullPull];
-            r2FullPullLb.DataContext = mappingListVM.ControlMap[DS4Controls.R2FullPull];
-        }
+		private void AssignTriggerFullPullAssociation()
+		{
+			l2FullPullBtn.DataContext = mappingListVM.ControlMap[DS4Controls.L2FullPull];
+			r2FullPullBtn.DataContext = mappingListVM.ControlMap[DS4Controls.R2FullPull];
+		}
 
-        private void AssignStickOuterBindAssociation()
-        {
-            lsOuterBindLb.DataContext = mappingListVM.ControlMap[DS4Controls.LSOuter];
-            rsOuterBindLb.DataContext = mappingListVM.ControlMap[DS4Controls.RSOuter];
-        }
+		private void AssignStickOuterBindAssociation()
+		{
+			lsOuterBindBtn.DataContext = mappingListVM.ControlMap[DS4Controls.LSOuter];
+			rsOuterBindBtn.DataContext = mappingListVM.ControlMap[DS4Controls.RSOuter];
+		}
 
         private void AssignGyroSwipeAssociation()
         {
@@ -1186,7 +1186,7 @@ namespace DS4WinWPF.DS4Forms
             bool state = profileSettingsVM.ColorBatteryPercent;
             if (state)
             {
-                colorGB.Header = Translations.Strings.Full;
+                colorGB.Header = Translations.Strings.FullyCharged;
                 emptyColorGB.Visibility = Visibility.Visible;
             }
             else
