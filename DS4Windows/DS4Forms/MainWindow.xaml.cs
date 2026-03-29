@@ -904,6 +904,13 @@ Suspend support not enabled.", true);
             aboutWin.Owner = this;
             aboutWin.ShowDialog();
         }
+		
+		private void OpenProgramFolderBtn_Click(object sender, RoutedEventArgs e)
+		{
+			ProcessStartInfo startInfo = new ProcessStartInfo(Global.exedirpath);
+			startInfo.UseShellExecute = true;
+			using (Process temp = Process.Start(startInfo)) { }
+		}
 
         private void StartStopBtn_Click(object sender, RoutedEventArgs e)
         {

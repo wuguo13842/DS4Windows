@@ -215,7 +215,8 @@ namespace DS4WinWPF.DS4Forms.ViewModels
 			contextMenu.Items.Clear();
 			ItemCollection items = contextMenu.Items;
 			
-			items.Add(openProgramItem);
+			// 将“打开程序文件夹”放在最上面
+			// items.Add(openProgramItem);
 			
 			using (ReadLocker locker = new ReadLocker(_colLocker))
 			{
@@ -278,8 +279,12 @@ namespace DS4WinWPF.DS4Forms.ViewModels
 
 					items.Add(controllerItem);
 				}
-
-				items.Add(new Separator());
+				
+				// 仅当有手柄时才添加分隔符
+				if (controllerList.Count > 0)
+				{
+					items.Add(new Separator());
+				}
 				PopulateStaticItems();
 			}
 		}

@@ -538,6 +538,10 @@
                                     Style="{StaticResource NoBGHoverBtn}" Click="ProfFolderBtn_Click">
                                     <TextBlock Text="{lex:Loc ProfileFolder}" TextDecorations="Underline" Foreground="{DynamicResource AccentColor}" Cursor="Hand" />
                                 </Button>
+								<Button x:Name="openProgramFolderBtn" BorderThickness="0" Margin="0,0,4,4" Background="{x:Null}" BorderBrush="{x:Null}"
+										Style="{StaticResource NoBGHoverBtn}" Click="OpenProgramFolderBtn_Click">
+									<TextBlock Text="{lex:Loc MenuOpenProgramFolder}" TextDecorations="Underline" Foreground="{DynamicResource AccentColor}" Cursor="Hand" />
+								</Button>
                                 <Button x:Name="controlPanelBtn" BorderThickness="0" Margin="0,0,4,4" Background="{x:Null}" BorderBrush="{x:Null}"
                                     Style="{StaticResource NoBGHoverBtn}" Click="ControlPanelBtn_Click" >
                                     <TextBlock Text="{lex:Loc ControlPanel}" TextDecorations="Underline" Foreground="{DynamicResource AccentColor}" Cursor="Hand" />
