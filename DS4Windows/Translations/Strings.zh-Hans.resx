@@ -621,10 +621,10 @@
     <value>插入</value>
   </data>
   <data name="RevertToDefaultProfileOnUnknown" xml:space="preserve">
-    <value>遇到未知的应用时回滚到默认配置文件</value>
+    <value>未知应用回滚到默认配置</value>
   </data>
   <data name="ShowAutoProfileDebugMessages" xml:space="preserve">
-    <value>显示自动配置文件切换的调试消息</value>
+    <value>自动切换配置文件的调试消息</value>
   </data>
   <data name="SwipeTouchpadToSwitchProfiles" xml:space="preserve">
     <value>滑动触摸板来切换配置文件</value>
@@ -759,7 +759,7 @@
     <value>第一次启动</value>
   </data>
   <data name="AutoProfiles.DisplaySwitchVia" xml:space="preserve">
-    <value>通过以下选项显示配置切换</value>
+    <value>配置切换通知方式</value>
   </data>
   <data name="AutoProfiles.LogAndNotification" xml:space="preserve">
     <value>日志 + 通知</value>
