@@ -1437,6 +1437,9 @@
 		<value>请静止平放不要移动等待校准完成！！</value>
 		<comment>参数：0=控制器编号</comment>
 	</data>
+	<data name="ProfileInUse" xml:space="preserve">
+		<value>配置文件“{0}”正在使用中，无法删除。</value>
+	</data>
   <data name="ThresholdPrefix" xml:space="preserve">
     <value>（阀值：</value>
     <comment>Prefix before threshold value, e.g. "(Threshold: "</comment>

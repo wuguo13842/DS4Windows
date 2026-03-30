@@ -1497,6 +1497,9 @@ Please click OK to confirm that you have read the message. Press Cancel to be re
 		<value>Please wait for the calibration to be completed by laying it flat and not moving it!!</value>
 		<comment>Notification when gyro calibration starts, parameter: {0}=controller number</comment>
 	</data>
+	<data name="ProfileInUse" xml:space="preserve">
+		<value>Profile "{0}" is currently in use and cannot be deleted.</value>
+	</data>
   <data name="ThresholdPrefix" xml:space="preserve">
     <value>(Threshold:   </value>
     <comment>Prefix before threshold value, e.g. "(Threshold: "  </comment>

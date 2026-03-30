@@ -1732,22 +1732,45 @@ Suspend support not enabled.", true);
             dupBoxBar.Visibility = Visibility.Collapsed;
         }
 
-        private void DeleteProfBtn_Click(object sender, RoutedEventArgs e)
-        {
-            if (profilesListBox.SelectedIndex >= 0)
-            {
-                int idx = profilesListBox.SelectedIndex;
-                ProfileEntity entity = profileListHolder.ProfileListCol[idx];
-                string filename = entity.Name;
-                if (MessageBox.Show(Properties.Resources.ProfileCannotRestore.Replace("*Profile name*", "\"" + filename + "\""),
-                    Properties.Resources.DeleteProfile,
-                    MessageBoxButton.YesNo, MessageBoxImage.Question) == MessageBoxResult.Yes)
-                {
-                    entity.DeleteFile();
-                    profileListHolder.ProfileListCol.RemoveAt(idx);
-                }
-            }
-        }
+		private void DeleteProfBtn_Click(object sender, RoutedEventArgs e)
+		{
+			if (profilesListBox.SelectedIndex >= 0)
+			{
+				int idx = profilesListBox.SelectedIndex;
+				ProfileEntity entity = profileListHolder.ProfileListCol[idx];
+				string filename = entity.Name;
+
+				// 检查该配置文件是否正在被任何控制器使用
+				bool isInUse = false;
+				foreach (var device in conLvViewModel.ControllerCol)
+				{
+					if (device.SelectedProfile == filename)
+					{
+						isInUse = true;
+						break;
+					}
+				}
+
+				if (isInUse)
+				{
+					// 发送警告通知（托盘气泡）
+					string message = string.Format(GetLocalizedString("ProfileInUse"), filename);
+					AppLogger.LogToTray(message, true, true);
+					// 可选：同时弹出 MessageBox 提醒用户
+					// MessageBox.Show(message, Translations.Strings.Warning, MessageBoxButton.OK, MessageBoxImage.Warning);
+					return; // 禁止删除
+				}
+
+				// 确认删除（原有逻辑）
+				if (MessageBox.Show(Properties.Resources.ProfileCannotRestore.Replace("*Profile name*", "\"" + filename + "\""),
+					Properties.Resources.DeleteProfile,
+					MessageBoxButton.YesNo, MessageBoxImage.Question) == MessageBoxResult.Yes)
+				{
+					entity.DeleteFile();
+					profileListHolder.ProfileListCol.RemoveAt(idx);
+				}
+			}
+		}
 
         private void SelectProfCombo_KeyDown(object sender, KeyEventArgs e)
         {
