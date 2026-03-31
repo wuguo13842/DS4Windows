@@ -1375,6 +1375,9 @@ To setup Bluetooth (optional): Hold the PS Button and Share for 3 seconds. The l
   <data name="SpecialActionEdit.SetUnloadTrigger" xml:space="preserve">
     <value>Set Unload Trigger</value>
   </data>
+  <data name="SpecialActionEdit.SetRegularTrigger" xml:space="preserve">
+    <value>Set Regular Trigge</value>
+  </data>
   <data name="SpecialActionEdit.SixAxisWheelCalib" xml:space="preserve">
     <value>Calibration of sixaxis wheel calibration</value>
   </data>
@@ -1975,5 +1978,8 @@ Please click OK to confirm that you have read the message. Press Cancel to be re
 	</data>
 	<data name="GyroMaxZone" xml:space="preserve">
 		<value>Max Angular Speed</value>
+	</data>
+	<data name="Arguments" xml:space="preserve">
+		<value>Arguments</value>
 	</data>
 </root>

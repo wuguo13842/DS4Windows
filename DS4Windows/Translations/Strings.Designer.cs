@@ -5663,5 +5663,14 @@ namespace DS4WinWPF.Translations {
 				return ResourceManager.GetString("MainWin.Unknown", resourceCulture);
 			}
 		}
+		
+		/// <summary>
+		///   Looks up a localized string similar to SpecialActionEdit.SetRegularTrigger.
+		/// </summary>
+		public static string SpecialActionEdit_SetRegularTrigger {
+			get {
+				return ResourceManager.GetString("SpecialActionEdit.SetRegularTrigger", resourceCulture);
+			}
+		}
     }
 }
