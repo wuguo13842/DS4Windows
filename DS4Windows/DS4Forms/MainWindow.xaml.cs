@@ -1104,7 +1104,8 @@ Suspend support not enabled.", true);
 			if (devIndex < 0 || devIndex >= Program.rootHub.DS4Controllers.Length) return;
 
 			DS4Device device = Program.rootHub.DS4Controllers[devIndex];
-			if (device != null && device.Synced && !device.Charging)
+			// 修改：使用 CanDisconnect 属性
+			if (device != null && device.CanDisconnect)
 			{
 				if (device.ConnectionType == ConnectionType.BT)
 				{

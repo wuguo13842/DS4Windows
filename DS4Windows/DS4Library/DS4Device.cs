@@ -982,6 +982,11 @@ namespace DS4Windows
                 }
             }
         }
+		
+        /// <summary>
+        /// 指示当前设备是否可以通过软件断开连接（仅限无线连接，且已同步）
+        /// </summary>
+        public bool CanDisconnect => synced && (conType == ConnectionType.BT || conType == ConnectionType.SONYWA);
 
         public bool isSynced()
         {

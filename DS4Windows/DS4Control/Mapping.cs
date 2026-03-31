@@ -4324,28 +4324,27 @@ namespace DS4Windows
                                         outputKBMHandler.PerformKeyPress(key);
                                 }
                             }
-                            else if (action.typeID == SpecialAction.ActionTypeId.DisconnectBT)
-                            {
-                                actionFound = true;
+							else if (action.typeID == SpecialAction.ActionTypeId.DisconnectBT)
+							{
+								actionFound = true;
 
-                                DS4Device d = ctrl.DS4Controllers[device];
-                                bool synced = /*tempBool =*/ d.isSynced();
-                                if (synced && !d.isCharging())
-                                {
-                                    ConnectionType deviceConn = d.getConnectionType();
-                                    //bool exclusive = /*tempBool =*/ d.isExclusive();
-                                    if (deviceConn == ConnectionType.BT)
-                                    {
-                                        d.DisconnectBT();
-                                        ReleaseActionKeys(action, device);
-                                        return;
-                                    }
-                                    else if (deviceConn == ConnectionType.SONYWA)
-                                    {
-                                        action.pressRelease = true;
-                                    }
-                                }
-                            }
+								DS4Device d = ctrl.DS4Controllers[device];
+								// 修改：使用 CanDisconnect 属性
+								if (d.CanDisconnect)
+								{
+									ConnectionType deviceConn = d.getConnectionType();
+									if (deviceConn == ConnectionType.BT)
+									{
+										d.DisconnectBT();
+										ReleaseActionKeys(action, device);
+										return;
+									}
+									else if (deviceConn == ConnectionType.SONYWA)
+									{
+										action.pressRelease = true;
+									}
+								}
+							}
                             else if (action.typeID == SpecialAction.ActionTypeId.BatteryCheck)
                             {
                                 actionFound = true;

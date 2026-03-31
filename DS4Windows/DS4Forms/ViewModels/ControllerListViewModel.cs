@@ -233,7 +233,23 @@ namespace DS4WinWPF.DS4Forms.ViewModels
         public string SelectedProfile { get => selectedProfile; set => selectedProfile = value; }
         public ProfileList ProfileEntities { get => profileListHolder; set => profileListHolder = value; }
         public ObservableCollection<ProfileEntity> ProfileListCol => profileListHolder.ProfileListCol;
-
+		
+		// ========== 新增：断开按钮启用状态属性 ==========
+		private bool _isDisconnectEnabled;
+		public bool IsDisconnectEnabled
+		{
+			get => _isDisconnectEnabled;
+			private set
+			{
+				if (_isDisconnectEnabled != value)
+				{
+					_isDisconnectEnabled = value;
+					OnPropertyChanged(nameof(IsDisconnectEnabled));
+				}
+			}
+		}
+		// =============================================
+	
         public string LightColor
         {
             get
@@ -484,7 +500,19 @@ namespace DS4WinWPF.DS4Forms.ViewModels
 
             // 订阅设备移除事件以清理资源
             device.Removal += OnDeviceRemoval;
+			
+			// ========== 新增：初始化断开按钮状态并订阅 SyncChange 事件 ==========
+			UpdateDisconnectEnabled();
+			device.SyncChange += (s, e) => OnPropertyChanged(nameof(IsDisconnectEnabled));
+			// =================================================================
         }
+		
+		// ========== 新增：更新断开按钮状态的方法 ==========
+		private void UpdateDisconnectEnabled()
+		{
+			IsDisconnectEnabled = device.CanDisconnect;
+		}
+		// ===============================================
 
         /// <summary>
         /// 闪烁定时器 Tick 事件处理 - 每250ms切换一次可见性，实现闪烁
@@ -817,23 +845,22 @@ namespace DS4WinWPF.DS4Forms.ViewModels
             }
         }
 
-        public void RequestDisconnect()
-        {
-            if (device.Synced && !device.Charging)
-            {
-                if (device.ConnectionType == ConnectionType.BT)
-                {
-                    //device.StopUpdate();
-                    device.queueEvent(() =>
-                    {
-                        device.DisconnectBT();
-                    });
-                }
-                else if (device.ConnectionType == ConnectionType.SONYWA)
-                {
-                    device.DisconnectDongle();
-                }
-            }
-        }
+		public void RequestDisconnect()
+		{
+			if (device.CanDisconnect)
+			{
+				if (device.ConnectionType == ConnectionType.BT)
+				{
+					device.queueEvent(() =>
+					{
+						device.DisconnectBT();
+					});
+				}
+				else if (device.ConnectionType == ConnectionType.SONYWA)
+				{
+					device.DisconnectDongle();
+				}
+			}
+		}
     }
 }

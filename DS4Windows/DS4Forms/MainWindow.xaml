@@ -205,7 +205,8 @@
 														Tag="{Binding DevIndex}" 
 														HorizontalAlignment="Center" 
 														VerticalAlignment="Center"
-														Width="60" Padding="5,2"/>
+														Width="60" Padding="5,2"
+														IsEnabled="{Binding IsDisconnectEnabled}" />
 											</StackPanel>
 										</DataTemplate>
 									</GridViewColumn.CellTemplate>

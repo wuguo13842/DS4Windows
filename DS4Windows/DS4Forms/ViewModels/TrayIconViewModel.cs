@@ -254,7 +254,7 @@ namespace DS4WinWPF.DS4Forms.ViewModels
 					}
 
 					// 断开连接菜单项
-					if (currentDev.Synced && !currentDev.Charging)
+					if (currentDev.CanDisconnect)
 					{
 						MenuItem disconnectItem = new MenuItem() 
 						{ 
@@ -348,7 +348,8 @@ namespace DS4WinWPF.DS4Forms.ViewModels
 			if (holder == null) return;
 
 			DS4Device tempDev = holder.Device;
-			if (tempDev != null && tempDev.Synced && !tempDev.Charging)
+			// 修改：使用 CanDisconnect 属性（无线且同步即可，不检查充电）
+			if (tempDev != null && tempDev.CanDisconnect)
 			{
 				if (tempDev.ConnectionType == ConnectionType.BT)
 					tempDev.DisconnectBT();
@@ -357,9 +358,9 @@ namespace DS4WinWPF.DS4Forms.ViewModels
 			}
 		}
 
-				/// <summary>
-				/// 陀螺仪校准菜单项点击事件
-				/// </summary>
+		/// <summary>
+		/// 陀螺仪校准菜单项点击事件
+		/// </summary>
 		private void CalibrateGyroMenuItem_Click(object sender, System.Windows.RoutedEventArgs e)
 		{
 			MenuItem item = sender as MenuItem;
