@@ -53,7 +53,7 @@
                                 <GridViewColumn x:Name="indexColumn" Header="#" Width="15">
                                     <GridViewColumn.CellTemplate>
                                         <DataTemplate>
-                                            <StackPanel  Width="{Binding ElementName=indexColumn, Path=Width}" Margin="-6,0,0,0">
+                                            <StackPanel  Width="{Binding ElementName=indexColumn, Path=Width}" Margin="-6,0,-6,0">
                                                 <TextBlock Text="{Binding DisplayDevIndex}" HorizontalAlignment="Center" />
                                             </StackPanel>
                                         </DataTemplate>
@@ -74,19 +74,35 @@
                                         </DataTemplate>
                                     </GridViewColumn.CellTemplate>
                                 </GridViewColumn>
-                                <GridViewColumn Header="{lex:Loc Status}"  x:Name="statusColumn" Width="35">
+                                <GridViewColumn Header="{lex:Loc Status}"  x:Name="statusColumn" Width="90">
                                     <GridViewColumn.CellTemplate>
                                         <DataTemplate>
-                                            <StackPanel Width="{Binding ElementName=statusColumn, Path=Width}" Margin="-6,0,0,0">
-                                                <Image x:Name="contStatusImg" Source="{Binding StatusSource}" Stretch="Uniform" Width="20" Height="20" HorizontalAlignment="Center" ToolTip="Right click to disconnect wireless" MouseRightButtonUp="ContStatusImg_MouseRightButtonUp" Tag="{Binding DevIndex}" />
-                                            </StackPanel>
-                                        </DataTemplate>
-                                    </GridViewColumn.CellTemplate>
-                                </GridViewColumn>
+											<Grid HorizontalAlignment="Center" VerticalAlignment="Center" Width="{Binding ElementName=statusColumn, Path=Width}" Margin="-6,0,-6,0">
+												<Grid.ColumnDefinitions>
+													<ColumnDefinition Width="*"/>
+													<ColumnDefinition Width="20"/>
+													<ColumnDefinition Width="2"/>
+													<ColumnDefinition Width="60"/>
+													<ColumnDefinition Width="*"/>
+												</Grid.ColumnDefinitions>
+												<Image Grid.Column="1" x:Name="contStatusImg" Source="{Binding StatusSource}" Stretch="Uniform" Width="20" Height="20" HorizontalAlignment="Center" ToolTip="Right click to disconnect wireless" MouseRightButtonUp="ContStatusImg_MouseRightButtonUp" Tag="{Binding DevIndex}" />
+
+												<Button Grid.Column="3" Content="{lex:Loc Disconnect}" 
+														Click="DisconnectControllerBtn_Click" 
+														Tag="{Binding DevIndex}" 
+														HorizontalAlignment="Center" 
+														VerticalAlignment="Center"
+														Width="60" Padding="5,2"
+														IsEnabled="{Binding IsDisconnectEnabled}"/>
+											</Grid>
+										</DataTemplate>
+									</GridViewColumn.CellTemplate>
+								</GridViewColumn>
+								
                                 <GridViewColumn x:Name="exclusiveColumn" Header="Ex" Width="35">
                                     <GridViewColumn.CellTemplate>
                                         <DataTemplate>
-                                            <StackPanel Width="{Binding ElementName=exclusiveColumn, Path=Width}" Margin="-6,0,0,0">
+                                            <StackPanel Width="{Binding ElementName=exclusiveColumn, Path=Width}" Margin="-6,0,-6,0">
                                                 <Image Source="{Binding ExclusiveSource}" Stretch="Uniform" Width="20" Height="20" HorizontalAlignment="Center"
                                                        ToolTip="{Binding IsExclusiveText}" />
                                             </StackPanel>
@@ -96,52 +112,52 @@
                                 <GridViewColumn x:Name="batteryColumn" Header="{lex:Loc Battery}" Width="55">
                                     <GridViewColumn.CellTemplate>
                                         <DataTemplate>
-                                            <StackPanel Width="{Binding ElementName=batteryColumn, Path=Width}" Margin="-6,0,0,0">
+                                            <StackPanel Width="{Binding ElementName=batteryColumn, Path=Width}" Margin="-6,0,-6,0">
                                                 <Label Content="{Binding BatteryState, Mode=OneWay}" HorizontalAlignment="Center">
                                                 </Label>
                                             </StackPanel>
                                         </DataTemplate>
                                     </GridViewColumn.CellTemplate>
                                 </GridViewColumn>
-								<GridViewColumn x:Name="selectProfileColumn" Header="{lex:Loc SelectedProfile}" Width="170">
+								<GridViewColumn x:Name="selectProfileColumn" Header="{lex:Loc SelectedProfile}" Width="160">
 									<GridViewColumn.CellTemplate>
 										<DataTemplate>
-                                            <StackPanel Width="{Binding Path=Width, ElementName=selectProfileColumn, Mode=OneWay}">
-												<Grid HorizontalAlignment="Stretch" VerticalAlignment="Center">
-													<Grid.ColumnDefinitions>
-														<ColumnDefinition Width="*" MinWidth="80" />
-														<ColumnDefinition Width="85" />
-													</Grid.ColumnDefinitions>
+											<Grid HorizontalAlignment="Stretch" VerticalAlignment="Center"  Width="{Binding Path=Width, ElementName=selectProfileColumn, Mode=OneWay}" Margin="-2,0,-2,0">
+												<Grid.ColumnDefinitions>
+													<ColumnDefinition Width="*"/>
+													<ColumnDefinition Width="*" MinWidth="80" />
+													<ColumnDefinition Width="1" />
+													<ColumnDefinition Width="85" />
+													<ColumnDefinition Width="*"/>
+												</Grid.ColumnDefinitions>
 
-													<ComboBox Grid.Column="0" x:Name="selectProfCombo"
-															  ItemsSource="{Binding ProfileListCol}" 
-															  SelectedIndex="{Binding SelectedIndex}" 
-															  Height="Auto" 
-															  Tag="{Binding DevIndex, Mode=OneTime}" 
-															  Visibility="{Binding PrimaryDevice, Converter={StaticResource BooleanToVisibilityConverter}}"
-															  SelectionChanged="SelectProfCombo_SelectionChanged" 
-															  KeyDown="SelectProfCombo_KeyDown">
-														<ComboBox.ItemTemplate>
-															<DataTemplate>
-																<TextBlock Text="{Binding Name, Mode=OneWay, FallbackValue=''}" />
-															</DataTemplate>
-														</ComboBox.ItemTemplate>
-													</ComboBox>
+												<ComboBox Grid.Column="1" x:Name="selectProfCombo"
+														  ItemsSource="{Binding ProfileListCol}" 
+														  SelectedIndex="{Binding SelectedIndex}" 
+														  Height="Auto" 
+														  Tag="{Binding DevIndex, Mode=OneTime}" 
+														  Visibility="{Binding PrimaryDevice, Converter={StaticResource BooleanToVisibilityConverter}}"
+														  SelectionChanged="SelectProfCombo_SelectionChanged" 
+														  KeyDown="SelectProfCombo_KeyDown">
+													<ComboBox.ItemTemplate>
+														<DataTemplate>
+															<TextBlock Text="{Binding Name, Mode=OneWay, FallbackValue=''}" />
+														</DataTemplate>
+													</ComboBox.ItemTemplate>
+												</ComboBox>
 
-													<xctk:SplitButton Grid.Column="1" x:Name="ProfEditSBtn" 
-																	  Content="{lex:Loc Edit}" Width="70" 
-																	  Margin="1,0,0,0"
-																	  Visibility="{Binding PrimaryDevice, Converter={StaticResource BooleanToVisibilityConverter}}"
-																	  Tag="{Binding DevIndex, Mode=OneTime}" 
-																	  Click="ProfEditSBtn_Click" 
-																	  HorizontalAlignment="Left">
-														<xctk:SplitButton.DropDownContent>
-															<Button x:Name="newProfBtn" Content="{lex:Loc NewProfile}" MinWidth="120" 
-																	Tag="{Binding DevIndex, Mode=OneTime}" Click="NewProfBtn_Click" />
-														</xctk:SplitButton.DropDownContent>
-													</xctk:SplitButton>
-												</Grid>
-											</StackPanel>
+												<xctk:SplitButton Grid.Column="3" x:Name="ProfEditSBtn" 
+																  Content="{lex:Loc Edit}" Width="70"
+																  Visibility="{Binding PrimaryDevice, Converter={StaticResource BooleanToVisibilityConverter}}"
+																  Tag="{Binding DevIndex, Mode=OneTime}" 
+																  Click="ProfEditSBtn_Click" 
+																  HorizontalAlignment="Left">
+													<xctk:SplitButton.DropDownContent>
+														<Button x:Name="newProfBtn" Content="{lex:Loc NewProfile}" MinWidth="120" 
+																Tag="{Binding DevIndex, Mode=OneTime}" Click="NewProfBtn_Click" />
+													</xctk:SplitButton.DropDownContent>
+												</xctk:SplitButton>
+											</Grid>
 										</DataTemplate>
 									</GridViewColumn.CellTemplate>
 								</GridViewColumn>
@@ -168,46 +184,27 @@
 								<GridViewColumn x:Name="DisconnectController" Width="95" Header="{lex:Loc GyroCalibration}">
 									<GridViewColumn.CellTemplate>
 										<DataTemplate>
-											<StackPanel Width="{Binding Path=Width, ElementName=DisconnectController, Mode=OneWay}" HorizontalAlignment="Center" Margin="-4,0,-6,0">
-												<Grid HorizontalAlignment="Center" VerticalAlignment="Center">
-													<Grid.ColumnDefinitions>
-														<ColumnDefinition Width="*"/>
-														<ColumnDefinition Width="20"/>
-														<ColumnDefinition Width="80"/>
-														<ColumnDefinition Width="*"/>
-													</Grid.ColumnDefinitions>
-													
-													<!-- 闪烁图标 -->
-													<Ellipse Grid.Column="1" Width="12" Height="12" Fill="Green" 
-															 Margin="0,0,3,0"
-															 HorizontalAlignment="Right"
-															 Visibility="{Binding GyroCalibrationBlink, Converter={StaticResource BooleanToVisibilityConverter}}"/>
-													
-													<!-- 校准按钮 -->
-													<Button Grid.Column="2" Content="{lex:Loc Calibrate}" 
-															Click="CalibrateGyroBtn_Click" 
-															Tag="{Binding DevIndex}" 
-															HorizontalAlignment="Left" 
-															Width="70" Padding="5,2"/>
-												</Grid>
-											</StackPanel>
-										</DataTemplate>
-									</GridViewColumn.CellTemplate>
-								</GridViewColumn>
-								
-								<!-- 新增断开控制器 -->
-								<GridViewColumn x:Name="DisconnectColumn" Width="75" >
-									<GridViewColumn.CellTemplate>
-										<DataTemplate>
-											<StackPanel Width="{Binding Path=Width, ElementName=DisconnectColumn, Mode=OneWay}" HorizontalAlignment="Center" Margin="-5,0,-5,0">
-												<Button Content="{lex:Loc Disconnect}" 
-														Click="DisconnectControllerBtn_Click" 
+											<Grid VerticalAlignment="Center" HorizontalAlignment="Center" Width="{Binding Path=Width, ElementName=DisconnectController, Mode=OneWay}" Margin="-4,0,-6,0">
+												<Grid.ColumnDefinitions>
+													<ColumnDefinition Width="*"/>
+													<ColumnDefinition Width="20"/>
+													<ColumnDefinition Width="80"/>
+													<ColumnDefinition Width="*"/>
+												</Grid.ColumnDefinitions>
+												
+												<!-- 闪烁图标 -->
+												<Ellipse Grid.Column="1" Width="12" Height="12" Fill="Green" 
+														 Margin="0,0,3,0"
+														 HorizontalAlignment="Right"
+														 Visibility="{Binding GyroCalibrationBlink, Converter={StaticResource BooleanToVisibilityConverter}}"/>
+												
+												<!-- 校准按钮 -->
+												<Button Grid.Column="2" Content="{lex:Loc Calibrate}" 
+														Click="CalibrateGyroBtn_Click" 
 														Tag="{Binding DevIndex}" 
-														HorizontalAlignment="Center" 
-														VerticalAlignment="Center"
-														Width="60" Padding="5,2"
-														IsEnabled="{Binding IsDisconnectEnabled}" />
-											</StackPanel>
+														HorizontalAlignment="Left" 
+														Width="70" Padding="5,2"/>
+											</Grid>
 										</DataTemplate>
 									</GridViewColumn.CellTemplate>
 								</GridViewColumn>

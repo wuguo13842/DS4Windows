@@ -258,7 +258,7 @@ namespace DS4WinWPF.DS4Forms.ViewModels
 					{
 						MenuItem disconnectItem = new MenuItem() 
 						{ 
-							Header = GetLocalizedString("Disconnect") + GetLocalizedString("Controllers")
+							Header = GetLocalizedString("Disconnect")
 						};
 						disconnectItem.Click += DisconnectMenuItem_Click;
 						disconnectItem.Tag = macAddress;

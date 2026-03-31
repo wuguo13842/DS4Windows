@@ -184,7 +184,7 @@
     <value>Controllers</value>
   </data>
   <data name="Disconnect" xml:space="preserve">
-    <value>Disconnect</value>
+    <value>Unpair</value>
   </data>
   <data name="ControlPanel" xml:space="preserve">
     <value>Control Panel</value>
