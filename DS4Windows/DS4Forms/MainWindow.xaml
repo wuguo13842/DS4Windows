@@ -124,14 +124,12 @@
 										<DataTemplate>
 											<Grid HorizontalAlignment="Stretch" VerticalAlignment="Center"  Width="{Binding Path=Width, ElementName=selectProfileColumn, Mode=OneWay}" Margin="-2,0,-2,0">
 												<Grid.ColumnDefinitions>
-													<ColumnDefinition Width="*"/>
 													<ColumnDefinition Width="*" MinWidth="80" />
 													<ColumnDefinition Width="1" />
 													<ColumnDefinition Width="85" />
-													<ColumnDefinition Width="*"/>
 												</Grid.ColumnDefinitions>
 
-												<ComboBox Grid.Column="1" x:Name="selectProfCombo"
+												<ComboBox Grid.Column="0" x:Name="selectProfCombo"
 														  ItemsSource="{Binding ProfileListCol}" 
 														  SelectedIndex="{Binding SelectedIndex}" 
 														  Height="Auto" 
@@ -146,7 +144,7 @@
 													</ComboBox.ItemTemplate>
 												</ComboBox>
 
-												<xctk:SplitButton Grid.Column="3" x:Name="ProfEditSBtn" 
+												<xctk:SplitButton Grid.Column="2" x:Name="ProfEditSBtn" 
 																  Content="{lex:Loc Edit}" Width="70"
 																  Visibility="{Binding PrimaryDevice, Converter={StaticResource BooleanToVisibilityConverter}}"
 																  Tag="{Binding DevIndex, Mode=OneTime}" 
