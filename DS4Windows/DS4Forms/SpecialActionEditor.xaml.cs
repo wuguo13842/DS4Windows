@@ -24,6 +24,8 @@ using System.Collections.Generic;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
+using DS4WinWPF.Translations;
+using DS4Windows.InputDevices;
 
 namespace DS4WinWPF.DS4Forms
 {
@@ -396,13 +398,13 @@ namespace DS4WinWPF.DS4Forms
             bool normalTrigger = pressKeyVM.NormalTrigger = !pressKeyVM.NormalTrigger;
             if (normalTrigger)
             {
-                pressKeyToggleTriggerBtn.Content = "Set Unload Trigger";
+                pressKeyToggleTriggerBtn.Content = Strings.SpecialActionEdit_SetUnloadTrigger;
                 triggersListView.Visibility = Visibility.Visible;
                 unloadTriggersListView.Visibility = Visibility.Collapsed;
             }
             else
             {
-                pressKeyToggleTriggerBtn.Content = "Set Regular Trigger";
+                pressKeyToggleTriggerBtn.Content = Strings.SpecialActionEdit_SetRegularTrigger;
                 triggersListView.Visibility = Visibility.Collapsed;
                 unloadTriggersListView.Visibility = Visibility.Visible;
             }
@@ -413,13 +415,13 @@ namespace DS4WinWPF.DS4Forms
             bool normalTrigger = loadProfileVM.NormalTrigger = !loadProfileVM.NormalTrigger;
             if (normalTrigger)
             {
-                loadProfUnloadBtn.Content = "Set Unload Trigger";
+                loadProfUnloadBtn.Content = Strings.SpecialActionEdit_SetUnloadTrigger;
                 triggersListView.Visibility = Visibility.Visible;
                 unloadTriggersListView.Visibility = Visibility.Collapsed;
             }
             else
             {
-                loadProfUnloadBtn.Content = "Set Regular Trigger";
+                loadProfUnloadBtn.Content = Strings.SpecialActionEdit_SetRegularTrigger;
                 triggersListView.Visibility = Visibility.Collapsed;
                 unloadTriggersListView.Visibility = Visibility.Visible;
             }

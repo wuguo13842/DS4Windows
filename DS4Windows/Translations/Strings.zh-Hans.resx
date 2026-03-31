@@ -304,7 +304,7 @@
     <value>滑动</value>
   </data>
   <data name="Trigger" xml:space="preserve">
-    <value>触发</value>
+    <value>加载</value>
   </data>
   <data name="WarningsOnly" xml:space="preserve">
     <value>仅警告</value>
@@ -1332,7 +1332,10 @@
     <value>选择一个宏</value>
   </data>
   <data name="SpecialActionEdit.SetUnloadTrigger" xml:space="preserve">
-    <value>设置取消加载触发键</value>
+    <value>设置卸载触发键</value>
+  </data>
+  <data name="SpecialActionEdit.SetRegularTrigger" xml:space="preserve">
+    <value>设置加载触发键</value>
   </data>
   <data name="SpecialActionEdit.SixAxisWheelCalib" xml:space="preserve">
     <value>六轴方向盘的校准</value>
@@ -1344,7 +1347,7 @@
     <value>点击触发</value>
   </data>
   <data name="SpecialActionEdit.UnloadTriggerRelease" xml:space="preserve">
-    <value>触发键松开时取消加载</value>
+    <value>按键松开触发</value>
   </data>
   <data name="SpecialActionEdit.UntoggleKeyBy" xml:space="preserve">
     <value>取消切换键</value>
@@ -1356,7 +1359,7 @@
     <value>通过通知显示</value>
   </data>
   <data name="UnloadTrigger" xml:space="preserve">
-    <value>卸载触发器</value>
+    <value>卸载</value>
   </data>
   <data name="Custom" xml:space="preserve">
     <value>自定义曲线</value>
@@ -1970,5 +1973,8 @@
 	</data>	
 	<data name="GyroMaxZone" xml:space="preserve">
 		<value>角速度上限</value>
+	</data>
+	<data name="Arguments" xml:space="preserve">
+		<value>参数</value>
 	</data>
 </root>

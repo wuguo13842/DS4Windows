@@ -14,7 +14,7 @@
              d:DesignHeight="350" d:DesignWidth="420">
     <DockPanel>
         <DockPanel DockPanel.Dock="Top" Margin="4,8,4,8">
-            <Label Content="Name:" DockPanel.Dock="Left" />
+            <Label Content="{lex:Loc Name}" ContentStringFormat="{}{0}:" DockPanel.Dock="Left" />
             <TextBox x:Name="actionNameTxt" Text="{Binding ActionName,FallbackValue=Name,ValidatesOnNotifyDataErrors=True}"
                      Margin="8,0,0,0" DockPanel.Dock="Right" VerticalContentAlignment="Center" />
         </DockPanel>
@@ -398,7 +398,7 @@
                                 <StackPanel Orientation="Horizontal" Margin="{StaticResource spaceMargin}">
                                     <Label Content="{lex:Loc SpecialActionEdit.HoldFor}" ContentStringFormat="{}{0} "></Label>
                                     <xctk:DecimalUpDown Value="{Binding Delay}" Width="60" Minimum="0" Maximum="60" FormatString= "F2" Increment="0.5" />
-                                    <Label Content="secs" />
+                                    <Label Content="{lex:Loc SecondsUnit}" />
                                 </StackPanel>
                                 <Button x:Name="launchProgBrowseBtn" Content="{lex:Loc Browse}" Margin="{StaticResource spaceMargin}"
                                         Click="LaunchProgBrowseBtn_Click" />
@@ -407,7 +407,7 @@
                                     <Image Source="{Binding ProgramIcon}" Width="32" Height="32" Margin="10,0,0,0" />
                                 </StackPanel>
                                 <StackPanel Margin="{StaticResource spaceMargin}">
-                                    <Label Content="Arguments"/>
+                                    <Label Content="{lex:Loc Arguments}" />
                                     <TextBox Text="{Binding Arguments}" />
                                 </StackPanel>
                             </StackPanel>
@@ -461,7 +461,7 @@
                             <StackPanel Orientation="Horizontal" Margin="{StaticResource spaceMargin}">
                                 <Label Content="{lex:Loc SpecialActionEdit.HoldFor}" ContentStringFormat="{}{0} "></Label>
                                 <xctk:DecimalUpDown Value="{Binding HoldInterval}" Width="60" Minimum="0" Maximum="60" FormatString= "F2" Increment="0.5" />
-                                <Label Content="secs" />
+                                <Label Content="{lex:Loc SecondsUnit}" />
                             </StackPanel>
                         </TabItem>
                         <TabItem x:Name="checkBatteryTab" Header="Check Battery">
@@ -469,7 +469,7 @@
                                 <StackPanel Orientation="Horizontal" Margin="0,8,0,8">
                                     <Label Content="{lex:Loc SpecialActionEdit.HoldFor}" ContentStringFormat="{}{0} "></Label>
                                     <xctk:DecimalUpDown Value="{Binding HoldInterval}" Width="60" Minimum="0" Maximum="60" FormatString= "F2" Increment="0.5"/>
-                                    <Label Content="secs" />
+                                    <Label Content="{lex:Loc SecondsUnit}" />
                                 </StackPanel>
                                 <CheckBox Content="{lex:Loc SpecialActionEdit.ViaNotification}" IsChecked="{Binding Notification}" Margin="{StaticResource spaceMargin}" />
                                 <CheckBox Content="{lex:Loc SpecialActionEdit.ViaLightbar}" IsChecked="{Binding Lightbar}" Margin="{StaticResource spaceMargin}" />
@@ -519,14 +519,14 @@
                             <StackPanel Orientation="Horizontal" Margin="{StaticResource spaceMargin}">
                                 <Label Content="{lex:Loc HoldFor}" ContentStringFormat="{}{0} "></Label>
                                 <xctk:DecimalUpDown Value="{Binding HoldInterval}" Width="60" Minimum="0" Maximum="60" FormatString= "F2" Increment="0.5" />
-                                <Label Content="secs" />
+                                <Label Content="{lex:Loc SecondsUnit}" />
                             </StackPanel>
                         </TabItem>
                         <TabItem x:Name="gyroCalibrateTab" Header="{lex:Loc GyroCalibration}">
                             <StackPanel Orientation="Horizontal" Margin="{StaticResource spaceMargin}">
                                 <Label Content="{lex:Loc HoldFor}" ContentStringFormat="{}{0} "></Label>
                                 <xctk:DecimalUpDown Value="{Binding HoldInterval}" Width="60" Minimum="0" Maximum="60" FormatString= "F2" Increment="0.5" />
-                                <Label Content="secs" />
+                                <Label Content="{lex:Loc SecondsUnit}" />
                             </StackPanel>
                         </TabItem>
                     </TabControl>
