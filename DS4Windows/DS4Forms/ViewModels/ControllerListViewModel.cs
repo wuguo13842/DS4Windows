@@ -296,6 +296,7 @@ namespace DS4WinWPF.DS4Forms.ViewModels
             {
                 if (selectedIndex == value) return;
                 selectedIndex = value;
+				OnPropertyChanged(nameof(SelectedIndex)); 
                 SelectedIndexChanged?.Invoke(this, EventArgs.Empty);
             }
         }
@@ -448,8 +449,16 @@ namespace DS4WinWPF.DS4Forms.ViewModels
             ProfileList collection)
         {
             this.device = device;
-            device.BatteryChanged += (sender, e) => BatteryStateChanged?.Invoke(this, e);
-            device.ChargingChanged += (sender, e) => BatteryStateChanged?.Invoke(this, e);
+			device.BatteryChanged += (sender, e) =>
+			{
+				BatteryStateChanged?.Invoke(this, e);
+				OnPropertyChanged(nameof(BatteryState));
+			};
+			device.ChargingChanged += (sender, e) =>
+			{
+				BatteryStateChanged?.Invoke(this, e);
+				OnPropertyChanged(nameof(BatteryState));
+			};
             device.MacAddressChanged += (sender, e) => IdTextChanged?.Invoke(this, e);
             this.devIndex = devIndex;
             this.selectedProfile = profile;
@@ -842,6 +851,9 @@ namespace DS4WinWPF.DS4Forms.ViewModels
             if (temp != null)
             {
                 SelectedIndex = profileListHolder.ProfileListCol.IndexOf(temp);
+				selectedProfile = loadprofile;
+				OnPropertyChanged(nameof(SelectedProfile));   // 通知主界面刷新
+				ChangeSelectedProfile();
             }
         }
 

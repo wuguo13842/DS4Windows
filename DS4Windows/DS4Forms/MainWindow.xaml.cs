@@ -438,6 +438,7 @@ namespace DS4WinWPF.DS4Forms
             if (devitem != null)
             {
                 devitem.ChangeSelectedProfile(profile);
+				trayIconVM.PopulateContextMenu();
             }
         }
 
