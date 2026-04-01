@@ -1150,17 +1150,20 @@ namespace DS4Windows
                         }
                         else
                         {
-                            if (res == HidDevice.ReadStatus.WaitTimedOut)
-                            {
-                                AppLogger.LogToGui(Mac.ToString() + " disconnected due to timeout", true);
-                            }
-                            else
-                            {
-                                int winError = Marshal.GetLastWin32Error();
-                                Console.WriteLine($"{Mac} {DateTime.UtcNow.ToString("o")}> disconnect due to read failure: {winError.ToString("x8")}");
-                                //Log.LogToGui(Mac.ToString() + " disconnected due to read failure: " + winError, true);
-                                AppLogger.LogToGui(Mac.ToString() + " disconnected due to read failure: " + winError, true);
-                            }
+							if (!isDisconnecting)
+							{
+								if (res == HidDevice.ReadStatus.WaitTimedOut)
+								{
+									AppLogger.LogToGui(Mac.ToString() + " disconnected due to timeout", true);
+								}
+								else
+								{
+									int winError = Marshal.GetLastWin32Error();
+									Console.WriteLine($"{Mac} {DateTime.UtcNow.ToString("o")}> disconnect due to read failure: {winError.ToString("x8")}");
+									//Log.LogToGui(Mac.ToString() + " disconnected due to read failure: " + winError, true);
+									AppLogger.LogToGui(Mac.ToString() + " disconnected due to read failure: " + winError, true);
+								}
+							}
 
                             readWaitEv.Reset();
                             sendOutputReport(true, true); // Kick Windows into noticing the disconnection.

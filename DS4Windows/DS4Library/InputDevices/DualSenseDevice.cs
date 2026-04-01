@@ -576,7 +576,11 @@ namespace DS4Windows.InputDevices
                                 {
                                     exitInputThread = true;
 
-                                    AppLogger.LogToGui(DS4WinWPF.Translations.Strings.CRC32Fail, true);
+									// 主动断开时不再记录日志
+									if (!isDisconnecting)
+									{
+										AppLogger.LogToGui(DS4WinWPF.Translations.Strings.CRC32Fail, true);
+									}
                                     readWaitEv.Reset();
                                     //sendOutputReport(true, true); // Kick Windows into noticing the disconnection.
                                     StopOutputUpdate();
@@ -601,28 +605,32 @@ namespace DS4Windows.InputDevices
                         }
                         else
                         {
-                            if (res == HidDevice.ReadStatus.WaitTimedOut)
-                            {
-                                AppLogger.LogToGui(Mac.ToString() + " disconnected due to timeout", true);
-                            }
-                            else
-                            {
-                                int winError = Marshal.GetLastWin32Error();
-                                Console.WriteLine($"{Mac} {DateTime.UtcNow.ToString("o")} > disconnect due to read failure: {winError.ToString("x8")}");
-                                //Log.LogToGui(Mac.ToString() + " disconnected due to read failure: " + winError, true);
-                                AppLogger.LogToGui(Mac.ToString() + " disconnected due to read failure: " + winError, true);
-                            }
+							// 主动断开时不再记录日志
+							if (!isDisconnecting)
+							{
+								if (res == HidDevice.ReadStatus.WaitTimedOut)
+								{
+									AppLogger.LogToGui(Mac.ToString() + " disconnected due to timeout", true);
+								}
+								else
+								{
+									int winError = Marshal.GetLastWin32Error();
+									Console.WriteLine($"{Mac} {DateTime.UtcNow.ToString("o")} > disconnect due to read failure: {winError.ToString("x8")}");
+									//Log.LogToGui(Mac.ToString() + " disconnected due to read failure: " + winError, true);
+									AppLogger.LogToGui(Mac.ToString() + " disconnected due to read failure: " + winError, true);
+								}
+							}
 
-                            exitInputThread = true;
-                            readWaitEv.Reset();
-                            //SendEmptyOutputReport();
-                            //sendOutputReport(true, true); // Kick Windows into noticing the disconnection.
-                            StopOutputUpdate();
-                            isDisconnecting = true;
-                            RunRemoval();
+							exitInputThread = true;
+							readWaitEv.Reset();
+							//SendEmptyOutputReport();
+							//sendOutputReport(true, true); // Kick Windows into noticing the disconnection.
+							StopOutputUpdate();
+							isDisconnecting = true;
+							RunRemoval();
 
-                            timeoutExecuted = true;
-                            continue;
+							timeoutExecuted = true;
+							continue;
                         }
                     }
                     else
@@ -630,16 +638,19 @@ namespace DS4Windows.InputDevices
                         HidDevice.ReadStatus res = hDevice.ReadFile(inputReport);
                         if (res != HidDevice.ReadStatus.Success)
                         {
-                            if (res == HidDevice.ReadStatus.WaitTimedOut)
-                            {
-                                AppLogger.LogToGui(Mac.ToString() + " disconnected due to timeout", true);
-                            }
-                            else
-                            {
-                                int winError = Marshal.GetLastWin32Error();
-                                Console.WriteLine($"{Mac} {DateTime.UtcNow.ToString("o")} > disconnect due to read failure: {winError.ToString("x8")}");
-                                //Log.LogToGui(Mac.ToString() + " disconnected due to read failure: " + winError, true);
-                            }
+							if (!isDisconnecting)
+							{
+								if (res == HidDevice.ReadStatus.WaitTimedOut)
+								{
+									AppLogger.LogToGui(Mac.ToString() + " disconnected due to timeout", true);
+								}
+								else
+								{
+									int winError = Marshal.GetLastWin32Error();
+									Console.WriteLine($"{Mac} {DateTime.UtcNow.ToString("o")} > disconnect due to read failure: {winError.ToString("x8")}");
+									//Log.LogToGui(Mac.ToString() + " disconnected due to read failure: " + winError, true);
+								}
+							}
 
                             exitInputThread = true;
                             readWaitEv.Reset();

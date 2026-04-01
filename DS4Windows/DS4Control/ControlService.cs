@@ -2616,7 +2616,7 @@ namespace DS4Windows
                     LogDebug(devError);
                 }
 
-                if (inWarnMonitor[ind])
+                if (inWarnMonitor[ind] && !device.IsRemoving && !device.IsRemoved)
                 {
                     int flashWhenLateAt = getFlashWhenLateAt();
                     if (!lag[ind] && device.Latency >= flashWhenLateAt)
