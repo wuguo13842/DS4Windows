@@ -734,6 +734,13 @@ namespace DS4Windows
             //}
 
             sendOutputReport(true, true, false); // initialize the output report (don't force disconnect the gamepad on initialization even if writeData fails because some fake DS4 gamepads don't support writeData over BT)
+			
+			// ========== GyroMacData ==========
+			// 将 MAC 地址传递给六轴对象
+			sixAxis.DeviceMac = this.MacAddress;
+			// 尝试加载已保存的校准数据
+			sixAxis.LoadCalibrationForMac(this.MacAddress);
+			// ========== GyroMacData ==========
         }
 
         // TODO: Possibly remove method

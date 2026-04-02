@@ -1084,11 +1084,13 @@ Suspend support not enabled.", true);
 				AppLogger.LogGyroCalibrationStarted(devIndex);
 
 				// 调用陀螺仪校准重置（与 ProfileEditor 中的 GyroCalibration_Click 一致）
-				device.SixAxis.ResetContinuousCalibration();
+				// device.SixAxis.ResetContinuousCalibration();
+				device.SixAxis.ForceResetContinuousCalibration(); // GyroMacData
 				if (device.JointDeviceSlotNumber != DS4Device.DEFAULT_JOINT_SLOT_NUMBER)
 				{
 					DS4Device tempDev = Program.rootHub.DS4Controllers[device.JointDeviceSlotNumber];
-					tempDev?.SixAxis.ResetContinuousCalibration();
+					// tempDev?.SixAxis.ResetContinuousCalibration();
+					tempDev?.SixAxis.ForceResetContinuousCalibration(); // GyroMacData
 				}
 			}
 		}

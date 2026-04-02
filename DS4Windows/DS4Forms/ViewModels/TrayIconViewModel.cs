@@ -388,11 +388,13 @@ namespace DS4WinWPF.DS4Forms.ViewModels
 				string message = string.Format(Strings.GyroCalibrationStarted, idx + 1);
 				AppLogger.LogToTray(message, false);
 
-				device.SixAxis.ResetContinuousCalibration();
+				// device.SixAxis.ResetContinuousCalibration();
+				device.SixAxis.ForceResetContinuousCalibration(); // GyroMacData
 				if (device.JointDeviceSlotNumber != DS4Device.DEFAULT_JOINT_SLOT_NUMBER)
 				{
 					DS4Device tempDev = controlService.DS4Controllers[device.JointDeviceSlotNumber];
-					tempDev?.SixAxis.ResetContinuousCalibration();
+					// tempDev?.SixAxis.ResetContinuousCalibration();
+					tempDev?.SixAxis.ForceResetContinuousCalibration(); // GyroMacData
 				}
 			}
 		}

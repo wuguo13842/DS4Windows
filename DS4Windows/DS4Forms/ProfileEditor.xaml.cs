@@ -1845,11 +1845,13 @@ namespace DS4WinWPF.DS4Forms
 				AppLogger.LogGyroCalibrationStarted(deviceNum);
 
 				DS4Device d = App.rootHub.DS4Controllers[deviceNum];
-				d.SixAxis.ResetContinuousCalibration();
+				// d.SixAxis.ResetContinuousCalibration();
+				d.SixAxis.ForceResetContinuousCalibration();
 				if (d.JointDeviceSlotNumber != DS4Device.DEFAULT_JOINT_SLOT_NUMBER)
 				{
 					DS4Device tempDev = App.rootHub.DS4Controllers[d.JointDeviceSlotNumber];
-					tempDev?.SixAxis.ResetContinuousCalibration();
+					// tempDev?.SixAxis.ResetContinuousCalibration();
+					tempDev?.SixAxis.ForceResetContinuousCalibration();
 				}
 			}
 		}

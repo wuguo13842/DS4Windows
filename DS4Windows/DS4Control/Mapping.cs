@@ -4403,11 +4403,13 @@ namespace DS4Windows
 									// 添加系统通知（仅手动校准时触发）
 									AppLogger.LogGyroCalibrationStarted(device);
 
-									d.SixAxis.ResetContinuousCalibration();
+									// d.SixAxis.ResetContinuousCalibration();
+									d.SixAxis.ForceResetContinuousCalibration(); // GyroMacData
 									if (d.JointDeviceSlotNumber != DS4Device.DEFAULT_JOINT_SLOT_NUMBER)
 									{
 										DS4Device tempDev = ctrl.DS4Controllers[d.JointDeviceSlotNumber];
-										tempDev?.SixAxis.ResetContinuousCalibration();
+										// tempDev?.SixAxis.ResetContinuousCalibration();
+										tempDev?.SixAxis.ForceResetContinuousCalibration(); // GyroMacData
 									}
 
 									actionDone[index].dev[device] = true;
