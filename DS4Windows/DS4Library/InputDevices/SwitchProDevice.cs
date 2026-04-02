@@ -286,6 +286,14 @@ namespace DS4Windows.InputDevices
             inputReportBuffer = new byte[INPUT_REPORT_LEN];
             outputReportBuffer = new byte[OUTPUT_REPORT_LEN];
             rumbleReportBuffer = new byte[RUMBLE_REPORT_LEN];
+
+            // ========== GyroMacData ==========
+            sixAxis.DeviceMac = this.MacAddress;
+            sixAxis.LoadCalibrationForMac(this.MacAddress);
+            // ========== GyroMacData ==========
+			
+			// 确保校准 Blinker 被创建（事件订阅在 Blinker 构造函数中完成）
+			var _ = CalibrationBlinker;
         }
 
         public static ConnectionType DetermineConnectionType(HidDevice hDevice)

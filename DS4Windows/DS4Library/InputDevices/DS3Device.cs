@@ -53,6 +53,14 @@ namespace DS4Windows.InputDevices
             inputReport = new byte[hDevice.Capabilities.InputReportByteLength];
             outputReport = new byte[hDevice.Capabilities.OutputReportByteLength];
             warnInterval = WARN_INTERVAL_USB;
+
+            // ========== GyroMacData ==========
+            sixAxis.DeviceMac = this.MacAddress;
+            sixAxis.LoadCalibrationForMac(this.MacAddress);
+            // ========== GyroMacData ==========
+			
+			// 确保校准 Blinker 被创建（事件订阅在 Blinker 构造函数中完成）
+			var _ = CalibrationBlinker;
         }
 
         public static ConnectionType DetermineConnectionType(HidDevice hidDevice)

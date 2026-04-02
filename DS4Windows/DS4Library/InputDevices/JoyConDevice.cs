@@ -385,6 +385,16 @@ namespace DS4Windows.InputDevices
 
             optionsStore = nativeOptionsStore = new JoyConControllerOptions(deviceType);
             SetupOptionsEvents();
+
+            // ========== GyroMacData ==========
+            // 将 MAC 地址传递给六轴对象
+            sixAxis.DeviceMac = this.MacAddress;
+            // 尝试加载已保存的校准数据
+            sixAxis.LoadCalibrationForMac(this.MacAddress);
+            // ========== GyroMacData ==========
+			
+			// 确保校准 Blinker 被创建（事件订阅在 Blinker 构造函数中完成）
+			var _ = CalibrationBlinker;
         }
 
         public static string ReadUSBSerial(HidDevice hDevice)
