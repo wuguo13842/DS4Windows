@@ -1066,9 +1066,9 @@ Suspend support not enabled.", true);
             button.ContextMenu.IsOpen = true;
         }
 
-        /// <summary>
-        /// 陀螺仪校准按钮点击事件
-        /// </summary>
+		/// <summary>
+		/// 陀螺仪校准按钮点击事件
+		/// </summary>
 		private void CalibrateGyroBtn_Click(object sender, RoutedEventArgs e)
 		{
 			Button btn = sender as Button;

@@ -183,26 +183,26 @@ namespace DS4Windows
             return Math.Min(1.0, 1.0 * DurationMs / expectedMs);
         }
     }
-	
-		// ========== GyroMacData ==========
-		[Serializable]
-		public class GyroCalibrationEntry
-		{
-			public string Mac { get; set; }
-			public int OffsetX { get; set; }
-			public int OffsetY { get; set; }
-			public int OffsetZ { get; set; }
-			public double AccelMagnitude { get; set; }
-		}
-		// ========== GyroMacData ==========
-	
+    
+    // ========== GyroMacData ==========
+    [Serializable]
+    public class GyroCalibrationEntry
+    {
+        public string Mac { get; set; }
+        public int OffsetX { get; set; }
+        public int OffsetY { get; set; }
+        public int OffsetZ { get; set; }
+        public double AccelMagnitude { get; set; }
+    }
+    // ========== GyroMacData ==========
+    
     public class DS4SixAxis
     {
-		// ========== GyroMacData ==========
-		private static readonly object fileLock = new object();
-		private bool calibrationLoaded = false;
-		// ========== GyroMacData ==========
-		
+        // ========== GyroMacData ==========
+        private static readonly object fileLock = new object();
+        private bool calibrationLoaded = false;
+        // ========== GyroMacData ==========
+        
         // 新增：校准状态改变事件
         public event EventHandler CalibrationStarted;
         public event EventHandler CalibrationStopped;
@@ -305,13 +305,13 @@ namespace DS4Windows
                 return gyroAverageTimer.IsRunning ? gyroAverageTimer.ElapsedMilliseconds : 0;
             }
         }
-		
-		// ========== GyroMacData ==========
-		/// <summary>
-		/// 所属手柄的 MAC 地址（由 DS4Device 设置）
-		/// </summary>
-		public string DeviceMac { get; set; }
-		// ========== GyroMacData ==========
+        
+        // ========== GyroMacData ==========
+        /// <summary>
+        /// 所属手柄的 MAC 地址（由 DS4Device 设置）
+        /// </summary>
+        public string DeviceMac { get; set; }
+        // ========== GyroMacData ==========
 
         public DS4SixAxis()
         {
@@ -598,7 +598,7 @@ namespace DS4Windows
 
         public void ResetContinuousCalibration()
         {
-			if (calibrationLoaded) return; // GyroMacData
+            if (calibrationLoaded) return; // GyroMacData
             // Potential race condition with CalcSensorCamples() since this method is called after checking gyroAverageTimer.IsRunning == true
             StopContinuousCalibration();
             StartContinuousCalibration();
@@ -668,158 +668,162 @@ namespace DS4Windows
                 y = (int)(totalY / weight);
                 z = (int)(totalZ / weight);
                 accelMagnitude = totalAccelMagnitude / weight;
-				
-				// ========== GyroMacData ==========
-				if (!string.IsNullOrEmpty(DeviceMac))
-				{
-					SaveCalibrationForMac(DeviceMac, x, y, z, accelMagnitude);
-					calibrationLoaded = true;
-				}
-				// ========== GyroMacData ==========
+                
+                // ========== GyroMacData ==========
+                if (!string.IsNullOrEmpty(DeviceMac))
+                {
+                    SaveCalibrationForMac(DeviceMac, x, y, z, accelMagnitude);
+                    calibrationLoaded = true;
+                }
+                // ========== GyroMacData ==========
             }
         }
 
-		// ========== GyroMacData ==========
-		private static string GetCalibrationFilePath()
-		{
-			return Path.Combine(Global.appdatapath, "GyroMacData.xml");
-		}
+        // ========== GyroMacData ==========
+        private static string GetCalibrationFilePath()
+        {
+            return Path.Combine(Global.appdatapath, "GyroMacData.xml");
+        }
 
-		public bool LoadCalibrationForMac(string mac)
-		{
-			if (string.IsNullOrEmpty(mac)) return false;
-			lock (fileLock)
-			{
-				string path = GetCalibrationFilePath();
-				if (!File.Exists(path)) return false;
-				try
-				{
-					XmlSerializer serializer = new XmlSerializer(typeof(List<GyroCalibrationEntry>));
-					using (StreamReader sr = new StreamReader(path))
-					{
-						var entries = serializer.Deserialize(sr) as List<GyroCalibrationEntry>;
-						var entry = entries?.Find(e => e.Mac == mac);
-						if (entry != null)
-						{
-							gyro_offset_x = entry.OffsetX;
-							gyro_offset_y = entry.OffsetY;
-							gyro_offset_z = entry.OffsetZ;
-							gyro_accel_magnitude = entry.AccelMagnitude;
-							calibrationLoaded = true;
-							StopContinuousCalibration();
-							return true;
-						}
-					}
-				}
-				catch (Exception ex)
-				{
-					AppLogger.LogToGui($"Failed to load gyro calibration for {mac}: {ex.Message}", false);
-				}
-			}
-			return false;
-		}
+        public bool LoadCalibrationForMac(string mac)
+        {
+            if (string.IsNullOrEmpty(mac)) return false;
+            lock (fileLock)
+            {
+                string path = GetCalibrationFilePath();
+                if (!File.Exists(path)) return false;
+                try
+                {
+                    XmlSerializer serializer = new XmlSerializer(typeof(List<GyroCalibrationEntry>));
+                    using (StreamReader sr = new StreamReader(path))
+                    {
+                        var entries = serializer.Deserialize(sr) as List<GyroCalibrationEntry>;
+                        var entry = entries?.Find(e => e.Mac == mac);
+                        if (entry != null)
+                        {
+                            gyro_offset_x = entry.OffsetX;
+                            gyro_offset_y = entry.OffsetY;
+                            gyro_offset_z = entry.OffsetZ;
+                            gyro_accel_magnitude = entry.AccelMagnitude;
+                            calibrationLoaded = true;
+                            StopContinuousCalibration();
+                            return true;
+                        }
+                    }
+                }
+                catch (Exception ex)
+                {
+                    AppLogger.LogToGui($"Failed to load gyro calibration for {mac}: {ex.Message}", false);
+                }
+            }
+            return false;
+        }
 
-		public void SaveCalibrationForMac(string mac, int offsetX, int offsetY, int offsetZ, double accelMag)
-		{
-			if (string.IsNullOrEmpty(mac)) return;
-			lock (fileLock)
-			{
-				string path = GetCalibrationFilePath();
-				List<GyroCalibrationEntry> entries = new List<GyroCalibrationEntry>();
-				if (File.Exists(path))
-				{
-					try
-					{
-						XmlSerializer serializer = new XmlSerializer(typeof(List<GyroCalibrationEntry>));
-						using (StreamReader sr = new StreamReader(path))
-						{
-							entries = serializer.Deserialize(sr) as List<GyroCalibrationEntry> ?? new List<GyroCalibrationEntry>();
-						}
-					}
-					catch (Exception ex)
-					{
-						AppLogger.LogToGui($"Failed to read gyro calibration file: {ex.Message}", false);
-						entries = new List<GyroCalibrationEntry>();
-					}
-				}
-				var existing = entries.Find(e => e.Mac == mac);
-				if (existing != null)
-				{
-					existing.OffsetX = offsetX;
-					existing.OffsetY = offsetY;
-					existing.OffsetZ = offsetZ;
-					existing.AccelMagnitude = accelMag;
-				}
-				else
-				{
-					entries.Add(new GyroCalibrationEntry
-					{
-						Mac = mac,
-						OffsetX = offsetX,
-						OffsetY = offsetY,
-						OffsetZ = offsetZ,
-						AccelMagnitude = accelMag
-					});
-				}
-				try
-				{
-					XmlSerializer serializer = new XmlSerializer(typeof(List<GyroCalibrationEntry>));
-					using (StreamWriter sw = new StreamWriter(path))
-					{
-						serializer.Serialize(sw, entries);
-					}
-				}
-				catch (Exception ex)
-				{
-					AppLogger.LogToGui($"Failed to save gyro calibration for {mac}: {ex.Message}", false);
-				}
-			}
-		}
+        public void SaveCalibrationForMac(string mac, int offsetX, int offsetY, int offsetZ, double accelMag)
+        {
+            if (string.IsNullOrEmpty(mac)) return;
+            lock (fileLock)
+            {
+                string path = GetCalibrationFilePath();
+                List<GyroCalibrationEntry> entries = new List<GyroCalibrationEntry>();
+                if (File.Exists(path))
+                {
+                    try
+                    {
+                        XmlSerializer serializer = new XmlSerializer(typeof(List<GyroCalibrationEntry>));
+                        using (StreamReader sr = new StreamReader(path))
+                        {
+                            entries = serializer.Deserialize(sr) as List<GyroCalibrationEntry> ?? new List<GyroCalibrationEntry>();
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        AppLogger.LogToGui($"Failed to read gyro calibration file: {ex.Message}", false);
+                        entries = new List<GyroCalibrationEntry>();
+                    }
+                }
+                var existing = entries.Find(e => e.Mac == mac);
+                if (existing != null)
+                {
+                    existing.OffsetX = offsetX;
+                    existing.OffsetY = offsetY;
+                    existing.OffsetZ = offsetZ;
+                    existing.AccelMagnitude = accelMag;
+                }
+                else
+                {
+                    entries.Add(new GyroCalibrationEntry
+                    {
+                        Mac = mac,
+                        OffsetX = offsetX,
+                        OffsetY = offsetY,
+                        OffsetZ = offsetZ,
+                        AccelMagnitude = accelMag
+                    });
+                }
+                try
+                {
+                    XmlSerializer serializer = new XmlSerializer(typeof(List<GyroCalibrationEntry>));
+                    using (StreamWriter sw = new StreamWriter(path))
+                    {
+                        serializer.Serialize(sw, entries);
+                    }
+                }
+                catch (Exception ex)
+                {
+                    AppLogger.LogToGui($"Failed to save gyro calibration for {mac}: {ex.Message}", false);
+                }
+            }
+        }
 
-		public void DeleteCalibrationForMac(string mac)
-		{
-			if (string.IsNullOrEmpty(mac)) return;
-			lock (fileLock)
-			{
-				string path = GetCalibrationFilePath();
-				if (!File.Exists(path)) return;
-				try
-				{
-					XmlSerializer serializer = new XmlSerializer(typeof(List<GyroCalibrationEntry>));
-					List<GyroCalibrationEntry> entries;
-					using (StreamReader sr = new StreamReader(path))
-					{
-						entries = serializer.Deserialize(sr) as List<GyroCalibrationEntry> ?? new List<GyroCalibrationEntry>();
-					}
-					if (entries.RemoveAll(e => e.Mac == mac) > 0)
-					{
-						using (StreamWriter sw = new StreamWriter(path))
-						{
-							serializer.Serialize(sw, entries);
-						}
-					}
-				}
-				catch (Exception ex)
-				{
-					AppLogger.LogToGui($"Failed to delete gyro calibration for {mac}: {ex.Message}", false);
-				}
-			}
-		}
+        public void DeleteCalibrationForMac(string mac)
+        {
+            if (string.IsNullOrEmpty(mac)) return;
+            lock (fileLock)
+            {
+                string path = GetCalibrationFilePath();
+                if (!File.Exists(path)) return;
+                try
+                {
+                    XmlSerializer serializer = new XmlSerializer(typeof(List<GyroCalibrationEntry>));
+                    List<GyroCalibrationEntry> entries;
+                    using (StreamReader sr = new StreamReader(path))
+                    {
+                        entries = serializer.Deserialize(sr) as List<GyroCalibrationEntry> ?? new List<GyroCalibrationEntry>();
+                    }
+                    if (entries.RemoveAll(e => e.Mac == mac) > 0)
+                    {
+                        using (StreamWriter sw = new StreamWriter(path))
+                        {
+                            serializer.Serialize(sw, entries);
+                        }
+                    }
+                }
+                catch (Exception ex)
+                {
+                    AppLogger.LogToGui($"Failed to delete gyro calibration for {mac}: {ex.Message}", false);
+                }
+            }
+        }
 
-		public void ForceResetContinuousCalibration()
-		{
-			// 停止正在进行的校准（如果有）
-			StopContinuousCalibration();
-			// 清空所有校准窗口
-			for (int i = 0; i < gyro_average_window.Length; i++)
-				gyro_average_window[i] = new GyroAverageWindow();
-			// 启动计时器开始校准
-			gyroAverageTimer.Start();
-			// 清除已加载标记，以便在 AverageGyro 中保存新数据
-			calibrationLoaded = false;
-			// 触发开始事件（用于 UI 闪烁）
-			CalibrationStarted?.Invoke(this, EventArgs.Empty);
-		}
-		// ========== GyroMacData ==========
+        public void ForceResetContinuousCalibration()
+        {
+            // 停止正在进行的校准（如果有）
+            StopContinuousCalibration();
+            
+            // 清空所有校准窗口
+            for (int i = 0; i < gyro_average_window.Length; i++)
+                gyro_average_window[i] = new GyroAverageWindow();
+            
+            // 清除已加载标记，以便在 AverageGyro 中保存新数据
+            calibrationLoaded = false;
+            
+            // 启动计时器开始校准
+            gyroAverageTimer.Start();
+            
+            // 触发开始事件（用于 UI 闪烁）
+            CalibrationStarted?.Invoke(this, EventArgs.Empty);
+        }
+        // ========== GyroMacData ==========
     }
 }

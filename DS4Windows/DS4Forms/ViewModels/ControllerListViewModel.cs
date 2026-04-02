@@ -31,6 +31,7 @@ using System.Windows.Data;
 using System.Windows.Media;
 using DS4Windows;
 using DS4WinWPF.DS4Control;
+using DS4WinWPF.DS4Forms; // 添加此引用以使用 GyroCalibrationBlinker
 
 namespace DS4WinWPF.DS4Forms.ViewModels
 {
@@ -220,36 +221,32 @@ namespace DS4WinWPF.DS4Forms.ViewModels
         private int selectedIndex = -1;
         private int devIndex;
 
-        // 陀螺仪校准状态相关字段
-        private bool isGyroCalibrating;
+        // 陀螺仪校准状态相关字段 - 使用 GyroCalibrationBlinker 简化后只保留属性
         private bool gyroCalibrationBlink;
-        private System.Windows.Threading.DispatcherTimer blinkTimer;
-        private System.Windows.Threading.DispatcherTimer blinkTimeoutTimer; // 新增：6秒超时定时器
-        private int blinkCounter; // 用于控制闪烁节奏
+        private GyroCalibrationBlinker _blinker; // 新增：闪烁管理器
         private bool isCleaningUp; // 防止重复清理的标志
-        private readonly object blinkLock = new object(); // 保护闪烁状态
 
         public DS4Device Device { get => device; set => device = value; }
         public string SelectedProfile { get => selectedProfile; set => selectedProfile = value; }
         public ProfileList ProfileEntities { get => profileListHolder; set => profileListHolder = value; }
         public ObservableCollection<ProfileEntity> ProfileListCol => profileListHolder.ProfileListCol;
-		
-		// ========== 新增：断开按钮启用状态属性 ==========
-		private bool _isDisconnectEnabled;
-		public bool IsDisconnectEnabled
-		{
-			get => _isDisconnectEnabled;
-			private set
-			{
-				if (_isDisconnectEnabled != value)
-				{
-					_isDisconnectEnabled = value;
-					OnPropertyChanged(nameof(IsDisconnectEnabled));
-				}
-			}
-		}
-		// =============================================
-	
+        
+        // ========== 新增：断开按钮启用状态属性 ==========
+        private bool _isDisconnectEnabled;
+        public bool IsDisconnectEnabled
+        {
+            get => _isDisconnectEnabled;
+            private set
+            {
+                if (_isDisconnectEnabled != value)
+                {
+                    _isDisconnectEnabled = value;
+                    OnPropertyChanged(nameof(IsDisconnectEnabled));
+                }
+            }
+        }
+        // =============================================
+    
         public string LightColor
         {
             get
@@ -296,7 +293,7 @@ namespace DS4WinWPF.DS4Forms.ViewModels
             {
                 if (selectedIndex == value) return;
                 selectedIndex = value;
-				OnPropertyChanged(nameof(SelectedIndex)); 
+                OnPropertyChanged(nameof(SelectedIndex)); 
                 SelectedIndexChanged?.Invoke(this, EventArgs.Empty);
             }
         }
@@ -407,21 +404,7 @@ namespace DS4WinWPF.DS4Forms.ViewModels
             get => device.PrimaryDevice;
         }
 
-        // 陀螺仪校准状态属性：是否正在校准
-        public bool IsGyroCalibrating
-        {
-            get => isGyroCalibrating;
-            private set
-            {
-                if (isGyroCalibrating != value)
-                {
-                    isGyroCalibrating = value;
-                    OnPropertyChanged(nameof(IsGyroCalibrating));
-                }
-            }
-        }
-
-        // 陀螺仪校准闪烁状态属性：用于UI绑定，控制图标可见性
+        // 陀螺仪校准状态属性：是否正在校准 - 由 Blinker 控制
         public bool GyroCalibrationBlink
         {
             get => gyroCalibrationBlink;
@@ -449,16 +432,16 @@ namespace DS4WinWPF.DS4Forms.ViewModels
             ProfileList collection)
         {
             this.device = device;
-			device.BatteryChanged += (sender, e) =>
-			{
-				BatteryStateChanged?.Invoke(this, e);
-				OnPropertyChanged(nameof(BatteryState));
-			};
-			device.ChargingChanged += (sender, e) =>
-			{
-				BatteryStateChanged?.Invoke(this, e);
-				OnPropertyChanged(nameof(BatteryState));
-			};
+            device.BatteryChanged += (sender, e) =>
+            {
+                BatteryStateChanged?.Invoke(this, e);
+                OnPropertyChanged(nameof(BatteryState));
+            };
+            device.ChargingChanged += (sender, e) =>
+            {
+                BatteryStateChanged?.Invoke(this, e);
+                OnPropertyChanged(nameof(BatteryState));
+            };
             device.MacAddressChanged += (sender, e) => IdTextChanged?.Invoke(this, e);
             this.devIndex = devIndex;
             this.selectedProfile = profile;
@@ -476,162 +459,36 @@ namespace DS4WinWPF.DS4Forms.ViewModels
 
             useCustomColor = Global.LightbarSettingsInfo[devIndex].ds4winSettings.useCustomLed;
 
-            // 在 UI 线程上创建 DispatcherTimer - 使用 Invoke 确保定时器在正确线程创建
-            // 这是必要的，因为构造函数可能在后台线程被调用（如热插拔时）
-            if (Application.Current != null && Application.Current.Dispatcher != null)
-            {
-                Application.Current.Dispatcher.Invoke(() =>
-                {
-                    // 初始化闪烁定时器 - 250ms间隔
-                    blinkTimer = new System.Windows.Threading.DispatcherTimer();
-                    blinkTimer.Interval = TimeSpan.FromMilliseconds(250); // 与 gyroCalEllipse 一致
-                    blinkTimer.Tick += BlinkTimer_Tick;
-
-                    // 初始化超时定时器 - 6秒间隔，仅在闪烁时启动
-                    blinkTimeoutTimer = new System.Windows.Threading.DispatcherTimer();
-                    blinkTimeoutTimer.Interval = TimeSpan.FromSeconds(5.25);
-                    blinkTimeoutTimer.Tick += BlinkTimeoutTimer_Tick;
-                });
-            }
-
-            // 订阅设备的 SixAxis 校准事件
+			// 在 CompositeDeviceModel 构造函数中
 			if (device?.SixAxis != null)
 			{
-				// 改为使用 lambda 捕获 device
-				device.SixAxis.CalibrationStarted += (s, e) => OnGyroCalibrationStarted(device, e);
-				device.SixAxis.CalibrationStopped += (s, e) => OnGyroCalibrationStopped(device, e);
-
-				if (device.SixAxis.CntCalibrating > 0)
+				Application.Current.Dispatcher.Invoke(() =>
 				{
-					OnGyroCalibrationStarted(device, EventArgs.Empty);
-				}
+					_blinker = new GyroCalibrationBlinker(device,
+						onBlinkUpdate: (visible) =>
+						{
+							GyroCalibrationBlink = visible;
+						},
+						onStopped: null
+					);
+				});
 			}
 
             // 订阅设备移除事件以清理资源
             device.Removal += OnDeviceRemoval;
-			
-			// ========== 新增：初始化断开按钮状态并订阅 SyncChange 事件 ==========
-			UpdateDisconnectEnabled();
-			device.SyncChange += (s, e) => OnPropertyChanged(nameof(IsDisconnectEnabled));
-			// =================================================================
-        }
-		
-		// ========== 新增：更新断开按钮状态的方法 ==========
-		private void UpdateDisconnectEnabled()
-		{
-			IsDisconnectEnabled = device.CanDisconnect;
-		}
-		// ===============================================
-
-        /// <summary>
-        /// 闪烁定时器 Tick 事件处理 - 每250ms切换一次可见性，实现闪烁
-        /// </summary>
-        private void BlinkTimer_Tick(object sender, EventArgs e)
-        {
-            // 如果正在清理中或定时器已被置空，忽略此次 Tick
-            if (isCleaningUp || blinkTimer == null) return;
             
-            blinkCounter++;
-            GyroCalibrationBlink = (blinkCounter % 2 == 1);
+            // ========== 新增：初始化断开按钮状态并订阅 SyncChange 事件 ==========
+            UpdateDisconnectEnabled();
+            device.SyncChange += (s, e) => OnPropertyChanged(nameof(IsDisconnectEnabled));
+            // =================================================================
         }
-
-        /// <summary>
-        /// 超时定时器 Tick 事件处理 - 6秒内未收到校准事件，强制停止闪烁
-        /// </summary>
-        private void BlinkTimeoutTimer_Tick(object sender, EventArgs e)
+        
+        // ========== 新增：更新断开按钮状态的方法 ==========
+        private void UpdateDisconnectEnabled()
         {
-            lock (blinkLock)
-            {
-                if (isGyroCalibrating)
-                {
-                    // 6秒超时，强制停止闪烁
-                    Application.Current.Dispatcher.BeginInvoke(new Action(() =>
-                    {
-                        lock (blinkLock)
-                        {
-                            if (isCleaningUp || blinkTimer == null || blinkTimeoutTimer == null) return;
-                            
-                            blinkTimeoutTimer.Stop();
-                            blinkTimer.Stop();
-                            isGyroCalibrating = false;
-                            GyroCalibrationBlink = false;
-                        }
-                    }));
-                }
-                else
-                {
-                    blinkTimeoutTimer?.Stop();
-                }
-            }
+            IsDisconnectEnabled = device.CanDisconnect;
         }
-
-        /// <summary>
-        /// 陀螺仪校准开始事件处理 - 与ControllerReadingsControl中的SixAxis_CalibrationStarted逻辑一致
-        /// 开始闪烁图标
-        /// </summary>
-        private void OnGyroCalibrationStarted(object sender, EventArgs e)
-        {
-            if (isCleaningUp) return;
-
-            lock (blinkLock)
-            {
-                IsGyroCalibrating = true;
-                blinkCounter = 0; // 重置计数器，确保从显示状态开始
-                
-                // 在 UI 线程上启动闪烁定时器和超时定时器
-                var dispatcher = Application.Current?.Dispatcher;
-                if (dispatcher != null && !dispatcher.HasShutdownStarted && !dispatcher.HasShutdownFinished)
-                {
-                    dispatcher.BeginInvoke(new Action(() =>
-                    {
-                        lock (blinkLock)
-                        {
-                            // 再次检查清理状态
-                            if (isCleaningUp || blinkTimer == null || blinkTimeoutTimer == null) return;
-                            
-                            blinkTimer.Stop();
-                            GyroCalibrationBlink = true; // 先显示
-                            blinkTimer.Start();
-                            
-                            // 重置并启动超时定时器
-                            blinkTimeoutTimer.Stop();
-                            blinkTimeoutTimer.Start();
-                        }
-                    }));
-                }
-            }
-        }
-
-        /// <summary>
-        /// 陀螺仪校准停止事件处理 - 与ControllerReadingsControl中的SixAxis_CalibrationStopped逻辑一致
-        /// 停止闪烁并隐藏图标
-        /// </summary>
-        private void OnGyroCalibrationStopped(object sender, EventArgs e)
-        {
-            if (isCleaningUp) return;
-
-            lock (blinkLock)
-            {
-                IsGyroCalibrating = false;
-                
-                var dispatcher = Application.Current?.Dispatcher;
-                if (dispatcher != null && !dispatcher.HasShutdownStarted && !dispatcher.HasShutdownFinished)
-                {
-                    dispatcher.BeginInvoke(new Action(() =>
-                    {
-                        lock (blinkLock)
-                        {
-                            // 再次检查清理状态
-                            if (isCleaningUp || blinkTimer == null || blinkTimeoutTimer == null) return;
-                            
-                            blinkTimer.Stop();
-                            blinkTimeoutTimer.Stop();
-                            GyroCalibrationBlink = false; // 隐藏
-                        }
-                    }));
-                }
-            }
-        }
+        // ===============================================
 
         /// <summary>
         /// 设备移除事件处理 - 清理陀螺仪相关资源
@@ -642,7 +499,7 @@ namespace DS4WinWPF.DS4Forms.ViewModels
         }
 
         /// <summary>
-        /// 清理陀螺仪校准相关事件和定时器
+        /// 清理陀螺仪校准相关事件和资源
         /// 在设备移除时调用，防止内存泄漏
         /// </summary>
         public void CleanupGyroEvents()
@@ -651,44 +508,11 @@ namespace DS4WinWPF.DS4Forms.ViewModels
             if (isCleaningUp) return;
             isCleaningUp = true;
 
-            // 先取消事件订阅，避免新的事件触发
-            if (device?.SixAxis != null)
-            {
-                device.SixAxis.CalibrationStarted -= OnGyroCalibrationStarted;
-                device.SixAxis.CalibrationStopped -= OnGyroCalibrationStopped;
-            }
-            device.Removal -= OnDeviceRemoval;
+            // 释放闪烁管理器资源
+            _blinker?.Dispose();
+            _blinker = null;
 
-            // 安全地停止并清理定时器
-            if (blinkTimer != null || blinkTimeoutTimer != null)
-            {
-                var dispatcher = Application.Current?.Dispatcher;
-                if (dispatcher != null && !dispatcher.HasShutdownStarted && !dispatcher.HasShutdownFinished)
-                {
-                    // 使用 BeginInvoke 异步停止定时器，避免死锁
-                    dispatcher.BeginInvoke(new Action(() =>
-                    {
-                        if (blinkTimer != null)
-                        {
-                            blinkTimer.Stop();
-                            blinkTimer.Tick -= BlinkTimer_Tick;
-                            blinkTimer = null;
-                        }
-                        if (blinkTimeoutTimer != null)
-                        {
-                            blinkTimeoutTimer.Stop();
-                            blinkTimeoutTimer.Tick -= BlinkTimeoutTimer_Tick;
-                            blinkTimeoutTimer = null;
-                        }
-                    }));
-                }
-                else
-                {
-                    // 应用程序正在关闭，直接置空
-                    blinkTimer = null;
-                    blinkTimeoutTimer = null;
-                }
-            }
+            device.Removal -= OnDeviceRemoval;
         }
 
         public void ChangeSelectedProfile()
@@ -851,28 +675,28 @@ namespace DS4WinWPF.DS4Forms.ViewModels
             if (temp != null)
             {
                 SelectedIndex = profileListHolder.ProfileListCol.IndexOf(temp);
-				selectedProfile = loadprofile;
-				OnPropertyChanged(nameof(SelectedProfile));   // 通知主界面刷新
-				ChangeSelectedProfile();
+                selectedProfile = loadprofile;
+                OnPropertyChanged(nameof(SelectedProfile));   // 通知主界面刷新
+                ChangeSelectedProfile();
             }
         }
 
-		public void RequestDisconnect()
-		{
-			if (device.CanDisconnect)
-			{
-				if (device.ConnectionType == ConnectionType.BT)
-				{
-					device.queueEvent(() =>
-					{
-						device.DisconnectBT();
-					});
-				}
-				else if (device.ConnectionType == ConnectionType.SONYWA)
-				{
-					device.DisconnectDongle();
-				}
-			}
-		}
+        public void RequestDisconnect()
+        {
+            if (device.CanDisconnect)
+            {
+                if (device.ConnectionType == ConnectionType.BT)
+                {
+                    device.queueEvent(() =>
+                    {
+                        device.DisconnectBT();
+                    });
+                }
+                else if (device.ConnectionType == ConnectionType.SONYWA)
+                {
+                    device.DisconnectDongle();
+                }
+            }
+        }
     }
 }

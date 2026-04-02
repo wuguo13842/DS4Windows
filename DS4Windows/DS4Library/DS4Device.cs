@@ -662,78 +662,78 @@ namespace DS4Windows
             sixAxis = new DS4SixAxis();
         }
 
-        public virtual void PostInit()
-        {
-            conType = HidConnectionType(hDevice);
-            Mac = hDevice.ReadSerial(SerialReportID);
+		public virtual void PostInit()
+		{
+			conType = HidConnectionType(hDevice);
+			Mac = hDevice.ReadSerial(SerialReportID);
 
-            //HidDevice hidDevice = hDevice;
-            deviceType = InputDevices.InputDeviceType.DS4;
-            gyroMouseSensSettings = new GyroMouseSens();
-            optionsStore = nativeOptionsStore = new DS4ControllerOptions(deviceType);
-            SetupOptionsEvents();
+			//HidDevice hidDevice = hDevice;
+			deviceType = InputDevices.InputDeviceType.DS4;
+			gyroMouseSensSettings = new GyroMouseSens();
+			optionsStore = nativeOptionsStore = new DS4ControllerOptions(deviceType);
+			SetupOptionsEvents();
 
-            if (conType == ConnectionType.USB || conType == ConnectionType.SONYWA)
-            {
-                inputReport = new byte[64];
-                outputReport = new byte[hDevice.Capabilities.OutputReportByteLength];
-                outReportBuffer = new byte[hDevice.Capabilities.OutputReportByteLength];
-                if (conType == ConnectionType.USB)
-                {
-                    warnInterval = WARN_INTERVAL_USB;
-                    synced = true;
-                }
-                else
-                {
-                    warnInterval = WARN_INTERVAL_BT;
-                    runCalib = synced = isValidSerial();
-                }
-            }
-            else
-            {
-                btInputReport = new byte[BT_INPUT_REPORT_LENGTH];
-                inputReport = new byte[BT_INPUT_REPORT_LENGTH - 2];
-                // If OnlyOutputData0x05 feature is not set then use the default DS4 output buffer size. However, some Razer gamepads use 32 bytes output buffer and output data type 0x05 in BT mode (writeData fails if the code tries to write too many unnecessary bytes)
-                if ((this.featureSet & VidPidFeatureSet.OnlyOutputData0x05) == 0)
-                {
-                    // Default DS4 logic while writing data to gamepad
-                    outputReport = new byte[BT_OUTPUT_REPORT_LENGTH];
-                    outReportBuffer = new byte[BT_OUTPUT_REPORT_LENGTH];
+			if (conType == ConnectionType.USB || conType == ConnectionType.SONYWA)
+			{
+				inputReport = new byte[64];
+				outputReport = new byte[hDevice.Capabilities.OutputReportByteLength];
+				outReportBuffer = new byte[hDevice.Capabilities.OutputReportByteLength];
+				if (conType == ConnectionType.USB)
+				{
+					warnInterval = WARN_INTERVAL_USB;
+					synced = true;
+				}
+				else
+				{
+					warnInterval = WARN_INTERVAL_BT;
+					runCalib = synced = isValidSerial();
+				}
+			}
+			else
+			{
+				btInputReport = new byte[BT_INPUT_REPORT_LENGTH];
+				inputReport = new byte[BT_INPUT_REPORT_LENGTH - 2];
+				// If OnlyOutputData0x05 feature is not set then use the default DS4 output buffer size. However, some Razer gamepads use 32 bytes output buffer and output data type 0x05 in BT mode (writeData fails if the code tries to write too many unnecessary bytes)
+				if ((this.featureSet & VidPidFeatureSet.OnlyOutputData0x05) == 0)
+				{
+					// Default DS4 logic while writing data to gamepad
+					outputReport = new byte[BT_OUTPUT_REPORT_LENGTH];
+					outReportBuffer = new byte[BT_OUTPUT_REPORT_LENGTH];
 
-                    // Buffer len and output report payload len will differ
-                    btOutputPayloadLen = BT_OUTPUT_REPORT_0x11_LENGTH;
-                }
-                else
-                {
-                    // Use the gamepad specific output buffer size (but minimum of 15 bytes to avoid out-of-index errors in this app)
-                    outputReport = new byte[hDevice.Capabilities.OutputReportByteLength <= 15 ? 15 : hDevice.Capabilities.OutputReportByteLength];
-                    outReportBuffer = new byte[hDevice.Capabilities.OutputReportByteLength <= 15 ? 15 : hDevice.Capabilities.OutputReportByteLength];
+					// Buffer len and output report payload len will differ
+					btOutputPayloadLen = BT_OUTPUT_REPORT_0x11_LENGTH;
+				}
+				else
+				{
+					// Use the gamepad specific output buffer size (but minimum of 15 bytes to avoid out-of-index errors in this app)
+					outputReport = new byte[hDevice.Capabilities.OutputReportByteLength <= 15 ? 15 : hDevice.Capabilities.OutputReportByteLength];
+					outReportBuffer = new byte[hDevice.Capabilities.OutputReportByteLength <= 15 ? 15 : hDevice.Capabilities.OutputReportByteLength];
 
-                    // Use custom buffer len
-                    btOutputPayloadLen = outputReport.Length;
-                }
-                warnInterval = WARN_INTERVAL_BT;
-                synced = isValidSerial();
-            }
+					// Use custom buffer len
+					btOutputPayloadLen = outputReport.Length;
+				}
+				warnInterval = WARN_INTERVAL_BT;
+				synced = isValidSerial();
+			}
 
-            if (runCalib)
-                RefreshCalibration();
+			if (runCalib)
+				RefreshCalibration();
 
-            // if (!hDevice.IsFileStreamOpen())
-            // {
-            //     hDevice.OpenFileStream(outputReport.Length);
-            // }
+			// if (!hDevice.IsFileStreamOpen())
+			// {
+			//     hDevice.OpenFileStream(outputReport.Length);
+			// }
 
-            // Temporarily disable this check as it does not seem to help
-            // detect fake DS4 controllers
-            //if (conType == ConnectionType.BT &&
-            //    !featureSet.HasFlag(VidPidFeatureSet.NoOutputData) &&
-            //    !featureSet.HasFlag(VidPidFeatureSet.OnlyOutputData0x05))
-            //{
-            //    CheckOutputReportTypes();
-            //}
+			// Temporarily disable this check as it does not seem to help
+			// detect fake DS4 controllers
+			//if (conType == ConnectionType.BT &&
+			//    !featureSet.HasFlag(VidPidFeatureSet.NoOutputData) &&
+			//    !featureSet.HasFlag(VidPidFeatureSet.OnlyOutputData0x05))
+			//{
+			//    CheckOutputReportTypes();
+			//}
 
-            sendOutputReport(true, true, false); // initialize the output report (don't force disconnect the gamepad on initialization even if writeData fails because some fake DS4 gamepads don't support writeData over BT)
+			sendOutputReport(true, true, false); // initialize the output report (don't force disconnect the gamepad on initialization even if writeData fails because some fake DS4 gamepads don't support writeData over BT)
 			
 			// ========== GyroMacData ==========
 			// 将 MAC 地址传递给六轴对象
@@ -741,7 +741,7 @@ namespace DS4Windows
 			// 尝试加载已保存的校准数据
 			sixAxis.LoadCalibrationForMac(this.MacAddress);
 			// ========== GyroMacData ==========
-        }
+		}
 
         // TODO: Possibly remove method
         private void CheckOutputReportTypes()
