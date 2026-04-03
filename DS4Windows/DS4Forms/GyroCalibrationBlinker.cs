@@ -128,10 +128,7 @@ namespace DS4WinWPF.DS4Forms
             {
                 _callbacks.Add(callback);
                 // 立即推送当前状态
-                if (_isCalibrating)
-                    callback(_blinkVisible);
-                else
-                    callback(false);
+                if (_isCalibrating) callback(_blinkVisible);
             }
         }
 
